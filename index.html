@@ -374,7 +374,7 @@
 // ═══════════════════════════════════════════════════════════════════
 //  VERSION (tự động bump)
 // ═══════════════════════════════════════════════════════════════════
-const VERSION = '1.2.7';
+const VERSION = '1.2.8';
 document.getElementById('versionBadge').textContent = 'v' + VERSION;
 document.title = 'HTML Grader | Công cụ chấm điểm code HTML tự động · THPT Thủ Thiêm';
 
@@ -555,119 +555,114 @@ function runAndGrade(){
 // ═══════════════════════════════════════════════════════════════════
 const SELF_CLOSING = new Set(['img','br','hr','input','meta','link','area','base','col','embed','param','source','track','wbr']);
 
-function parseHTML(code){
-  const lower = code.toLowerCase();
-  const tags = {};
-  const attrs = {};
-  const tagRx = /<([a-zA-Z][a-zA-Z0-9]*)((?:\s+[^>]*)?)\/?>/gi;
-  let m;
-  while((m = tagRx.exec(code)) !== null){
-    const tag = m[1].toLowerCase();
-    tags[tag] = (tags[tag]||0) + 1;
-    const attrStr = m[2]||'';
-    const attrRx = /(\w[\w-]*)(?:\s*=\s*(?:"([^"]*)"|'([^']*)'|(\S+)))?/g;
-    let am;
-    while((am = attrRx.exec(attrStr)) !== null){
-      const aname = am[1].toLowerCase();
-      const aval = (am[2]||am[3]||am[4]||'').toLowerCase();
-      const key = tag+'|'+aname;
-      if(!attrs[key]) attrs[key] = [];
-      attrs[key].push(aval);
+function parseHTML(code) {
+    const domParser = new DOMParser();
+    const doc = domParser.parseFromString(code, "text/html");
+    return doc;
+}
+
+function runTestCases(doc, ex) {
+    const issues = [];
+    for (const tc of (ex.test_cases || [])) {
+        let elements = [];
+        if (tc.tag) {
+            elements = Array.from(doc.querySelectorAll(tc.tag));
+        }
+
+        switch (tc.type) {
+            case "tag_exist":
+                if (elements.length === 0) {
+                    issues.push({ type: "error", title: `Thiếu thẻ &lt;${tc.tag}&gt;`, msg: tc.error, hint: tc.hint });
+                }
+                break;
+            case "tag_count":
+                if (elements.length < tc.min) {
+                    issues.push({ type: "warn", title: `Không đủ thẻ &lt;${tc.tag}&gt;`, msg: `Cần ít nhất ${tc.min} thẻ &lt;${tc.tag}&gt;, tìm thấy ${elements.length}`, hint: tc.hint });
+                }
+                break;
+            case "attr_exist":
+                if (elements.length > 0 && !elements.some(el => el.hasAttribute(tc.attr))) {
+                    issues.push({ type: "error", title: `Thiếu thuộc tính ${tc.attr} trên &lt;${tc.tag}&gt;`, msg: tc.error, hint: tc.hint });
+                }
+                break;
+            case "attr_value":
+                if (elements.length > 0 && !elements.some(el => el.getAttribute(tc.attr) === tc.value)) {
+                    issues.push({ type: "error", title: `Sai giá trị ${tc.attr} trên &lt;${tc.tag}&gt;`, msg: `Giá trị của ${tc.attr} phải là '${tc.value}'`, hint: tc.hint });
+                }
+                break;
+            case "content_contains":
+                if (elements.length > 0 && !elements.some(el => el.textContent.includes(tc.value))) {
+                    issues.push({ type: "error", title: `Nội dung thẻ &lt;${tc.tag}&gt; không đúng`, msg: `Nội dung thẻ phải chứa '${tc.value}'`, hint: tc.hint });
+                }
+                break;
+        }
     }
-  }
-  return {tags, attrs, content: lower, code};
+    return issues;
 }
 
-function runTestCases(parsed, ex){
-  const issues = [];
-  const {tags, attrs, content} = parsed;
-  for(const tc of (ex.test_cases||[])){
-    switch(tc.type){
-      case 'tag_exist':
-        for(const tag of (tc.tags||[])){
-          if(!tags[tag]){
-            issues.push({type:'error', title:`Thiếu thẻ &lt;${tag}&gt;`,
-              msg:(tc.error||'').replace('{tag}',tag),
-              hint:(tc.hint||'').replace('{tag}',tag)});
-          }
-        }
-        break;
-      case 'tag_count':
-        if((tags[tc.tag]||0) < tc.min){
-          issues.push({type:'warn', title:`Không đủ thẻ &lt;${tc.tag}&gt;`,
-            msg: tc.error, hint: tc.hint});
-        }
-        break;
-      case 'attr_exist':
-        if(!attrs[tc.tag+'|'+tc.attr]){
-          issues.push({type:'error', title:`Thiếu thuộc tính ${tc.attr} trên &lt;${tc.tag}&gt;`,
-            msg: tc.error, hint: tc.hint});
-        }
-        break;
-      case 'attr_value':
-        const vals = attrs[tc.tag+'|'+tc.attr]||[];
-        if(!vals.includes(tc.value)){
-          issues.push({type:'error', title:`Sai giá trị ${tc.attr} trên &lt;${tc.tag}&gt;`,
-            msg: tc.error, hint: tc.hint});
-        }
-        break;
-      case 'bool_attr':
-        const bkey = tc.tag+'|'+tc.attr;
-        if(!attrs[bkey]){
-          issues.push({type:'warn', title:`Thiếu thuộc tính ${tc.attr} trên &lt;${tc.tag}&gt;`,
-            msg: tc.error, hint: tc.hint});
-        }
-        break;
-      case 'title_contains':
-        const titleM = content.match(/<title[^>]*>(.*?)<\/title>/);
-        if(!titleM || !titleM[1].includes(tc.value.toLowerCase())){
-          issues.push({type:'error', title:`Tiêu đề trang không đúng`,
-            msg: tc.error, hint: tc.hint});
-        }
-        break;
+function checkStructure(doc, code) {
+    const issues = [];
+    if (!code.toLowerCase().startsWith("<!doctype html")) {
+        issues.push({ type: "error", title: "Thiếu <!DOCTYPE html>", msg: "Dòng đầu tiên của file phải là <!DOCTYPE html>.", hint: "Thêm <!DOCTYPE html> vào đầu file." });
     }
-  }
-  return issues;
-}
-
-function checkStructure(parsed){
-  const issues = [];
-  const {tags, content} = parsed;
-  if(!content.includes('<!doctype html')) issues.push({type:'error',title:'Thiếu <!DOCTYPE html>',msg:'Dòng đầu tiên phải là <!DOCTYPE html>',hint:'Thêm <!DOCTYPE html> vào đầu file'});
-  if(!tags['html']) issues.push({type:'error',title:'Thiếu thẻ &lt;html&gt;',msg:'Cần có thẻ <html>...</html>',hint:'Bọc toàn bộ nội dung trong <html>'});
-  if(!tags['head']) issues.push({type:'error',title:'Thiếu thẻ &lt;head&gt;',msg:'Cần có thẻ <head>',hint:'Thêm <head><title>...</title></head>'});
-  if(!tags['title']) issues.push({type:'error',title:'Thiếu thẻ &lt;title&gt;',msg:'Cần có <title> trong <head>',hint:'Thêm <title>Tiêu đề</title>'});
-  if(!tags['body']) issues.push({type:'error',title:'Thiếu thẻ &lt;body&gt;',msg:'Cần có thẻ <body>',hint:'Thêm <body>...</body>'});
-  return issues;
-}
-
-function checkSyntax(code){
-  const issues = [];
-  const lines = code.split('\n');
-  let hasIndent = false;
-  lines.forEach((line, i) => {
-    if(line.startsWith('  ') || line.startsWith('\t')) hasIndent = true;
-    const attrRx = /\w+=[^"'\s>][^\s>]*/g;
-    if(attrRx.test(line)){
-      issues.push({type:'warn',title:`Dòng ${i+1}: Thuộc tính thiếu dấu nháy`,
-        msg:`Phát hiện thuộc tính không có dấu nháy`,hint:'Dùng dấu nháy kép: attr="value"'});
+    if (!doc.querySelector("html")) {
+        issues.push({ type: "error", title: "Thiếu thẻ &lt;html&gt;", msg: "Toàn bộ nội dung phải được bọc trong thẻ &lt;html&gt;.", hint: "Thêm &lt;html&gt;...&lt;/html&gt;." });
     }
-  });
-  if(!hasIndent && lines.length > 3){
-    issues.push({type:'warn',title:'Code thiếu thụt lề',
-      msg:'Code nên được thụt lề để dễ đọc',hint:'Dùng 2 hoặc 4 dấu cách để thụt lề'});
-  }
-  return issues;
+    if (!doc.querySelector("head")) {
+        issues.push({ type: "error", title: "Thiếu thẻ &lt;head&gt;", msg: "Phần đầu của tài liệu phải có thẻ &lt;head&gt;.", hint: "Thêm &lt;head&gt;...&lt;/head&gt; bên trong &lt;html&gt;." });
+    }
+    if (!doc.querySelector("title")) {
+        issues.push({ type: "error", title: "Thiếu thẻ &lt;title&gt;", msg: "Thẻ &lt;head&gt; phải chứa thẻ &lt;title&gt;.", hint: "Thêm &lt;title&gt;Tiêu đề trang&lt;/title&gt; vào trong &lt;head&gt;." });
+    }
+    if (!doc.querySelector("body")) {
+        issues.push({ type: "error", title: "Thiếu thẻ &lt;body&gt;", msg: "Phần thân của tài liệu phải có thẻ &lt;body&gt;.", hint: "Thêm &lt;body&gt;...&lt;/body&gt; bên trong &lt;html&gt;." });
+    }
+    return issues;
 }
 
-function calcScore(structIssues, tcIssues, syntaxIssues, ex){
-  let score = 10;
-  const errors = [...structIssues, ...tcIssues, ...syntaxIssues].filter(i=>i.type==='error');
-  const warns = [...structIssues, ...tcIssues, ...syntaxIssues].filter(i=>i.type==='warn');
-  score -= errors.length * 1.2;
-  score -= warns.length * 0.5;
-  score = Math.max(0, Math.min(10, score));
-  return Math.round(score * 10) / 10;
+function checkSyntax(code) {
+    const issues = [];
+    const lines = code.split("\n");
+    const stack = [];
+    const tagRegex = /<(\/)?([a-zA-Z0-9]+)[^>]*>/g;
+    let match;
+
+    lines.forEach((line, i) => {
+        while ((match = tagRegex.exec(line)) !== null) {
+            const [fullMatch, isClosing, tagName] = match;
+            if (SELF_CLOSING.has(tagName.toLowerCase())) continue;
+
+            if (isClosing) {
+                if (stack.length === 0) {
+                    issues.push({ type: "error", title: `Dòng ${i + 1}: Thẻ đóng thừa &lt;/${tagName}&gt;`, msg: "Thẻ này không có thẻ mở tương ứng.", hint: "Kiểm tra lại cấu trúc các thẻ lồng nhau." });
+                } else if (stack[stack.length - 1] === tagName.toLowerCase()) {
+                    stack.pop();
+                } else {
+                    issues.push({ type: "error", title: `Dòng ${i + 1}: Sai thứ tự đóng thẻ`, msg: `Mong đợi &lt;/${stack[stack.length - 1]}&gt; nhưng lại thấy &lt;/${tagName}&gt;`, hint: "Đảm bảo các thẻ được đóng theo thứ tự ngược lại với khi mở." });
+                }
+            } else {
+                stack.push(tagName.toLowerCase());
+            }
+        }
+    });
+
+    if (stack.length > 0) {
+        issues.push({ type: "error", title: `Thiếu thẻ đóng`, msg: `Các thẻ sau chưa được đóng: ${stack.map(t => `&lt;${t}&gt;`).join(", ")}`, hint: "Mỗi thẻ mở phải có một thẻ đóng tương ứng." });
+    }
+
+    return issues;
+}
+
+function calcScore(structIssues, tcIssues, syntaxIssues, ex) {
+    let score = 10;
+    const criteria = ex.criteria || {};
+    const deduct = (issues, points) => issues.reduce((total, issue) => total + (points[issue.type] || 0), 0);
+
+    score -= deduct(structIssues, criteria.structure || {});
+    score -= deduct(tcIssues, criteria.test_cases || {});
+    score -= deduct(syntaxIssues, criteria.syntax || {});
+
+    return Math.max(0, Math.min(10, score));
 }
 
 function gradeCode(){
@@ -680,9 +675,9 @@ function gradeCode(){
   document.getElementById('scoreContent').style.display = 'none';
 
   setTimeout(() => {
-    const parsed = parseHTML(code);
-    const structIssues = checkStructure(parsed);
-    const tcIssues = ex ? runTestCases(parsed, ex) : [];
+    const doc = parseHTML(code);
+    const structIssues = checkStructure(doc, code);
+    const tcIssues = ex ? runTestCases(doc, ex) : [];
     const syntaxIssues = checkSyntax(code);
     const allIssues = [...structIssues, ...tcIssues, ...syntaxIssues];
     const score = calcScore(structIssues, tcIssues, syntaxIssues, ex);
