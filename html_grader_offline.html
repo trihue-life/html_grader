@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HTML Grader v1.1.0 — Offline — Trí Huệ</title>
+  <!--
+  ╔══════════════════════════════════════════════════════════════╗
+  ║         HTML GRADER v1.1.0 — PHIÊN BẢN OFFLINE              ║
+  ║  Chạy trực tiếp trên trình duyệt, không cần internet        ║
+  ║  Tác giả : Trí Huệ  |  trihue.life@gmail.com               ║
+  ║  GitHub  : https://github.com/TriHue-life/html_grader       ║
+  ╚══════════════════════════════════════════════════════════════╝
+  -->
+  <style>
+    /* ══════════════════════════════════════
+       RESET & BIẾN MÀU
+    ══════════════════════════════════════ */
+    :root {
+      --bg:       #0f1117;
+      --surface:  #1a1d27;
+      --surface2: #22263a;
+      --border:   #2e3250;
+      --accent:   #6c63ff;
+      --accent2:  #a78bfa;
+      --green:    #22c55e;
+      --red:      #ef4444;
+      --yellow:   #f59e0b;
+      --blue:     #3b82f6;
+      --text:     #e2e8f0;
+      --muted:    #94a3b8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      min-height: 100vh;
+    }
+
+    /* ══════════════════════════════════════
+       HEADER
+    ══════════════════════════════════════ */
+    header {
+      background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #1e1b4b 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 18px 32px;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 12px;
+    }
+    .logo { display: flex; align-items: center; gap: 14px; }
+    .logo-icon { font-size: 36px; }
+    .logo-text h1 {
+      font-size: 26px; font-weight: 800; color: #ffffff;
+      letter-spacing: 0.5px;
+      text-shadow: 0 0 20px rgba(167,139,250,0.5);
+    }
+    .logo-text p {
+      font-size: 13px; color: #c4b5fd; font-weight: 500;
+      margin-top: 2px; letter-spacing: 0.2px;
+    }
+    .header-right { display: flex; align-items: center; gap: 10px; }
+    .badge {
+      background: var(--accent); color: #fff;
+      padding: 5px 14px; border-radius: 20px; font-size: 12px; font-weight: 700;
+      box-shadow: 0 0 12px rgba(108,99,255,0.4);
+    }
+    .badge-offline {
+      background: rgba(34,197,94,0.15); border: 1px solid rgba(34,197,94,0.4);
+      color: #22c55e; padding: 5px 14px; border-radius: 20px; font-size: 12px;
+      font-weight: 600;
+    }
+    .badge-author {
+      background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+      color: #e2e8f0; padding: 5px 14px; border-radius: 20px; font-size: 12px;
+      font-weight: 500;
+    }
+
+    /* ══════════════════════════════════════
+       LAYOUT CHÍNH
+    ══════════════════════════════════════ */
+    .container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      height: calc(100vh - 76px);
+    }
+
+    /* ══════════════════════════════════════
+       PANEL TRÁI — EDITOR
+    ══════════════════════════════════════ */
+    .left-panel {
+      display: flex; flex-direction: column;
+      border-right: 1px solid var(--border);
+    }
+    .panel-top {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 16px;
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .panel-top-row { display: flex; align-items: center; gap: 8px; }
+    .panel-label { font-size: 12px; font-weight: 600; color: var(--muted); white-space: nowrap; }
+    select {
+      flex: 1;
+      background: var(--surface2); border: 1px solid var(--border);
+      color: var(--text); padding: 7px 10px; border-radius: 8px;
+      font-size: 12px; cursor: pointer; outline: none;
+    }
+    select:focus { border-color: var(--accent); }
+    .exercise-desc {
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 8px; padding: 8px 12px;
+      font-size: 11px; color: var(--muted); line-height: 1.6;
+      max-height: 72px; overflow-y: auto;
+    }
+    .required-tags { display: flex; flex-wrap: wrap; gap: 4px; padding: 4px 0 2px; }
+    .tag-chip {
+      background: rgba(108,99,255,0.15); border: 1px solid rgba(108,99,255,0.3);
+      color: var(--accent2); padding: 2px 8px; border-radius: 12px; font-size: 10px;
+      font-family: monospace;
+    }
+
+    textarea {
+      flex: 1;
+      background: #0d1117; color: #e6edf3;
+      border: none; padding: 14px 16px;
+      font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+      font-size: 13px; line-height: 1.7; resize: none; outline: none;
+      tab-size: 2;
+    }
+    textarea::placeholder { color: #3d4451; }
+
+    /* ══════════════════════════════════════
+       ACTION BAR
+    ══════════════════════════════════════ */
+    .action-bar {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 10px 16px;
+      display: flex; gap: 8px; align-items: center;
+    }
+    .btn-run {
+      flex: 1;
+      background: linear-gradient(135deg, #059669, #10b981);
+      color: #fff; border: none; padding: 10px 16px;
+      border-radius: 8px; font-size: 13px; font-weight: 700;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .btn-run:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(16,185,129,0.4); }
+    .btn-run:active { transform: translateY(0); }
+    .btn-grade {
+      flex: 1.4;
+      background: linear-gradient(135deg, var(--accent), #8b5cf6);
+      color: #fff; border: none; padding: 10px 16px;
+      border-radius: 8px; font-size: 13px; font-weight: 700;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .btn-grade:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(108,99,255,0.4); }
+    .btn-grade:active { transform: translateY(0); }
+    .btn-clear {
+      background: var(--surface2); color: var(--muted);
+      border: 1px solid var(--border);
+      padding: 10px 12px; border-radius: 8px; font-size: 12px; cursor: pointer;
+    }
+    .btn-clear:hover { color: var(--text); }
+    .shortcut-hint { font-size: 10px; color: var(--muted); white-space: nowrap; }
+
+    /* ══════════════════════════════════════
+       PANEL PHẢI — TABS
+    ══════════════════════════════════════ */
+    .right-panel {
+      display: flex; flex-direction: column;
+      overflow: hidden;
+    }
+    .tab-bar {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      display: flex; flex-shrink: 0;
+    }
+    .tab-btn {
+      flex: 1; padding: 10px 12px;
+      background: transparent; border: none; border-bottom: 2px solid transparent;
+      color: var(--muted); font-size: 12px; font-weight: 600;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .tab-btn:hover { color: var(--text); }
+    .tab-btn.active-grade { color: var(--accent2); border-bottom-color: var(--accent2); }
+    .tab-btn.active-run   { color: #10b981;        border-bottom-color: #10b981; }
+
+    /* ── Result Panel ── */
+    .result-panel {
+      flex: 1; display: flex; flex-direction: column;
+      overflow-y: auto;
+    }
+    .result-panel.hidden { display: none; }
+
+    .result-placeholder {
+      flex: 1; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 12px; color: var(--muted);
+      padding: 40px;
+    }
+    .result-placeholder .ph-icon { font-size: 56px; opacity: 0.25; }
+    .result-placeholder p { font-size: 13px; text-align: center; line-height: 1.6; }
+
+    .loading { display: none; text-align: center; padding: 60px 20px; }
+    .spinner {
+      width: 40px; height: 40px;
+      border: 3px solid var(--border); border-top-color: var(--accent);
+      border-radius: 50%; animation: spin 0.7s linear infinite;
+      margin: 0 auto 14px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Preview Panel ── */
+    .preview-panel {
+      flex: 1; display: none; flex-direction: column;
+    }
+    .preview-panel.visible { display: flex; }
+
+    .preview-toolbar {
+      background: var(--surface2); border-bottom: 1px solid var(--border);
+      padding: 6px 12px; display: flex; align-items: center; gap: 8px; flex-shrink: 0;
+    }
+    .preview-toolbar span { font-size: 11px; color: var(--muted); flex: 1; }
+    .btn-refresh {
+      background: var(--surface); border: 1px solid var(--border);
+      color: var(--muted); padding: 4px 10px; border-radius: 6px;
+      font-size: 11px; cursor: pointer;
+    }
+    .btn-refresh:hover { color: var(--text); }
+
+    .preview-empty {
+      flex: 1; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 12px;
+      color: var(--muted); background: var(--bg);
+    }
+    .preview-empty .ph-icon { font-size: 48px; opacity: 0.25; }
+    .preview-empty p { font-size: 13px; text-align: center; line-height: 1.6; }
+
+    .preview-iframe {
+      flex: 1; border: none; width: 100%; background: #fff; display: none;
+    }
+    .preview-iframe.visible { display: block; }
+
+    /* ══════════════════════════════════════
+       SCORE CARD
+    ══════════════════════════════════════ */
+    .score-card { padding: 20px; }
+    .score-header { text-align: center; margin-bottom: 20px; }
+    .score-circle {
+      width: 110px; height: 110px; border-radius: 50%;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      margin: 0 auto 12px; border: 4px solid; background: var(--surface2);
+    }
+    .score-num { font-size: 30px; font-weight: 800; }
+    .score-denom { font-size: 12px; color: var(--muted); }
+    .score-label { font-size: 17px; font-weight: 700; margin-bottom: 4px; }
+    .score-exercise { font-size: 11px; color: var(--muted); max-width: 280px; margin: 0 auto; }
+
+    .score-bars { margin-bottom: 18px; }
+    .bar-item { margin-bottom: 10px; }
+    .bar-label { display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 3px; }
+    .bar-label span:first-child { color: var(--muted); }
+    .bar-label span:last-child { font-weight: 700; }
+    .bar-track { background: var(--surface2); border-radius: 4px; height: 7px; overflow: hidden; }
+    .bar-fill { height: 100%; border-radius: 4px; transition: width 0.6s ease; }
+
+    .stats-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; margin-bottom: 18px; }
+    .stat-card {
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 10px; padding: 10px; text-align: center;
+    }
+    .stat-num { font-size: 20px; font-weight: 800; }
+    .stat-lbl { font-size: 10px; color: var(--muted); margin-top: 2px; }
+
+    .issues-title {
+      font-size: 11px; font-weight: 700; color: var(--muted);
+      text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;
+    }
+    .issue-item {
+      background: var(--surface2); border-radius: 8px;
+      padding: 9px 12px; margin-bottom: 7px;
+      border-left: 3px solid; display: flex; gap: 9px;
+    }
+    .issue-icon { font-size: 13px; flex-shrink: 0; margin-top: 1px; }
+    .issue-title-text { font-size: 12px; font-weight: 600; margin-bottom: 2px; }
+    .issue-msg { font-size: 11px; color: var(--muted); line-height: 1.5; }
+    .issue-line { font-size: 10px; color: var(--accent2); margin-top: 2px; }
+    .issue-error   { border-color: var(--red); }
+    .issue-warning { border-color: var(--yellow); }
+    .issue-info    { border-color: var(--blue); }
+    .issue-success { border-color: var(--green); }
+
+    .no-errors {
+      text-align: center; color: var(--green);
+      padding: 16px; font-size: 13px; font-weight: 600;
+    }
+
+    /* ══════════════════════════════════════
+       FOOTER
+    ══════════════════════════════════════ */
+    .footer {
+      background: var(--surface); border-top: 1px solid var(--border);
+      padding: 8px 16px; font-size: 10px; color: var(--muted); text-align: center;
+      flex-shrink: 0;
+    }
+    .footer a { color: var(--accent2); text-decoration: none; }
+    .footer a:hover { text-decoration: underline; }
+
+    /* ══════════════════════════════════════
+       OFFLINE BANNER
+    ══════════════════════════════════════ */
+    .offline-banner {
+      background: linear-gradient(135deg, rgba(34,197,94,0.1), rgba(16,185,129,0.05));
+      border-bottom: 1px solid rgba(34,197,94,0.2);
+      padding: 6px 32px;
+      display: flex; align-items: center; gap: 10px;
+      font-size: 11px; color: #6ee7b7;
+    }
+    .offline-banner strong { color: #22c55e; }
+
+    /* ══════════════════════════════════════
+       RESPONSIVE
+    ══════════════════════════════════════ */
+    @media (max-width: 700px) {
+      .container { grid-template-columns: 1fr; height: auto; }
+      .left-panel { height: 55vh; }
+      .right-panel { height: 60vh; }
+      .offline-banner { padding: 6px 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Header ── -->
+<header>
+  <div class="logo">
+    <div class="logo-icon">🏷️</div>
+    <div class="logo-text">
+      <h1>HTML Grader</h1>
+      <p>Công cụ chấm điểm code HTML tự động · THPT Thủ Thiêm</p>
+    </div>
+  </div>
+  <div class="header-right">
+    <span class="badge-offline">✈ Offline</span>
+    <span class="badge-author">✍️ Trí Huệ</span>
+    <span class="badge">v1.1.0</span>
+  </div>
+</header>
+
+<!-- ── Offline Banner ── -->
+<div class="offline-banner">
+  ✅ <strong>Phiên bản Offline</strong> — Chạy hoàn toàn trên máy tính, không cần kết nối internet.
+  &nbsp;|&nbsp; Mở file này bằng bất kỳ trình duyệt nào (Chrome, Edge, Firefox).
+</div>
+
+<!-- ── Main Layout ── -->
+<div class="container">
+
+  <!-- ═══ LEFT: Editor ═══ -->
+  <div class="left-panel">
+    <div class="panel-top">
+      <div class="panel-top-row">
+        <span class="panel-label">📚 Bài tập:</span>
+        <select id="exerciseSelect" onchange="onExerciseChange()"></select>
+      </div>
+      <div class="exercise-desc" id="exerciseDesc">Chọn bài tập để xem mô tả...</div>
+      <div class="required-tags" id="requiredTags"></div>
+    </div>
+
+    <textarea id="htmlCode"
+      placeholder="Nhập code HTML của bạn vào đây...
+
+Ví dụ:
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;title&gt;Trang của tôi&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;h1&gt;Xin chào!&lt;/h1&gt;
+    &lt;p&gt;Đây là trang web của tôi.&lt;/p&gt;
+  &lt;/body&gt;
+&lt;/html&gt;"></textarea>
+
+    <div class="action-bar">
+      <button class="btn-run"   onclick="runCode()">▶ Run</button>
+      <button class="btn-grade" onclick="gradeCode()">⚡ Chấm điểm</button>
+      <button class="btn-clear" onclick="clearCode()">🗑 Xóa</button>
+      <span class="shortcut-hint">Ctrl+Enter</span>
+    </div>
+  </div>
+
+  <!-- ═══ RIGHT: Tabs ═══ -->
+  <div class="right-panel" id="rightPanel">
+
+    <!-- Tab bar -->
+    <div class="tab-bar">
+      <button class="tab-btn active-grade" id="tabGrade" onclick="switchTab('grade')">📊 Kết quả chấm điểm</button>
+      <button class="tab-btn"              id="tabRun"   onclick="switchTab('run')">▶ Preview Output</button>
+    </div>
+
+    <!-- ── Tab: Kết quả chấm điểm ── -->
+    <div class="result-panel" id="panelGrade">
+      <div class="result-placeholder" id="placeholder">
+        <div class="ph-icon">📊</div>
+        <p>Chọn bài tập, nhập code HTML<br>và nhấn <strong style="color:var(--accent2)">⚡ Chấm điểm</strong> để xem kết quả</p>
+      </div>
+      <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <p style="color:var(--muted);font-size:12px">Đang phân tích code...</p>
+      </div>
+      <div id="resultArea" style="display:none"></div>
+    </div>
+
+    <!-- ── Tab: Preview Output ── -->
+    <div class="preview-panel" id="panelRun">
+      <div class="preview-toolbar">
+        <span id="previewLabel">Chưa có output — nhấn ▶ Run để xem</span>
+        <button class="btn-refresh" onclick="runCode()">↺ Chạy lại</button>
+      </div>
+      <div class="preview-empty" id="previewEmpty">
+        <div class="ph-icon">▶</div>
+        <p>Nhập code HTML và nhấn <strong style="color:#10b981">▶ Run</strong><br>để xem kết quả hiển thị tại đây</p>
+      </div>
+      <iframe id="previewFrame" class="preview-iframe"
+        sandbox="allow-scripts allow-same-origin allow-forms allow-modals"></iframe>
+    </div>
+
+    <div class="footer">
+      Tác giả: <strong>Trí Huệ</strong> &nbsp;·&nbsp;
+      <a href="mailto:trihue.life@gmail.com">trihue.life@gmail.com</a> &nbsp;·&nbsp;
+      <a href="https://github.com/TriHue-life/html_grader" target="_blank">GitHub</a>
+      &nbsp;·&nbsp; Phiên bản Offline — Không cần internet
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════
+//  DỮ LIỆU BÀI TẬP (21 bài từ F1 đến Tổng hợp)
+// ═══════════════════════════════════════════════════════════════════
+const EXERCISES = [
+  {
+    id: "f1_apply1", title: "F1 - Vận dụng 1: Trang thông tin cá nhân",
+    description: "Viết mã HTML hoàn chỉnh tạo trang web có <strong>tiêu đề</strong> là \"Thông tin cá nhân\", màu nền <strong>lightblue</strong>, chứa một đề mục lớn h1 ghi tên và một đoạn văn p giới thiệu sở thích.",
+    required_tags: ["html","head","title","body","h1","p"]
+  },
+  {
+    id: "f1_apply2", title: "F1 - Vận dụng 2: Trang có ô nhập số điện thoại",
+    description: "Sử dụng thẻ <strong>&lt;input&gt;</strong> để tạo trang web hoàn chỉnh có khung nhập liệu \"Số điện thoại:\" kèm đề mục h1 \"Liên hệ với chúng tôi\".",
+    required_tags: ["html","head","title","body","h1","p","input"]
+  },
+  {
+    id: "f1_apply3", title: "F1 - Vận dụng 3: Lí lịch trích ngang (có &lt;hr&gt;)",
+    description: "Tạo trang web dùng thẻ <strong>&lt;hr&gt;</strong> để ngăn cách rõ ràng giữa hai phần \"Thông tin cá nhân\" và \"Thành tích học tập\". Mỗi phần có h1 và p.",
+    required_tags: ["html","head","title","body","h1","p","hr"]
+  },
+  {
+    id: "f1_analyze1", title: "F1 - Phân tích: Sửa lỗi cú pháp thuộc tính",
+    description: "Đoạn mã có lỗi <strong>cú pháp thuộc tính</strong> khiến màu nền không hiển thị đúng màu xanh lá (green). Học sinh cần sửa lại cho đúng.<br><code style=\"color:#f7c948\">Gợi ý lỗi: &lt;body bgcolor:\"green\";&gt;</code>",
+    required_tags: ["html","head","title","body","h1"]
+  },
+  {
+    id: "f2_apply1", title: "F2 - Vận dụng 1: Danh sách môn học yêu thích (in đậm)",
+    description: "Viết mã HTML tạo danh sách <strong>không thứ tự &lt;ul&gt;</strong> gồm 3 môn học yêu thích, tên môn được in đậm bằng thẻ <strong>&lt;strong&gt;</strong>.",
+    required_tags: ["html","head","title","body","h3","ul","li","strong"]
+  },
+  {
+    id: "f2_apply2", title: "F2 - Vận dụng 2: Trang thành viên lớp + liên kết",
+    description: "Tạo trang <code>thanhvienlop.html</code> với tiêu đề \"Kỉ yếu lớp 12A\", danh sách thành viên dùng thẻ <strong>&lt;a href&gt;</strong> liên kết đến từng trang cá nhân.",
+    required_tags: ["html","head","title","body","h1","h2","p","a"]
+  },
+  {
+    id: "f2_apply3", title: "F2 - Vận dụng 3: Portfolio — Sở thích & Hoạt động",
+    description: "Cập nhật trang <code>portfolio.html</code> với danh sách <strong>&lt;ul&gt;</strong> sở thích và danh sách <strong>&lt;ol&gt;</strong> các hoạt động đã tham gia. Phân cách bằng &lt;hr&gt;.",
+    required_tags: ["html","head","title","body","h1","h2","p","ul","ol","li","hr"]
+  },
+  {
+    id: "f3_apply1", title: "F3 - Vận dụng 1: Bảng danh sách điểm thi",
+    description: "Tạo bảng gồm các cột: STT, Họ tên, Điểm Toán, Điểm Văn. Hàng tiêu đề <strong>&lt;th&gt;</strong> có màu nền xanh nhạt (lightblue), ít nhất 2 hàng dữ liệu.",
+    required_tags: ["html","head","title","body","table","tr","th","td"]
+  },
+  {
+    id: "f3_apply2", title: "F3 - Vận dụng 2: Bố cục trang web (Header-Menu-Nội dung-Footer)",
+    description: "Sử dụng <strong>&lt;table&gt;</strong> để tạo bố cục trang: Header (trên, gộp cột), Menu trái 20%, Nội dung phải 80%, Footer (dưới, gộp cột). Dùng colspan/rowspan.",
+    required_tags: ["html","head","title","body","table","tr","td"]
+  },
+  {
+    id: "f3_apply3", title: "F3 - Vận dụng 3: Nhúng video YouTube (iframe)",
+    description: "Nhúng một video YouTube vào trang web bằng thẻ <strong>&lt;iframe&gt;</strong> với kích thước 560×315. Thêm đề mục h3 \"Video giới thiệu\".",
+    required_tags: ["html","head","title","body","h3","iframe"]
+  },
+  {
+    id: "f4_apply1", title: "F4 - Vận dụng 1: Video tự động phát, tắt tiếng",
+    description: "Viết mã HTML hiển thị video chiều rộng 500px, có thuộc tính <strong>autoplay</strong>, <strong>muted</strong> và <strong>loop</strong>. Thêm đề mục h3 mô tả video.",
+    required_tags: ["html","head","title","body","h3","video"]
+  },
+  {
+    id: "f4_apply2", title: "F4 - Vận dụng 2: Trang nhạc + lời bài hát",
+    description: "Tạo trang web hiển thị tên bài hát bằng h2, lời bài hát bằng p, và nhúng tệp âm thanh bằng <strong>&lt;audio controls&gt;</strong>.",
+    required_tags: ["html","head","title","body","h2","p","audio"]
+  },
+  {
+    id: "f4_apply3", title: "F4 - Vận dụng 3: Portfolio hoàn chỉnh (ảnh + video + audio)",
+    description: "Hoàn thiện trang portfolio với: ảnh đại diện <strong>&lt;img&gt;</strong>, bố cục ảnh 3 cột dùng bảng, video hoạt động lớp <strong>&lt;video&gt;</strong>, bài hát yêu thích <strong>&lt;audio&gt;</strong>.",
+    required_tags: ["html","head","title","body","h1","h2","img","table","tr","td","video","audio"]
+  },
+  {
+    id: "f5_apply1", title: "F5 - Vận dụng 1: Biểu mẫu tìm kiếm",
+    description: "Tạo biểu mẫu tìm kiếm đơn giản gồm: ô nhập từ khóa <strong>type=\"text\"</strong> (có placeholder), nút bấm \"Tìm kiếm\" <strong>type=\"submit\"</strong>. Dùng method GET.",
+    required_tags: ["html","head","title","body","form","input","button"]
+  },
+  {
+    id: "f5_apply2", title: "F5 - Vận dụng 2: Đăng ký nhận tin (email bắt buộc)",
+    description: "Tạo biểu mẫu \"Đăng ký nhận tin mới\" gồm: nhãn <strong>&lt;label&gt;</strong>, ô nhập <strong>type=\"email\"</strong> có thuộc tính <strong>required</strong>, nút Đăng ký.",
+    required_tags: ["html","head","title","body","h3","form","label","input","button"]
+  },
+  {
+    id: "f5_apply3", title: "F5 - Vận dụng 3: Khảo sát ý kiến",
+    description: "Thiết kế biểu mẫu khảo sát gồm: Tên (text), Tuổi (number, min/max), Đánh giá mức độ hài lòng dùng <strong>radio</strong> (Tốt/Khá/Trung bình), nút Gửi.",
+    required_tags: ["html","head","title","body","h2","form","input","button"]
+  },
+  {
+    id: "f5_apply4", title: "F5 - Thực hành: Trang đăng nhập hệ thống",
+    description: "Tạo trang <code>login.html</code> với biểu mẫu đăng nhập: tên người dùng (text, required), mật khẩu (<strong>password</strong>, required), nút Đăng nhập. Dùng method POST.",
+    required_tags: ["html","head","title","body","h2","form","label","input","button"]
+  },
+  {
+    id: "f5_apply5", title: "F5 - Vận dụng: Đăng ký câu lạc bộ",
+    description: "Tạo biểu mẫu đăng ký CLB gồm: Họ tên (text, required), Lớp (<strong>&lt;select&gt;</strong> dropdown: 10A/11A/12A), Giới thiệu bản thân (<strong>&lt;textarea&gt;</strong>), nút Đăng ký và Làm lại.",
+    required_tags: ["html","head","title","body","h2","form","label","input","select","option","textarea","button"]
+  },
+  {
+    id: "tong1", title: "Tổng hợp - Vận dụng 1: Hồ sơ cá nhân tổng hợp (F1+F2+F4)",
+    description: "Tạo trang giới thiệu bản thân gồm: tiêu đề lớn h1, ảnh đại diện <strong>&lt;img&gt;</strong> 150px, danh sách <strong>&lt;ul&gt;</strong> 3 sở thích, đường kẻ ngang hr, đoạn video giới thiệu <strong>&lt;video controls&gt;</strong>.",
+    required_tags: ["html","head","title","body","h1","img","ul","li","hr","video"]
+  },
+  {
+    id: "tong2", title: "Tổng hợp - Vận dụng 2: Thời khóa biểu phức tạp (F3)",
+    description: "Tạo bảng thời khóa biểu gồm Thứ 2–4, 4 hàng tiết. Hàng tiêu đề màu xanh nhạt, ô \"Chào cờ\" <strong>rowspan=\"2\"</strong>, ô \"Nghỉ giải lao\" <strong>colspan=\"4\"</strong>.",
+    required_tags: ["html","head","title","body","h1","table","tr","th","td"]
+  },
+  {
+    id: "tong3", title: "Tổng hợp - Vận dụng 3: Đăng ký câu lạc bộ đầy đủ (F5)",
+    description: "Biểu mẫu đăng ký CLB hoàn chỉnh: họ tên (text), lớp (select), giới thiệu (textarea), nút Đăng ký + Làm lại. Kết hợp label, for/id đúng chuẩn, method POST.",
+    required_tags: ["html","head","title","body","h2","form","label","input","select","option","textarea","button"]
+  }
+];
+
+// ═══════════════════════════════════════════════════════════════════
+//  KHỞI TẠO DROPDOWN
+// ═══════════════════════════════════════════════════════════════════
+const GROUPS = {
+  'BÀI F1: HTML và Trang Web':  EXERCISES.filter(e => e.id.startsWith('f1')),
+  'BÀI F2: Tạo và Định dạng':   EXERCISES.filter(e => e.id.startsWith('f2')),
+  'BÀI F3: Bảng và Khung':      EXERCISES.filter(e => e.id.startsWith('f3')),
+  'BÀI F4: Đa Phương Tiện':     EXERCISES.filter(e => e.id.startsWith('f4')),
+  'BÀI F5: Biểu Mẫu':           EXERCISES.filter(e => e.id.startsWith('f5')),
+  'Bộ Tổng Hợp (F1–F5)':        EXERCISES.filter(e => e.id.startsWith('tong')),
+};
+const exerciseMap = Object.fromEntries(EXERCISES.map(e => [e.id, e]));
+
+(function initDropdown() {
+  const sel = document.getElementById('exerciseSelect');
+  for (const [groupName, exList] of Object.entries(GROUPS)) {
+    const og = document.createElement('optgroup');
+    og.label = groupName;
+    exList.forEach(ex => {
+      const opt = document.createElement('option');
+      opt.value = ex.id;
+      opt.textContent = ex.title;
+      og.appendChild(opt);
+    });
+    sel.appendChild(og);
+  }
+  onExerciseChange();
+})();
+
+function onExerciseChange() {
+  const ex = exerciseMap[document.getElementById('exerciseSelect').value];
+  if (!ex) return;
+  document.getElementById('exerciseDesc').innerHTML = ex.description || 'Không có mô tả.';
+  const tagsEl = document.getElementById('requiredTags');
+  tagsEl.innerHTML = ex.required_tags.map(t => `<span class="tag-chip">&lt;${t}&gt;</span>`).join('');
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  TAB SWITCHING
+// ═══════════════════════════════════════════════════════════════════
+let currentTab = 'grade';
+
+function switchTab(tab) {
+  currentTab = tab;
+  const panelGrade = document.getElementById('panelGrade');
+  const panelRun   = document.getElementById('panelRun');
+  const tabGrade   = document.getElementById('tabGrade');
+  const tabRun     = document.getElementById('tabRun');
+  if (tab === 'grade') {
+    panelGrade.classList.remove('hidden');
+    panelRun.classList.remove('visible');
+    tabGrade.className = 'tab-btn active-grade';
+    tabRun.className   = 'tab-btn';
+  } else {
+    panelGrade.classList.add('hidden');
+    panelRun.classList.add('visible');
+    tabGrade.className = 'tab-btn';
+    tabRun.className   = 'tab-btn active-run';
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  RUN — Hiển thị output HTML trong iframe
+// ═══════════════════════════════════════════════════════════════════
+function runCode() {
+  const code = document.getElementById('htmlCode').value.trim();
+  if (!code) { alert('Vui lòng nhập code HTML!'); return; }
+
+  switchTab('run');
+
+  const frame = document.getElementById('previewFrame');
+  const empty = document.getElementById('previewEmpty');
+  const label = document.getElementById('previewLabel');
+
+  frame.classList.add('visible');
+  empty.style.display = 'none';
+
+  const doc = frame.contentDocument || frame.contentWindow.document;
+  doc.open();
+  doc.write(code);
+  doc.close();
+
+  const ex = exerciseMap[document.getElementById('exerciseSelect').value];
+  label.textContent = '▶ Đang hiển thị: ' + (ex ? ex.title : 'Code HTML');
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  CLEAR
+// ═══════════════════════════════════════════════════════════════════
+function clearCode() {
+  document.getElementById('htmlCode').value = '';
+  document.getElementById('resultArea').style.display = 'none';
+  document.getElementById('placeholder').style.display = 'flex';
+  const frame = document.getElementById('previewFrame');
+  frame.classList.remove('visible');
+  document.getElementById('previewEmpty').style.display = 'flex';
+  document.getElementById('previewLabel').textContent = 'Chưa có output — nhấn ▶ Run để xem';
+  switchTab('grade');
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  LOGIC CHẤM ĐIỂM
+// ═══════════════════════════════════════════════════════════════════
+const SELF_CLOSING = new Set(['img','br','hr','input','meta','link','area','base','col','embed','param','source','track','wbr']);
+const SCORES_MAX = { structure: 2.5, required: 3.0, syntax: 2.5, format: 1.0, attributes: 1.0 };
+
+function gradeHTML(htmlCode, testCase) {
+  const lines = htmlCode.split('\n');
+  const codeLower = htmlCode.toLowerCase();
+  const issues = [];
+  const scores = { structure: 0, required: 0, syntax: 0, format: 0, attributes: 0 };
+
+  // 1. Cấu trúc HTML
+  const structureChecks = [
+    [/<!doctype\s+html/i,           '<!DOCTYPE html>',    0.5],
+    [/<html[\s>][\s\S]*<\/html>/i,  '<html>...</html>',   0.5],
+    [/<head[\s>][\s\S]*<\/head>/i,  '<head>...</head>',   0.5],
+    [/<title[\s>][\s\S]*<\/title>/i,'<title>...</title>', 0.5],
+    [/<body[\s>][\s\S]*<\/body>/i,  '<body>...</body>',   0.5],
+  ];
+  for (const [rx, name, pts] of structureChecks) {
+    if (rx.test(codeLower)) {
+      scores.structure += pts;
+    } else {
+      issues.push({ type:'error', title:`Thiếu ${name}`, message:`${name} là thành phần cơ bản bắt buộc của trang HTML.`, line: null });
+    }
+  }
+
+  // 2. Thẻ bắt buộc
+  const reqTags = testCase.required_tags || [];
+  if (!reqTags.length) {
+    scores.required = SCORES_MAX.required;
+  } else {
+    const ptsEach = SCORES_MAX.required / reqTags.length;
+    for (const tag of reqTags) {
+      const rx = new RegExp('<' + tag.replace(/[.*+?^${}()|[\]\\]/g,'\\$&') + '[\\s>/]', 'i');
+      if (rx.test(codeLower)) {
+        scores.required += ptsEach;
+        const lineNum = lines.findIndex(l => rx.test(l.toLowerCase())) + 1 || null;
+        issues.push({ type:'success', title:`Có thẻ <${tag}>`, message:`Thẻ <${tag}> được tìm thấy.`, line: lineNum });
+      } else {
+        issues.push({ type:'error', title:`Thiếu thẻ <${tag}>`, message:`Không tìm thấy <${tag}>. Bài tập yêu cầu thẻ này.`, line: null });
+      }
+    }
+  }
+
+  // 3. Cú pháp thẻ
+  let syntaxErrors = 0;
+  const tagStack = [];
+  const tagRx = /<\/?([a-zA-Z][a-zA-Z0-9]*)[^>]*\/?>/g;
+  for (let i = 0; i < lines.length; i++) {
+    const trimmed = lines[i].trim();
+    if (!trimmed || trimmed.startsWith('<!--')) continue;
+    let m; tagRx.lastIndex = 0;
+    while ((m = tagRx.exec(trimmed)) !== null) {
+      const full = m[0], tagName = m[1].toLowerCase();
+      const isClosing = full.startsWith('</');
+      const isSelf = full.endsWith('/>') || SELF_CLOSING.has(tagName);
+      if (!isClosing && !isSelf) {
+        tagStack.push({ tag: tagName, line: i + 1 });
+      } else if (isClosing && !SELF_CLOSING.has(tagName)) {
+        if (tagStack.length && tagStack[tagStack.length-1].tag === tagName) {
+          tagStack.pop();
+        } else {
+          syntaxErrors++;
+          issues.push({ type:'error', title:`Thẻ đóng không khớp </${tagName}>`, message:`Dòng ${i+1}: </${tagName}> không có thẻ mở tương ứng.`, line: i+1 });
+        }
+      }
+    }
+    const quoteCount = (trimmed.match(/"/g) || []).length;
+    if (quoteCount % 2 !== 0) {
+      syntaxErrors++;
+      issues.push({ type:'error', title:'Dấu nháy chưa đóng', message:`Dòng ${i+1}: Dấu nháy " chưa đóng đúng.`, line: i+1 });
+    }
+  }
+  for (const ti of tagStack) {
+    if (!['html','head','body'].includes(ti.tag)) {
+      syntaxErrors++;
+      issues.push({ type:'error', title:`Thẻ <${ti.tag}> chưa đóng`, message:`Dòng ${ti.line}: <${ti.tag}> mở nhưng không có thẻ đóng.`, line: ti.line });
+    }
+  }
+  const hasHTML = /<[a-zA-Z][a-zA-Z0-9]*[\s>/]/.test(htmlCode);
+  scores.syntax = hasHTML ? Math.max(0, SCORES_MAX.syntax - syntaxErrors * 0.5) : 0;
+
+  // 4. Định dạng
+  if (!hasHTML) {
+    scores.format = 0;
+  } else {
+    let fmtOk = true;
+    for (let i = 0; i < lines.length; i++) {
+      if (lines[i].trim() && lines[i].length > 200) {
+        fmtOk = false;
+        issues.push({ type:'info', title:'Dòng quá dài', message:`Dòng ${i+1}: ${lines[i].length} ký tự. Nên xuống dòng.`, line: i+1 });
+      }
+    }
+    const hasIndent = lines.some(l => l.startsWith('  ') || l.startsWith('\t'));
+    if (!hasIndent && lines.length > 5) {
+      fmtOk = false;
+      issues.push({ type:'info', title:'Không có thụt lề', message:'Code không có thụt lề. Nên indent các thẻ lồng nhau.', line: null });
+    }
+    scores.format = fmtOk ? SCORES_MAX.format : SCORES_MAX.format * 0.5;
+  }
+
+  // 5. Thuộc tính
+  if (!hasHTML) {
+    scores.attributes = 0;
+  } else {
+    let attrScore = SCORES_MAX.attributes;
+    const imgTags = htmlCode.match(/<img[^>]*>/gi) || [];
+    for (const img of imgTags) {
+      if (!/\balt\s*=/i.test(img))  { attrScore -= 0.25; issues.push({ type:'warning', title:'<img> thiếu alt', message:'Thẻ <img> cần thuộc tính alt="" (tốt cho SEO).', line: null }); }
+      if (!/\bsrc\s*=/i.test(img))  { attrScore -= 0.25; issues.push({ type:'error',   title:'<img> thiếu src', message:'Thẻ <img> phải có src="đường_dẫn_ảnh".', line: null }); }
+    }
+    const aTags = htmlCode.match(/<a[^>]*>/gi) || [];
+    for (const a of aTags) {
+      if (!/\bhref\s*=/i.test(a))   { attrScore -= 0.2;  issues.push({ type:'warning', title:'<a> thiếu href', message:'Thẻ <a> nên có href="" để chỉ định liên kết.', line: null }); }
+    }
+    scores.attributes = Math.max(0, attrScore);
+  }
+
+  const total = Math.round((scores.structure + scores.required + scores.syntax + scores.format + scores.attributes) * 10) / 10;
+  return { total, scores, issues };
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  RENDER KẾT QUẢ
+// ═══════════════════════════════════════════════════════════════════
+function barColor(score, max) {
+  const p = score / max;
+  return p >= 0.8 ? '#22c55e' : p >= 0.5 ? '#f59e0b' : '#ef4444';
+}
+
+function renderResult(total, scores, issues, exerciseTitle) {
+  const scoreColor = total >= 8.5 ? '#22c55e' : total >= 7 ? '#a78bfa' : total >= 5 ? '#f59e0b' : '#ef4444';
+  const scoreLabel = total >= 8.5 ? '🏆 Xuất sắc!' : total >= 7 ? '👍 Khá tốt' : total >= 5 ? '⚠️ Trung bình' : '❌ Cần cải thiện';
+
+  const errors    = issues.filter(i => i.type === 'error');
+  const warnings  = issues.filter(i => i.type === 'warning');
+  const infos     = issues.filter(i => i.type === 'info');
+  const successes = issues.filter(i => i.type === 'success');
+  const nonSuccess = issues.filter(i => i.type !== 'success');
+
+  const ICONS = { error:'✕', warning:'⚠', info:'ℹ', success:'✓' };
+
+  const issueHTML = nonSuccess.map(issue => `
+    <div class="issue-item issue-${issue.type}">
+      <div class="issue-icon">${ICONS[issue.type]}</div>
+      <div>
+        <div class="issue-title-text">${issue.title}</div>
+        <div class="issue-msg">${issue.message}</div>
+        ${issue.line ? `<div class="issue-line">Dòng ${issue.line}</div>` : ''}
+      </div>
+    </div>
+  `).join('');
+
+  const barRows = [
+    ['Cấu trúc HTML', scores.structure, 2.5],
+    ['Thẻ bắt buộc',  scores.required,  3.0],
+    ['Cú pháp thẻ',   scores.syntax,    2.5],
+    ['Định dạng',     scores.format,    1.0],
+    ['Thuộc tính',    scores.attributes,1.0],
+  ].map(([label, score, max]) => `
+    <div class="bar-item">
+      <div class="bar-label">
+        <span>${label}</span>
+        <span style="color:${barColor(score,max)}">${score.toFixed(1)}/${max}</span>
+      </div>
+      <div class="bar-track">
+        <div class="bar-fill" style="width:${Math.round(score/max*100)}%;background:${barColor(score,max)}"></div>
+      </div>
+    </div>
+  `).join('');
+
+  document.getElementById('resultArea').innerHTML = `
+    <div class="score-card">
+      <div class="score-header">
+        <div class="score-circle" style="border-color:${scoreColor}">
+          <span class="score-num" style="color:${scoreColor}">${total.toFixed(1)}</span>
+          <span class="score-denom">/10</span>
+        </div>
+        <div class="score-label" style="color:${scoreColor}">${scoreLabel}</div>
+        <div class="score-exercise">${exerciseTitle}</div>
+      </div>
+      <div class="score-bars">${barRows}</div>
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-num" style="color:#ef4444">${errors.length}</div><div class="stat-lbl">Lỗi</div></div>
+        <div class="stat-card"><div class="stat-num" style="color:#f59e0b">${warnings.length}</div><div class="stat-lbl">Cảnh báo</div></div>
+        <div class="stat-card"><div class="stat-num" style="color:#3b82f6">${infos.length}</div><div class="stat-lbl">Gợi ý</div></div>
+        <div class="stat-card"><div class="stat-num" style="color:#22c55e">${successes.length}</div><div class="stat-lbl">Đúng</div></div>
+      </div>
+      ${nonSuccess.length > 0
+        ? `<div class="issues-title">Chi tiết lỗi & cảnh báo</div>${issueHTML}`
+        : '<div class="no-errors">✅ Không có lỗi nào! Code hoàn hảo!</div>'}
+    </div>
+  `;
+  document.getElementById('resultArea').style.display = 'block';
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  CHẤM ĐIỂM
+// ═══════════════════════════════════════════════════════════════════
+function gradeCode() {
+  const code = document.getElementById('htmlCode').value.trim();
+  const exerciseId = document.getElementById('exerciseSelect').value;
+  if (!code) { alert('Vui lòng nhập code HTML!'); return; }
+
+  switchTab('grade');
+  document.getElementById('placeholder').style.display = 'none';
+  document.getElementById('resultArea').style.display = 'none';
+  document.getElementById('loading').style.display = 'block';
+
+  setTimeout(() => {
+    const ex = exerciseMap[exerciseId];
+    const { total, scores, issues } = gradeHTML(code, ex);
+    document.getElementById('loading').style.display = 'none';
+    renderResult(total, scores, issues, ex.title);
+    document.getElementById('panelGrade').scrollTop = 0;
+  }, 300);
+}
+
+// ── Phím tắt Ctrl+Enter ──
+document.addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') gradeCode();
+});
+
+// ── Tab key trong textarea ──
+document.getElementById('htmlCode').addEventListener('keydown', function(e) {
+  if (e.key === 'Tab') {
+    e.preventDefault();
+    const s = this.selectionStart, end = this.selectionEnd;
+    this.value = this.value.substring(0, s) + '  ' + this.value.substring(end);
+    this.selectionStart = this.selectionEnd = s + 2;
+  }
+});
+</script>
+</body>
+</html>
