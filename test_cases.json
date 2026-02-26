@@ -1,0 +1,344 @@
+[
+  {
+    "id": "f1_apply1",
+    "title": "F1 - Vận dụng 1: Trang thông tin cá nhân",
+    "description": "Viết mã HTML hoàn chỉnh tạo trang web có <strong>tiêu đề</strong> là \"Thông tin cá nhân\", màu nền <strong>lightblue</strong>, chứa một đề mục lớn h1 ghi tên và một đoạn văn p giới thiệu sở thích.",
+    "required_tags": [
+      "html",
+      "head",
+      "title",
+      "body",
+      "h1",
+      "p"
+    ],
+    "initial_code": ""
+  },
+  {
+    "id": "f1_apply2",
+    "title": "F1 - Vận dụng 2: Trang có ô nhập số điện thoại",
+    "description": "Sử dụng thẻ <strong>&lt;input&gt;</strong> để tạo trang web hoàn chỉnh có khung nhập liệu \"Số điện thoại:\" kèm đề mục h1 \"Liên hệ với chúng tôi\".",
+    "required_tags": [
+      "html",
+      "head",
+      "title",
+      "body",
+      "h1",
+      "p",
+      "input"
+    ],
+    "initial_code": ""
+  },
+  {
+    "id": "f1_apply3",
+    "title": "F1 - Vận dụng 3: Lí lịch trích ngang (có &lt;hr&gt;)",
+    "description": "Tạo trang web dùng thẻ <strong>&lt;hr&gt;</strong> để ngăn cách rõ ràng giữa hai phần \"Thông tin cá nhân\" và \"Thành tích học tập\". Mỗi phần có h1 và p.",
+    "required_tags": [
+      "html",
+      "head",
+      "title",
+      "body",
+      "h1",
+      "p",
+      "hr"
+    ],
+    "initial_code": ""
+  },
+  {
+    "id": "f1_analyze1",
+    "title": "F1 - Phân tích: Sửa lỗi cú pháp thuộc tính",
+    "description": "Đoạn mã có lỗi <strong>cú pháp thuộc tính</strong> khiến màu nền không hiển thị đúng màu xanh lá (green). Học sinh cần sửa lại cho đúng.\n<code style=\"color:#f7c948\">Gợi ý lỗi: &lt;body bgcolor:\"green\";&gt;</code>",
+    "required_tags": [
+      "html",
+      "head",
+      "title",
+      "body",
+      "h1"
+    ],
+    "initial_code": ""
+  },
+  {
+    "id": "f2_apply1",
+    "title": "F2 - Vận dụng 1: Danh sách môn học yêu thích (in đậm)",
+    "description": "Viết mã HTML tạo danh sách <strong>không thứ tự &lt;ul&gt;</strong> gồm 3 môn học yêu thích, tên môn được in đậm bằng thẻ <strong>&lt;strong&gt;</strong>.",
+    "required_tags": [
+      "html",
+      "head",
+      "title",
+      "body",
+      "h3",
+      "ul",
+      "li",
+      "strong"
+    ],
+    "initial_code": ""
+  },
+  {
+    "id": "f2_apply2",
+    "title": "F2 - Vận dụng 2: Trang thành viên lớp + liên kết",
+    "description": "Tạo trang <code>thanhvienlop.html</code> với tiêu đề \"Kỉ yếu lớp 12A\", danh sách thành viên dùng thẻ <strong>&lt;a href&gt;</strong> liên kết đến từng trang cá nhân.",
+    "required_tags": [
+      "html",
+      "head",
+      "title",
+      "body",
+      "h1",
+      "h2",
+      "p",
+      "a"
+    ],
+    "initial_code": ""
+  },
+  {
+    "id": "f2_apply3",
+    "title": "F2 - Vận dụng 3: Portfolio — Sở thích & Hoạt động",
+    "description": "Cập nhật trang <code>portfolio.html</code> với danh sách <strong>&lt;ul&gt;</strong> sở thích và danh sách <strong>&lt;ol&gt;</strong> các hoạt động đã tham gia. Phân cách bằng &lt;hr&gt;.",
+    "required_tags": [
+      "html",
+      "head",
+      "title",
+      "body",
+      "h1",
+      "h2",
+      "p",
+      "ul",
+      "ol",
+      "li",
+      "hr"
+    ],
+    "initial_code": ""
+  },
+  {
+    "id": "f3_apply1",
+    "title": "F3 - Vận dụng 1: Bảng danh sách điểm thi",
+    "description": "Tạo bảng gồm các cột: STT, Họ tên, Điểm Toán, Điểm Văn. Hàng tiêu đề <strong>&lt;th&gt;</strong> có màu nền xanh nhạt (lightblue), ít nhất 2 hàng dữ liệu.",
+    "required_tags": [
+      "html",
+      "head",
+      "title",
+      "body",
+      "table",
+      "tr",
+      "th",
+      "td"
+    ],
+    "initial_code": ""
+  },
+  {
+    "id": "f3_apply2",
+    "title": "F3 - Vận dụng 2: Bố cục trang web (Header-Menu-Nội dung-Footer)",
+    "description": "Sử dụng <strong>&lt;table&gt;</strong> để tạo bố cục trang: Header (trên, gộp cột), Menu trái 20%, Nội dung phải 80%, Footer (dưới, gộp cột). Dùng colspan/rowspan.",
+    "required_tags": [
+      "html",
+      "head",
+      "title",
+      "body",
+      "table",
+      "tr",
+      "td"
+    ],
+    "initial_code": ""
+  },
+  {
+    "id": "f3_apply3",
+    "title": "F3 - Vận dụng 3: Nhúng video YouTube (iframe)",
+    "description": "Nhúng một video YouTube vào trang web bằng thẻ <strong>&lt;iframe&gt;</strong> với kích thước 560×315. Thêm đề mục h3 \"Video giới thiệu\".",
+    "required_tags": [
+      "html",
+      "head",
+      "title",
+      "body",
+      "h3",
+      "iframe"
+    ],
+    "initial_code": ""
+  },
+  {
+    "id": "f4_apply1",
+    "title": "F4 - Vận dụng 1: Video tự động phát, tắt tiếng",
+    "description": "Viết mã HTML hiển thị video chiều rộng 500px, có thuộc tính <strong>autoplay</strong>, <strong>muted</strong> và <strong>loop</strong>. Thêm đề mục h3 mô tả video.",
+    "required_tags": [
+      "html",
+      "head",
+      "title",
+      "body",
+      "h3",
+      "video"
+    ],
+    "initial_code": ""
+  },
+  {
+    "id": "f4_apply2",
+    "title": "F4 - Vận dụng 2: Trang nhạc + lời bài hát",
+    "description": "Tạo trang web hiển thị tên bài hát bằng h2, lời bài hát bằng p, và nhúng tệp âm thanh bằng <strong>&lt;audio controls&gt;</strong>.",
+    "required_tags": [
+      "html",
+      "head",
+      "title",
+      "body",
+      "h2",
+      "p",
+      "audio"
+    ],
+    "initial_code": ""
+  },
+  {
+    "id": "f4_apply3",
+    "title": "F4 - Vận dụng 3: Portfolio hoàn chỉnh (ảnh + video + audio)",
+    "description": "Hoàn thiện trang portfolio với: ảnh đại diện <strong>&lt;img&gt;</strong>, bố cục ảnh 3 cột dùng bảng, video hoạt động lớp <strong>&lt;video&gt;</strong>, bài hát yêu thích <strong>&lt;audio&gt;</strong>.",
+    "required_tags": [
+      "html",
+      "head",
+      "title",
+      "body",
+      "h1",
+      "h2",
+      "img",
+      "table",
+      "tr",
+      "td",
+      "video",
+      "audio"
+    ],
+    "initial_code": ""
+  },
+  {
+    "id": "f5_apply1",
+    "title": "F5 - Vận dụng 1: Biểu mẫu tìm kiếm",
+    "description": "Tạo biểu mẫu tìm kiếm đơn giản gồm: ô nhập từ khóa <strong>type=\"text\"</strong> (có placeholder), nút bấm \"Tìm kiếm\" <strong>type=\"submit\"</strong>. Dùng method GET.",
+    "required_tags": [
+      "html",
+      "head",
+      "title",
+      "body",
+      "form",
+      "input",
+      "button"
+    ],
+    "initial_code": ""
+  },
+  {
+    "id": "f5_apply2",
+    "title": "F5 - Vận dụng 2: Đăng ký nhận tin (email bắt buộc)",
+    "description": "Tạo biểu mẫu \"Đăng ký nhận tin mới\" gồm: nhãn <strong>&lt;label&gt;</strong>, ô nhập <strong>type=\"email\"</strong> có thuộc tính <strong>required</strong>, nút Đăng ký.",
+    "required_tags": [
+      "html",
+      "head",
+      "title",
+      "body",
+      "h3",
+      "form",
+      "label",
+      "input",
+      "button"
+    ],
+    "initial_code": ""
+  },
+  {
+    "id": "f5_apply3",
+    "title": "F5 - Vận dụng 3: Khảo sát ý kiến",
+    "description": "Thiết kế biểu mẫu khảo sát gồm: Tên (text), Tuổi (number, min/max), Đánh giá mức độ hài lòng dùng <strong>radio</strong> (Tốt/Khá/Trung bình), nút Gửi.",
+    "required_tags": [
+      "html",
+      "head",
+      "title",
+      "body",
+      "h2",
+      "form",
+      "input",
+      "button"
+    ],
+    "initial_code": ""
+  },
+  {
+    "id": "f5_apply4",
+    "title": "F5 - Thực hành: Trang đăng nhập hệ thống",
+    "description": "Tạo trang <code>login.html</code> với biểu mẫu đăng nhập: tên người dùng (text, required), mật khẩu (<strong>password</strong>, required), nút Đăng nhập. Dùng method POST.",
+    "required_tags": [
+      "html",
+      "head",
+      "title",
+      "body",
+      "h2",
+      "form",
+      "label",
+      "input",
+      "button"
+    ],
+    "initial_code": ""
+  },
+  {
+    "id": "f5_apply5",
+    "title": "F5 - Vận dụng: Đăng ký câu lạc bộ",
+    "description": "Tạo biểu mẫu đăng ký CLB gồm: Họ tên (text, required), Lớp (<strong>&lt;select&gt;</strong> dropdown: 10A/11A/12A), Giới thiệu bản thân (<strong>&lt;textarea&gt;</strong>), nút Đăng ký và Làm lại.",
+    "required_tags": [
+      "html",
+      "head",
+      "title",
+      "body",
+      "h2",
+      "form",
+      "label",
+      "input",
+      "select",
+      "option",
+      "textarea",
+      "button"
+    ],
+    "initial_code": ""
+  },
+  {
+    "id": "tong1",
+    "title": "Tổng hợp - Vận dụng 1: Hồ sơ cá nhân tổng hợp (F1+F2+F4)",
+    "description": "Tạo trang giới thiệu bản thân gồm: tiêu đề lớn h1, ảnh đại diện <strong>&lt;img&gt;</strong> 150px, danh sách <strong>&lt;ul&gt;</strong> 3 sở thích, đường kẻ ngang hr, đoạn video giới thiệu <strong>&lt;video controls&gt;</strong>.",
+    "required_tags": [
+      "html",
+      "head",
+      "title",
+      "body",
+      "h1",
+      "img",
+      "ul",
+      "li",
+      "hr",
+      "video"
+    ],
+    "initial_code": ""
+  },
+  {
+    "id": "tong2",
+    "title": "Tổng hợp - Vận dụng 2: Thời khóa biểu phức tạp (F3)",
+    "description": "Tạo bảng thời khóa biểu gồm Thứ 2–4, 4 hàng tiết. Hàng tiêu đề màu xanh nhạt, ô \"Chào cờ\" <strong>rowspan=\"2\"</strong>, ô \"Nghỉ giải lao\" <strong>colspan=\"4\"</strong>.",
+    "required_tags": [
+      "html",
+      "head",
+      "title",
+      "body",
+      "h1",
+      "table",
+      "tr",
+      "th",
+      "td"
+    ],
+    "initial_code": ""
+  },
+  {
+    "id": "tong3",
+    "title": "Tổng hợp - Vận dụng 3: Đăng ký câu lạc bộ đầy đủ (F5)",
+    "description": "Biểu mẫu đăng ký CLB hoàn chỉnh: họ tên (text), lớp (select), giới thiệu (textarea), nút Đăng ký + Làm lại. Kết hợp label, for/id đúng chuẩn, method POST.",
+    "required_tags": [
+      "html",
+      "head",
+      "title",
+      "body",
+      "h2",
+      "form",
+      "label",
+      "input",
+      "select",
+      "option",
+      "textarea",
+      "button"
+    ],
+    "initial_code": ""
+  }
+]
