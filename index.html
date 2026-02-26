@@ -3,301 +3,151 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HTML Grader v1.1.0 — Trí Huệ</title>
+  <title>HTML Grader v1.2.0 — Trí Huệ</title>
   <style>
     :root {
-      --bg: #0f1117;
-      --surface: #1a1d27;
-      --surface2: #22263a;
-      --border: #2e3250;
-      --accent: #6c63ff;
-      --accent2: #a78bfa;
-      --green: #22c55e;
-      --red: #ef4444;
-      --yellow: #f59e0b;
-      --blue: #3b82f6;
-      --text: #e2e8f0;
-      --muted: #94a3b8;
+      --bg:#0f1117; --surface:#1a1d27; --surface2:#22263a; --surface3:#2a2f45;
+      --border:#2e3250; --accent:#6c63ff; --accent2:#a78bfa;
+      --green:#22c55e; --red:#ef4444; --yellow:#f59e0b; --blue:#3b82f6; --cyan:#06b6d4;
+      --text:#e2e8f0; --muted:#94a3b8;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-      min-height: 100vh;
-    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh}
 
-    /* ── Header ── */
-    header {
-      background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #1e1b4b 100%);
-      border-bottom: 1px solid var(--border);
-      padding: 18px 32px;
-      display: flex; align-items: center; justify-content: space-between;
-      flex-wrap: wrap; gap: 12px;
+    /* ── HEADER ── */
+    header{
+      background:linear-gradient(135deg,#1e1b4b 0%,#312e81 50%,#1e1b4b 100%);
+      border-bottom:1px solid var(--border);
+      padding:18px 32px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px
     }
-    .logo { display: flex; align-items: center; gap: 14px; }
-    .logo-icon { font-size: 36px; }
-    .logo-text h1 {
-      font-size: 26px; font-weight: 800; color: #ffffff;
-      letter-spacing: 0.5px;
-      text-shadow: 0 0 20px rgba(167,139,250,0.5);
-    }
-    .logo-text p {
-      font-size: 13px; color: #c4b5fd; font-weight: 500;
-      margin-top: 2px; letter-spacing: 0.2px;
-    }
-    .header-right { display: flex; align-items: center; gap: 10px; }
-    .badge {
-      background: var(--accent); color: #fff;
-      padding: 5px 14px; border-radius: 20px; font-size: 12px; font-weight: 700;
-      box-shadow: 0 0 12px rgba(108,99,255,0.4);
-    }
-    .badge-author {
-      background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
-      color: #e2e8f0; padding: 5px 14px; border-radius: 20px; font-size: 12px;
-      font-weight: 500;
-    }
+    .logo{display:flex;align-items:center;gap:14px}
+    .logo-icon{font-size:36px}
+    .logo-text h1{font-size:26px;font-weight:800;color:#fff;letter-spacing:.5px;text-shadow:0 0 20px rgba(167,139,250,.5)}
+    .logo-text p{font-size:13px;color:#c4b5fd;font-weight:500;margin-top:2px}
+    .header-right{display:flex;align-items:center;gap:8px}
+    .badge{background:var(--accent);color:#fff;padding:5px 14px;border-radius:20px;font-size:12px;font-weight:700;box-shadow:0 0 12px rgba(108,99,255,.4)}
+    .badge-author{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#e2e8f0;padding:5px 14px;border-radius:20px;font-size:12px;font-weight:500}
 
-    /* ── Layout ── */
-    .container {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      height: calc(100vh - 65px);
-    }
+    /* ── LAYOUT ── */
+    .container{display:grid;grid-template-columns:1fr 1fr;height:calc(100vh - 76px)}
 
-    /* ── Left Panel (Editor) ── */
-    .left-panel {
-      display: flex; flex-direction: column;
-      border-right: 1px solid var(--border);
-    }
-    .panel-top {
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      padding: 12px 16px;
-      display: flex; flex-direction: column; gap: 8px;
-    }
-    .panel-top-row { display: flex; align-items: center; gap: 8px; }
-    .panel-label { font-size: 12px; font-weight: 600; color: var(--muted); white-space: nowrap; }
-    select {
-      flex: 1;
-      background: var(--surface2); border: 1px solid var(--border);
-      color: var(--text); padding: 7px 10px; border-radius: 8px;
-      font-size: 12px; cursor: pointer; outline: none;
-    }
-    select:focus { border-color: var(--accent); }
-    .exercise-desc {
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 8px 12px;
-      font-size: 11px; color: var(--muted); line-height: 1.6;
-      max-height: 72px; overflow-y: auto;
-    }
-    .required-tags { display: flex; flex-wrap: wrap; gap: 4px; padding: 4px 0 2px; }
-    .tag-chip {
-      background: rgba(108,99,255,0.15); border: 1px solid rgba(108,99,255,0.3);
-      color: var(--accent2); padding: 2px 8px; border-radius: 12px; font-size: 10px;
-      font-family: monospace;
-    }
+    /* ── LEFT PANEL ── */
+    .left-panel{display:flex;flex-direction:column;border-right:1px solid var(--border)}
+    .panel-top{background:var(--surface);border-bottom:1px solid var(--border);padding:12px 16px;display:flex;flex-direction:column;gap:8px}
+    .panel-top-row{display:flex;align-items:center;gap:8px}
+    .panel-label{font-size:12px;font-weight:600;color:var(--muted);white-space:nowrap}
+    select{flex:1;background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:7px 10px;border-radius:8px;font-size:12px;cursor:pointer;outline:none}
+    select:focus{border-color:var(--accent)}
+    .exercise-desc{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-size:12px;color:var(--text);line-height:1.7;max-height:90px;overflow-y:auto}
+    .exercise-desc code{background:rgba(108,99,255,.15);color:var(--accent2);padding:1px 5px;border-radius:4px;font-size:11px}
+    .required-tags{display:flex;flex-wrap:wrap;gap:4px;padding:2px 0}
+    .tag-chip{background:rgba(108,99,255,.15);border:1px solid rgba(108,99,255,.3);color:var(--accent2);padding:2px 8px;border-radius:12px;font-size:10px;font-family:monospace}
+    textarea{flex:1;background:#0d1117;color:#e6edf3;border:none;padding:14px 16px;font-family:'Cascadia Code','Fira Code',Consolas,monospace;font-size:13px;line-height:1.7;resize:none;outline:none;tab-size:2}
+    textarea::placeholder{color:#3d4451}
 
-    textarea {
-      flex: 1;
-      background: #0d1117; color: #e6edf3;
-      border: none; padding: 14px 16px;
-      font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
-      font-size: 13px; line-height: 1.7; resize: none; outline: none;
-      tab-size: 2;
-    }
-    textarea::placeholder { color: #3d4451; }
+    /* ── ACTION BAR ── */
+    .action-bar{background:var(--surface);border-top:1px solid var(--border);padding:10px 16px;display:flex;gap:8px;align-items:center}
+    .btn-run{flex:1;background:linear-gradient(135deg,#059669,#10b981);color:#fff;border:none;padding:10px 16px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s}
+    .btn-run:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(16,185,129,.4)}
+    .btn-grade{flex:1.4;background:linear-gradient(135deg,var(--accent),#8b5cf6);color:#fff;border:none;padding:10px 16px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s}
+    .btn-grade:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(108,99,255,.4)}
+    .btn-clear{background:var(--surface2);color:var(--muted);border:1px solid var(--border);padding:10px 12px;border-radius:8px;font-size:12px;cursor:pointer}
+    .btn-clear:hover{color:var(--text)}
+    .shortcut-hint{font-size:10px;color:var(--muted);white-space:nowrap}
 
-    /* ── Action Bar ── */
-    .action-bar {
-      background: var(--surface);
-      border-top: 1px solid var(--border);
-      padding: 10px 16px;
-      display: flex; gap: 8px; align-items: center;
-    }
-    .btn-run {
-      flex: 1;
-      background: linear-gradient(135deg, #059669, #10b981);
-      color: #fff; border: none; padding: 10px 16px;
-      border-radius: 8px; font-size: 13px; font-weight: 700;
-      cursor: pointer; transition: all 0.2s;
-    }
-    .btn-run:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(16,185,129,0.4); }
-    .btn-run:active { transform: translateY(0); }
-    .btn-grade {
-      flex: 1.4;
-      background: linear-gradient(135deg, var(--accent), #8b5cf6);
-      color: #fff; border: none; padding: 10px 16px;
-      border-radius: 8px; font-size: 13px; font-weight: 700;
-      cursor: pointer; transition: all 0.2s;
-    }
-    .btn-grade:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(108,99,255,0.4); }
-    .btn-grade:active { transform: translateY(0); }
-    .btn-clear {
-      background: var(--surface2); color: var(--muted);
-      border: 1px solid var(--border);
-      padding: 10px 12px; border-radius: 8px; font-size: 12px; cursor: pointer;
-    }
-    .btn-clear:hover { color: var(--text); }
-    .shortcut-hint { font-size: 10px; color: var(--muted); white-space: nowrap; }
+    /* ── RIGHT PANEL ── */
+    .right-panel{display:flex;flex-direction:column;overflow:hidden}
+    .tab-bar{background:var(--surface);border-bottom:1px solid var(--border);display:flex;flex-shrink:0}
+    .tab-btn{flex:1;padding:10px 12px;background:transparent;border:none;border-bottom:2px solid transparent;color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;transition:all .2s}
+    .tab-btn:hover{color:var(--text)}
+    .tab-btn.active-grade{color:var(--accent2);border-bottom-color:var(--accent2)}
+    .tab-btn.active-run{color:#10b981;border-bottom-color:#10b981}
+    .tab-btn.active-criteria{color:var(--cyan);border-bottom-color:var(--cyan)}
 
-    /* ── Right Panel ── */
-    .right-panel {
-      display: flex; flex-direction: column;
-      overflow: hidden;
-    }
+    /* ── GRADE PANEL ── */
+    .result-panel{flex:1;display:flex;flex-direction:column;overflow-y:auto}
+    .result-panel.hidden{display:none}
+    .result-placeholder{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:var(--muted);padding:40px}
+    .result-placeholder .ph-icon{font-size:56px;opacity:.25}
+    .result-placeholder p{font-size:13px;text-align:center;line-height:1.6}
+    .loading{display:none;text-align:center;padding:60px 20px}
+    .spinner{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 14px}
+    @keyframes spin{to{transform:rotate(360deg)}}
 
-    /* ── Tab Bar ── */
-    .tab-bar {
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      flex-shrink: 0;
-    }
-    .tab-btn {
-      flex: 1; padding: 10px 12px;
-      background: transparent; border: none; border-bottom: 2px solid transparent;
-      color: var(--muted); font-size: 12px; font-weight: 600;
-      cursor: pointer; transition: all 0.2s;
-    }
-    .tab-btn:hover { color: var(--text); }
-    .tab-btn.active-grade { color: var(--accent2); border-bottom-color: var(--accent2); }
-    .tab-btn.active-run   { color: #10b981;        border-bottom-color: #10b981; }
+    /* ── PREVIEW PANEL ── */
+    .preview-panel{flex:1;display:none;flex-direction:column}
+    .preview-panel.visible{display:flex}
+    .preview-toolbar{background:var(--surface2);border-bottom:1px solid var(--border);padding:6px 12px;display:flex;align-items:center;gap:8px;flex-shrink:0}
+    .preview-toolbar span{font-size:11px;color:var(--muted);flex:1}
+    .btn-refresh{background:var(--surface);border:1px solid var(--border);color:var(--muted);padding:4px 10px;border-radius:6px;font-size:11px;cursor:pointer}
+    .btn-refresh:hover{color:var(--text)}
+    .preview-empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:var(--muted);background:var(--bg)}
+    .preview-empty .ph-icon{font-size:48px;opacity:.25}
+    .preview-empty p{font-size:13px;text-align:center;line-height:1.6}
+    .preview-iframe{flex:1;border:none;width:100%;background:#fff;display:none}
+    .preview-iframe.visible{display:block}
 
-    /* ── Result Panel ── */
-    .result-panel {
-      flex: 1; display: flex; flex-direction: column;
-      overflow-y: auto;
-    }
-    .result-panel.hidden { display: none; }
+    /* ── CRITERIA PANEL ── */
+    .criteria-panel{flex:1;display:none;flex-direction:column;overflow-y:auto}
+    .criteria-panel.visible{display:flex}
+    .criteria-body{padding:16px;display:flex;flex-direction:column;gap:12px}
+    .criteria-header{font-size:13px;font-weight:700;color:var(--accent2);border-bottom:1px solid var(--border);padding-bottom:8px;margin-bottom:4px}
+    .criteria-card{background:var(--surface2);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+    .criteria-card-header{background:var(--surface3);padding:10px 14px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+    .criteria-card-title{font-size:13px;font-weight:700;color:var(--text)}
+    .criteria-points{background:var(--accent);color:#fff;padding:2px 10px;border-radius:12px;font-size:11px;font-weight:700;white-space:nowrap}
+    .criteria-card-body{padding:10px 14px;display:flex;flex-direction:column;gap:6px}
+    .criteria-item{display:flex;align-items:flex-start;gap:8px;font-size:12px;color:var(--muted);line-height:1.5}
+    .criteria-item-icon{font-size:11px;margin-top:2px;flex-shrink:0}
+    .criteria-total{background:linear-gradient(135deg,rgba(108,99,255,.2),rgba(139,92,246,.1));border:1px solid rgba(108,99,255,.3);border-radius:10px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between}
+    .criteria-total-label{font-size:13px;font-weight:700;color:var(--text)}
+    .criteria-total-score{font-size:20px;font-weight:800;color:var(--accent2)}
 
-    .result-placeholder {
-      flex: 1; display: flex; flex-direction: column;
-      align-items: center; justify-content: center; gap: 12px; color: var(--muted);
-      padding: 40px;
-    }
-    .result-placeholder .ph-icon { font-size: 56px; opacity: 0.25; }
-    .result-placeholder p { font-size: 13px; text-align: center; line-height: 1.6; }
+    /* ── SCORE CARD ── */
+    .score-card{padding:20px}
+    .score-header{text-align:center;margin-bottom:20px}
+    .score-circle{width:110px;height:110px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 12px;border:4px solid;background:var(--surface2)}
+    .score-num{font-size:30px;font-weight:800}
+    .score-denom{font-size:12px;color:var(--muted)}
+    .score-label{font-size:17px;font-weight:700;margin-bottom:4px}
+    .score-exercise{font-size:11px;color:var(--muted);max-width:280px;margin:0 auto}
+    .score-bars{margin-bottom:18px}
+    .bar-item{margin-bottom:10px}
+    .bar-label{display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px}
+    .bar-label span:first-child{color:var(--muted)}
+    .bar-label span:last-child{font-weight:700}
+    .bar-track{background:var(--surface2);border-radius:4px;height:7px;overflow:hidden}
+    .bar-fill{height:100%;border-radius:4px;transition:width .6s ease}
+    .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:18px}
+    .stat-card{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px;text-align:center}
+    .stat-num{font-size:20px;font-weight:800}
+    .stat-lbl{font-size:10px;color:var(--muted);margin-top:2px}
+    .issues-title{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px}
+    .issue-item{background:var(--surface2);border-radius:8px;padding:9px 12px;margin-bottom:7px;border-left:3px solid;display:flex;gap:9px}
+    .issue-icon{font-size:13px;flex-shrink:0;margin-top:1px}
+    .issue-title-text{font-size:12px;font-weight:600;margin-bottom:2px}
+    .issue-msg{font-size:11px;color:var(--muted);line-height:1.5}
+    .issue-line{font-size:10px;color:var(--accent2);margin-top:2px}
+    .issue-error{border-color:var(--red)}
+    .issue-warning{border-color:var(--yellow)}
+    .issue-info{border-color:var(--blue)}
+    .issue-success{border-color:var(--green)}
+    .no-errors{text-align:center;color:var(--green);padding:16px;font-size:13px;font-weight:600}
 
-    .loading { display: none; text-align: center; padding: 60px 20px; }
-    .spinner {
-      width: 40px; height: 40px;
-      border: 3px solid var(--border); border-top-color: var(--accent);
-      border-radius: 50%; animation: spin 0.7s linear infinite;
-      margin: 0 auto 14px;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
+    /* ── FOOTER ── */
+    .footer{background:var(--surface);border-top:1px solid var(--border);padding:8px 16px;font-size:10px;color:var(--muted);text-align:center;flex-shrink:0}
+    .footer a{color:var(--accent2);text-decoration:none}
+    .footer a:hover{text-decoration:underline}
 
-    /* ── Preview Panel ── */
-    .preview-panel {
-      flex: 1; display: none; flex-direction: column;
-    }
-    .preview-panel.visible { display: flex; }
-
-    .preview-toolbar {
-      background: var(--surface2);
-      border-bottom: 1px solid var(--border);
-      padding: 6px 12px;
-      display: flex; align-items: center; gap: 8px;
-      flex-shrink: 0;
-    }
-    .preview-toolbar span { font-size: 11px; color: var(--muted); flex: 1; }
-    .btn-refresh {
-      background: var(--surface); border: 1px solid var(--border);
-      color: var(--muted); padding: 4px 10px; border-radius: 6px;
-      font-size: 11px; cursor: pointer;
-    }
-    .btn-refresh:hover { color: var(--text); }
-
-    .preview-empty {
-      flex: 1; display: flex; flex-direction: column;
-      align-items: center; justify-content: center; gap: 12px;
-      color: var(--muted); background: var(--bg);
-    }
-    .preview-empty .ph-icon { font-size: 48px; opacity: 0.25; }
-    .preview-empty p { font-size: 13px; text-align: center; line-height: 1.6; }
-
-    .preview-iframe {
-      flex: 1; border: none; width: 100%; background: #fff;
-      display: none;
-    }
-    .preview-iframe.visible { display: block; }
-
-    /* ── Score Card ── */
-    .score-card { padding: 20px; }
-    .score-header { text-align: center; margin-bottom: 20px; }
-    .score-circle {
-      width: 110px; height: 110px; border-radius: 50%;
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      margin: 0 auto 12px; border: 4px solid;
-      background: var(--surface2);
-    }
-    .score-num { font-size: 30px; font-weight: 800; }
-    .score-denom { font-size: 12px; color: var(--muted); }
-    .score-label { font-size: 17px; font-weight: 700; margin-bottom: 4px; }
-    .score-exercise { font-size: 11px; color: var(--muted); max-width: 280px; margin: 0 auto; }
-
-    .score-bars { margin-bottom: 18px; }
-    .bar-item { margin-bottom: 10px; }
-    .bar-label { display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 3px; }
-    .bar-label span:first-child { color: var(--muted); }
-    .bar-label span:last-child { font-weight: 700; }
-    .bar-track { background: var(--surface2); border-radius: 4px; height: 7px; overflow: hidden; }
-    .bar-fill { height: 100%; border-radius: 4px; transition: width 0.6s ease; }
-
-    .stats-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; margin-bottom: 18px; }
-    .stat-card {
-      background: var(--surface2); border: 1px solid var(--border);
-      border-radius: 10px; padding: 10px; text-align: center;
-    }
-    .stat-num { font-size: 20px; font-weight: 800; }
-    .stat-lbl { font-size: 10px; color: var(--muted); margin-top: 2px; }
-
-    .issues-title {
-      font-size: 11px; font-weight: 700; color: var(--muted);
-      text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;
-    }
-    .issue-item {
-      background: var(--surface2); border-radius: 8px;
-      padding: 9px 12px; margin-bottom: 7px;
-      border-left: 3px solid; display: flex; gap: 9px;
-    }
-    .issue-icon { font-size: 13px; flex-shrink: 0; margin-top: 1px; }
-    .issue-title-text { font-size: 12px; font-weight: 600; margin-bottom: 2px; }
-    .issue-msg { font-size: 11px; color: var(--muted); line-height: 1.5; }
-    .issue-line { font-size: 10px; color: var(--accent2); margin-top: 2px; }
-    .issue-error   { border-color: var(--red); }
-    .issue-warning { border-color: var(--yellow); }
-    .issue-info    { border-color: var(--blue); }
-    .issue-success { border-color: var(--green); }
-
-    .no-errors {
-      text-align: center; color: var(--green);
-      padding: 16px; font-size: 13px; font-weight: 600;
-    }
-
-    /* ── Footer ── */
-    .footer {
-      background: var(--surface); border-top: 1px solid var(--border);
-      padding: 8px 16px; font-size: 10px; color: var(--muted); text-align: center;
-      flex-shrink: 0;
-    }
-    .footer a { color: var(--accent2); text-decoration: none; }
-    .footer a:hover { text-decoration: underline; }
-
-    /* ── Responsive ── */
-    @media (max-width: 700px) {
-      .container { grid-template-columns: 1fr; height: auto; }
-      .left-panel { height: 55vh; }
-      .right-panel { height: 60vh; }
+    @media(max-width:700px){
+      .container{grid-template-columns:1fr;height:auto}
+      .left-panel{height:55vh}
+      .right-panel{height:65vh}
     }
   </style>
 </head>
 <body>
 
-<!-- ── Header ── -->
 <header>
   <div class="logo">
     <div class="logo-icon">🏷️</div>
@@ -308,13 +158,11 @@
   </div>
   <div class="header-right">
     <span class="badge-author">✍️ Trí Huệ</span>
-    <span class="badge">v1.1.0</span>
+    <span class="badge" id="versionBadge">v1.2.0</span>
   </div>
 </header>
 
-<!-- ── Main Layout ── -->
 <div class="container">
-
   <!-- ═══ LEFT: Editor ═══ -->
   <div class="left-panel">
     <div class="panel-top">
@@ -325,7 +173,6 @@
       <div class="exercise-desc" id="exerciseDesc">Chọn bài tập để xem mô tả...</div>
       <div class="required-tags" id="requiredTags"></div>
     </div>
-
     <textarea id="htmlCode"
       placeholder="Nhập code HTML của bạn vào đây...
 
@@ -340,7 +187,6 @@ Ví dụ:
     &lt;p&gt;Đây là trang web của tôi.&lt;/p&gt;
   &lt;/body&gt;
 &lt;/html&gt;"></textarea>
-
     <div class="action-bar">
       <button class="btn-run"   onclick="runCode()">▶ Run</button>
       <button class="btn-grade" onclick="gradeCode()">⚡ Chấm điểm</button>
@@ -350,15 +196,14 @@ Ví dụ:
   </div>
 
   <!-- ═══ RIGHT: Tabs ═══ -->
-  <div class="right-panel" id="rightPanel">
-
-    <!-- Tab bar -->
+  <div class="right-panel">
     <div class="tab-bar">
-      <button class="tab-btn active-grade" id="tabGrade" onclick="switchTab('grade')">📊 Kết quả chấm điểm</button>
-      <button class="tab-btn"              id="tabRun"   onclick="switchTab('run')">▶ Preview Output</button>
+      <button class="tab-btn active-grade" id="tabGrade"    onclick="switchTab('grade')">📊 Kết quả</button>
+      <button class="tab-btn"              id="tabRun"      onclick="switchTab('run')">▶ Preview</button>
+      <button class="tab-btn"              id="tabCriteria" onclick="switchTab('criteria')">📋 Tiêu chí</button>
     </div>
 
-    <!-- ── Tab: Kết quả chấm điểm ── -->
+    <!-- Tab: Kết quả -->
     <div class="result-panel" id="panelGrade">
       <div class="result-placeholder" id="placeholder">
         <div class="ph-icon">📊</div>
@@ -371,7 +216,7 @@ Ví dụ:
       <div id="resultArea" style="display:none"></div>
     </div>
 
-    <!-- ── Tab: Preview Output ── -->
+    <!-- Tab: Preview -->
     <div class="preview-panel" id="panelRun">
       <div class="preview-toolbar">
         <span id="previewLabel">Chưa có output — nhấn ▶ Run để xem</span>
@@ -381,7 +226,18 @@ Ví dụ:
         <div class="ph-icon">▶</div>
         <p>Nhập code HTML và nhấn <strong style="color:#10b981">▶ Run</strong><br>để xem kết quả hiển thị tại đây</p>
       </div>
-      <iframe id="previewFrame" class="preview-iframe" sandbox="allow-scripts allow-same-origin allow-forms allow-modals"></iframe>
+      <iframe id="previewFrame" class="preview-iframe"
+        sandbox="allow-scripts allow-same-origin allow-forms allow-modals"></iframe>
+    </div>
+
+    <!-- Tab: Tiêu chí chấm điểm -->
+    <div class="criteria-panel" id="panelCriteria">
+      <div class="criteria-body" id="criteriaBody">
+        <div style="text-align:center;color:var(--muted);padding:40px">
+          <div style="font-size:48px;opacity:.25">📋</div>
+          <p style="font-size:13px;margin-top:12px">Chọn bài tập để xem tiêu chí chấm điểm</p>
+        </div>
+      </div>
     </div>
 
     <div class="footer">
@@ -390,358 +246,865 @@ Ví dụ:
       <a href="https://github.com/TriHue-life/html_grader" target="_blank">GitHub</a>
     </div>
   </div>
-
 </div>
 
 <script>
-// ═══════════════════════════════════════════════════════
-//  DỮ LIỆU BÀI TẬP
-// ═══════════════════════════════════════════════════════
-const EXERCISES = [{"id": "f1_apply1", "title": "F1 - Vận dụng 1: Trang thông tin cá nhân", "description": "Viết mã HTML hoàn chỉnh tạo trang web có <strong>tiêu đề</strong> là \"Thông tin cá nhân\", màu nền <strong>lightblue</strong>, chứa một đề mục lớn h1 ghi tên và một đoạn văn p giới thiệu sở thích.", "required_tags": ["html", "head", "title", "body", "h1", "p"], "initial_code": ""}, {"id": "f1_apply2", "title": "F1 - Vận dụng 2: Trang có ô nhập số điện thoại", "description": "Sử dụng thẻ <strong>&lt;input&gt;</strong> để tạo trang web hoàn chỉnh có khung nhập liệu \"Số điện thoại:\" kèm đề mục h1 \"Liên hệ với chúng tôi\".", "required_tags": ["html", "head", "title", "body", "h1", "p", "input"], "initial_code": ""}, {"id": "f1_apply3", "title": "F1 - Vận dụng 3: Lí lịch trích ngang (có &lt;hr&gt;)", "description": "Tạo trang web dùng thẻ <strong>&lt;hr&gt;</strong> để ngăn cách rõ ràng giữa hai phần \"Thông tin cá nhân\" và \"Thành tích học tập\". Mỗi phần có h1 và p.", "required_tags": ["html", "head", "title", "body", "h1", "p", "hr"], "initial_code": ""}, {"id": "f1_analyze1", "title": "F1 - Phân tích: Sửa lỗi cú pháp thuộc tính", "description": "Đoạn mã có lỗi <strong>cú pháp thuộc tính</strong> khiến màu nền không hiển thị đúng màu xanh lá (green). Học sinh cần sửa lại cho đúng.\n<code style=\"color:#f7c948\">Gợi ý lỗi: &lt;body bgcolor:\"green\";&gt;</code>", "required_tags": ["html", "head", "title", "body", "h1"], "initial_code": ""}, {"id": "f2_apply1", "title": "F2 - Vận dụng 1: Danh sách môn học yêu thích (in đậm)", "description": "Viết mã HTML tạo danh sách <strong>không thứ tự &lt;ul&gt;</strong> gồm 3 môn học yêu thích, tên môn được in đậm bằng thẻ <strong>&lt;strong&gt;</strong>.", "required_tags": ["html", "head", "title", "body", "h3", "ul", "li", "strong"], "initial_code": ""}, {"id": "f2_apply2", "title": "F2 - Vận dụng 2: Trang thành viên lớp + liên kết", "description": "Tạo trang <code>thanhvienlop.html</code> với tiêu đề \"Kỉ yếu lớp 12A\", danh sách thành viên dùng thẻ <strong>&lt;a href&gt;</strong> liên kết đến từng trang cá nhân.", "required_tags": ["html", "head", "title", "body", "h1", "h2", "p", "a"], "initial_code": ""}, {"id": "f2_apply3", "title": "F2 - Vận dụng 3: Portfolio — Sở thích & Hoạt động", "description": "Cập nhật trang <code>portfolio.html</code> với danh sách <strong>&lt;ul&gt;</strong> sở thích và danh sách <strong>&lt;ol&gt;</strong> các hoạt động đã tham gia. Phân cách bằng &lt;hr&gt;.", "required_tags": ["html", "head", "title", "body", "h1", "h2", "p", "ul", "ol", "li", "hr"], "initial_code": ""}, {"id": "f3_apply1", "title": "F3 - Vận dụng 1: Bảng danh sách điểm thi", "description": "Tạo bảng gồm các cột: STT, Họ tên, Điểm Toán, Điểm Văn. Hàng tiêu đề <strong>&lt;th&gt;</strong> có màu nền xanh nhạt (lightblue), ít nhất 2 hàng dữ liệu.", "required_tags": ["html", "head", "title", "body", "table", "tr", "th", "td"], "initial_code": ""}, {"id": "f3_apply2", "title": "F3 - Vận dụng 2: Bố cục trang web (Header-Menu-Nội dung-Footer)", "description": "Sử dụng <strong>&lt;table&gt;</strong> để tạo bố cục trang: Header (trên, gộp cột), Menu trái 20%, Nội dung phải 80%, Footer (dưới, gộp cột). Dùng colspan/rowspan.", "required_tags": ["html", "head", "title", "body", "table", "tr", "td"], "initial_code": ""}, {"id": "f3_apply3", "title": "F3 - Vận dụng 3: Nhúng video YouTube (iframe)", "description": "Nhúng một video YouTube vào trang web bằng thẻ <strong>&lt;iframe&gt;</strong> với kích thước 560×315. Thêm đề mục h3 \"Video giới thiệu\".", "required_tags": ["html", "head", "title", "body", "h3", "iframe"], "initial_code": ""}, {"id": "f4_apply1", "title": "F4 - Vận dụng 1: Video tự động phát, tắt tiếng", "description": "Viết mã HTML hiển thị video chiều rộng 500px, có thuộc tính <strong>autoplay</strong>, <strong>muted</strong> và <strong>loop</strong>. Thêm đề mục h3 mô tả video.", "required_tags": ["html", "head", "title", "body", "h3", "video"], "initial_code": ""}, {"id": "f4_apply2", "title": "F4 - Vận dụng 2: Trang nhạc + lời bài hát", "description": "Tạo trang web hiển thị tên bài hát bằng h2, lời bài hát bằng p, và nhúng tệp âm thanh bằng <strong>&lt;audio controls&gt;</strong>.", "required_tags": ["html", "head", "title", "body", "h2", "p", "audio"], "initial_code": ""}, {"id": "f4_apply3", "title": "F4 - Vận dụng 3: Portfolio hoàn chỉnh (ảnh + video + audio)", "description": "Hoàn thiện trang portfolio với: ảnh đại diện <strong>&lt;img&gt;</strong>, bố cục ảnh 3 cột dùng bảng, video hoạt động lớp <strong>&lt;video&gt;</strong>, bài hát yêu thích <strong>&lt;audio&gt;</strong>.", "required_tags": ["html", "head", "title", "body", "h1", "h2", "img", "table", "tr", "td", "video", "audio"], "initial_code": ""}, {"id": "f5_apply1", "title": "F5 - Vận dụng 1: Biểu mẫu tìm kiếm", "description": "Tạo biểu mẫu tìm kiếm đơn giản gồm: ô nhập từ khóa <strong>type=\"text\"</strong> (có placeholder), nút bấm \"Tìm kiếm\" <strong>type=\"submit\"</strong>. Dùng method GET.", "required_tags": ["html", "head", "title", "body", "form", "input", "button"], "initial_code": ""}, {"id": "f5_apply2", "title": "F5 - Vận dụng 2: Đăng ký nhận tin (email bắt buộc)", "description": "Tạo biểu mẫu \"Đăng ký nhận tin mới\" gồm: nhãn <strong>&lt;label&gt;</strong>, ô nhập <strong>type=\"email\"</strong> có thuộc tính <strong>required</strong>, nút Đăng ký.", "required_tags": ["html", "head", "title", "body", "h3", "form", "label", "input", "button"], "initial_code": ""}, {"id": "f5_apply3", "title": "F5 - Vận dụng 3: Khảo sát ý kiến", "description": "Thiết kế biểu mẫu khảo sát gồm: Tên (text), Tuổi (number, min/max), Đánh giá mức độ hài lòng dùng <strong>radio</strong> (Tốt/Khá/Trung bình), nút Gửi.", "required_tags": ["html", "head", "title", "body", "h2", "form", "input", "button"], "initial_code": ""}, {"id": "f5_apply4", "title": "F5 - Thực hành: Trang đăng nhập hệ thống", "description": "Tạo trang <code>login.html</code> với biểu mẫu đăng nhập: tên người dùng (text, required), mật khẩu (<strong>password</strong>, required), nút Đăng nhập. Dùng method POST.", "required_tags": ["html", "head", "title", "body", "h2", "form", "label", "input", "button"], "initial_code": ""}, {"id": "f5_apply5", "title": "F5 - Vận dụng: Đăng ký câu lạc bộ", "description": "Tạo biểu mẫu đăng ký CLB gồm: Họ tên (text, required), Lớp (<strong>&lt;select&gt;</strong> dropdown: 10A/11A/12A), Giới thiệu bản thân (<strong>&lt;textarea&gt;</strong>), nút Đăng ký và Làm lại.", "required_tags": ["html", "head", "title", "body", "h2", "form", "label", "input", "select", "option", "textarea", "button"], "initial_code": ""}, {"id": "tong1", "title": "Tổng hợp - Vận dụng 1: Hồ sơ cá nhân tổng hợp (F1+F2+F4)", "description": "Tạo trang giới thiệu bản thân gồm: tiêu đề lớn h1, ảnh đại diện <strong>&lt;img&gt;</strong> 150px, danh sách <strong>&lt;ul&gt;</strong> 3 sở thích, đường kẻ ngang hr, đoạn video giới thiệu <strong>&lt;video controls&gt;</strong>.", "required_tags": ["html", "head", "title", "body", "h1", "img", "ul", "li", "hr", "video"], "initial_code": ""}, {"id": "tong2", "title": "Tổng hợp - Vận dụng 2: Thời khóa biểu phức tạp (F3)", "description": "Tạo bảng thời khóa biểu gồm Thứ 2–4, 4 hàng tiết. Hàng tiêu đề màu xanh nhạt, ô \"Chào cờ\" <strong>rowspan=\"2\"</strong>, ô \"Nghỉ giải lao\" <strong>colspan=\"4\"</strong>.", "required_tags": ["html", "head", "title", "body", "h1", "table", "tr", "th", "td"], "initial_code": ""}, {"id": "tong3", "title": "Tổng hợp - Vận dụng 3: Đăng ký câu lạc bộ đầy đủ (F5)", "description": "Biểu mẫu đăng ký CLB hoàn chỉnh: họ tên (text), lớp (select), giới thiệu (textarea), nút Đăng ký + Làm lại. Kết hợp label, for/id đúng chuẩn, method POST.", "required_tags": ["html", "head", "title", "body", "h2", "form", "label", "input", "select", "option", "textarea", "button"], "initial_code": ""}];
+// ═══════════════════════════════════════════════════════════════════
+//  VERSION (tự động)
+// ═══════════════════════════════════════════════════════════════════
+const VERSION = '1.2.0';
+document.getElementById('versionBadge').textContent = 'v' + VERSION;
+document.title = `HTML Grader v${VERSION} — Trí Huệ`;
 
-// ═══════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════════
+//  DỮ LIỆU BÀI TẬP v1.2.0 — ĐẦY ĐỦ TIÊU CHÍ & TEST CASE
+// ═══════════════════════════════════════════════════════════════════
+const EXERCISES = [
+  // ─── F1 ───────────────────────────────────────────────────────
+  {
+    id:'f1_apply1',
+    title:'F1 - Vận dụng 1: Trang thông tin cá nhân',
+    description:'Viết mã HTML hoàn chỉnh tạo trang web có <strong>tiêu đề trang</strong> là "Thông tin cá nhân", thuộc tính <code>bgcolor="lightblue"</code> cho thẻ <code>&lt;body&gt;</code>, chứa một đề mục lớn <code>&lt;h1&gt;</code> ghi tên và một đoạn văn <code>&lt;p&gt;</code> giới thiệu sở thích.',
+    required_tags:['h1','p'],
+    grading_criteria:[
+      {name:'Cấu trúc HTML cơ bản', points:2.5, items:['Có &lt;!DOCTYPE html&gt;','Có thẻ &lt;html&gt;...&lt;/html&gt;','Có thẻ &lt;head&gt;...&lt;/head&gt;','Có thẻ &lt;title&gt;...&lt;/title&gt;','Có thẻ &lt;body&gt;...&lt;/body&gt;']},
+      {name:'Thẻ bắt buộc', points:3.0, items:['Có thẻ &lt;h1&gt; ghi tên','Có thẻ &lt;p&gt; giới thiệu sở thích']},
+      {name:'Nội dung & Thuộc tính', points:3.0, items:['Tiêu đề trang &lt;title&gt; chứa "Thông tin cá nhân"','Thẻ &lt;body&gt; có bgcolor="lightblue"']},
+      {name:'Cú pháp & Định dạng', points:1.5, items:['Tất cả thẻ đóng đúng','Dấu nháy thuộc tính đúng','Code có thụt lề']}
+    ],
+    test_cases:[
+      {type:'tag_exist', tags:['h1','p'], error:'Thiếu thẻ &lt;{tag}&gt;', hint:'Thêm thẻ &lt;{tag}&gt; vào trong &lt;body&gt;'},
+      {type:'title_contains', value:'Thông tin cá nhân', error:'Tiêu đề trang chưa đúng', hint:'Sửa &lt;title&gt;Thông tin cá nhân&lt;/title&gt;'},
+      {type:'body_attr', attribute:'bgcolor', value:'lightblue', error:'Thiếu bgcolor="lightblue" cho &lt;body&gt;', hint:'Sửa thành &lt;body bgcolor="lightblue"&gt;'}
+    ]
+  },
+  {
+    id:'f1_apply2',
+    title:'F1 - Vận dụng 2: Trang có ô nhập số điện thoại',
+    description:'Sử dụng thẻ <code>&lt;input&gt;</code> để tạo trang web hoàn chỉnh có đề mục <code>&lt;h1&gt;</code> "Liên hệ với chúng tôi", nhãn <code>&lt;p&gt;</code> "Số điện thoại:" và ô nhập liệu <code>&lt;input type="text"&gt;</code>.',
+    required_tags:['h1','p','input'],
+    grading_criteria:[
+      {name:'Cấu trúc HTML cơ bản', points:2.5, items:['Có đủ DOCTYPE, html, head, title, body']},
+      {name:'Thẻ bắt buộc', points:4.0, items:['Có thẻ &lt;h1&gt;','Có thẻ &lt;p&gt;','Có thẻ &lt;input&gt;']},
+      {name:'Nội dung', points:2.0, items:['Thẻ &lt;h1&gt; chứa "Liên hệ với chúng tôi"','Có nhãn "Số điện thoại"']},
+      {name:'Cú pháp & Định dạng', points:1.5, items:['Tất cả thẻ đóng đúng','Code có thụt lề']}
+    ],
+    test_cases:[
+      {type:'tag_exist', tags:['h1','p','input'], error:'Thiếu thẻ &lt;{tag}&gt;', hint:'Thêm thẻ &lt;{tag}&gt; vào trong &lt;body&gt;'},
+      {type:'tag_content', tag:'h1', contains:'Liên hệ với chúng tôi', error:'Thẻ &lt;h1&gt; chưa có nội dung "Liên hệ với chúng tôi"', hint:'Sửa &lt;h1&gt;Liên hệ với chúng tôi&lt;/h1&gt;'},
+      {type:'content_contains', value:'Số điện thoại', error:'Thiếu nhãn "Số điện thoại"', hint:'Thêm &lt;p&gt;Số điện thoại:&lt;/p&gt;'}
+    ]
+  },
+  {
+    id:'f1_apply3',
+    title:'F1 - Vận dụng 3: Lí lịch trích ngang (có &lt;hr&gt;)',
+    description:'Tạo trang web dùng thẻ <code>&lt;hr&gt;</code> để ngăn cách rõ ràng giữa hai phần "Thông tin cá nhân" và "Thành tích học tập". Mỗi phần có <code>&lt;h1&gt;</code> và ít nhất một <code>&lt;p&gt;</code>.',
+    required_tags:['h1','p','hr'],
+    grading_criteria:[
+      {name:'Cấu trúc HTML cơ bản', points:2.5, items:['Có đủ DOCTYPE, html, head, title, body']},
+      {name:'Thẻ bắt buộc', points:4.0, items:['Có ít nhất 2 thẻ &lt;h1&gt;','Có ít nhất 2 thẻ &lt;p&gt;','Có thẻ &lt;hr&gt; phân cách']},
+      {name:'Nội dung', points:2.0, items:['Phần 1: "Thông tin cá nhân"','Phần 2: "Thành tích học tập"']},
+      {name:'Cú pháp & Định dạng', points:1.5, items:['Tất cả thẻ đóng đúng','Code có thụt lề']}
+    ],
+    test_cases:[
+      {type:'tag_exist', tags:['hr'], error:'Thiếu thẻ &lt;hr&gt; phân cách', hint:'Thêm &lt;hr&gt; giữa hai phần nội dung'},
+      {type:'tag_count_min', tag:'h1', min:2, error:'Cần ít nhất 2 thẻ &lt;h1&gt; (cho 2 phần)', hint:'Thêm &lt;h1&gt; cho mỗi phần nội dung'},
+      {type:'tag_count_min', tag:'p', min:2, error:'Cần ít nhất 2 thẻ &lt;p&gt;', hint:'Mỗi phần cần ít nhất 1 đoạn văn &lt;p&gt;'},
+      {type:'content_contains', value:'Thông tin cá nhân', error:'Thiếu nội dung "Thông tin cá nhân"', hint:'Thêm &lt;h1&gt;Thông tin cá nhân&lt;/h1&gt;'},
+      {type:'content_contains', value:'Thành tích', error:'Thiếu nội dung "Thành tích học tập"', hint:'Thêm &lt;h1&gt;Thành tích học tập&lt;/h1&gt;'}
+    ]
+  },
+  {
+    id:'f1_analyze1',
+    title:'F1 - Phân tích: Sửa lỗi cú pháp thuộc tính',
+    description:'Đoạn mã có lỗi <strong>cú pháp thuộc tính</strong> khiến màu nền không hiển thị đúng màu xanh lá. Học sinh cần sửa lại cho đúng.<br><code style="color:#f7c948">Lỗi điển hình: &lt;body bgcolor:"green";&gt; → Đúng: &lt;body bgcolor="green"&gt;</code>',
+    required_tags:['h1'],
+    grading_criteria:[
+      {name:'Cấu trúc HTML cơ bản', points:2.5, items:['Có đủ DOCTYPE, html, head, title, body']},
+      {name:'Sửa lỗi cú pháp thuộc tính', points:5.0, items:['Thuộc tính bgcolor dùng dấu = (không dùng :)','Giá trị thuộc tính trong dấu nháy kép "..."','Không có dấu ; sau giá trị']},
+      {name:'Cú pháp & Định dạng', points:2.5, items:['Tất cả thẻ đóng đúng','Không còn lỗi cú pháp khác']}
+    ],
+    test_cases:[
+      {type:'body_attr', attribute:'bgcolor', value:'green', error:'Thuộc tính bgcolor="green" chưa đúng', hint:'Sửa thành &lt;body bgcolor="green"&gt; — dùng dấu = và nháy kép, không dùng : hay ;'}
+    ]
+  },
+
+  // ─── F2 ───────────────────────────────────────────────────────
+  {
+    id:'f2_apply1',
+    title:'F2 - Vận dụng 1: Danh sách môn học yêu thích (in đậm)',
+    description:'Viết mã HTML tạo danh sách <strong>không thứ tự</strong> <code>&lt;ul&gt;</code> gồm ít nhất 3 môn học yêu thích. Tên mỗi môn được in đậm bằng thẻ <code>&lt;strong&gt;</code> bên trong thẻ <code>&lt;li&gt;</code>.',
+    required_tags:['ul','li','strong'],
+    grading_criteria:[
+      {name:'Cấu trúc HTML cơ bản', points:2.0, items:['Có đủ DOCTYPE, html, head, title, body']},
+      {name:'Thẻ danh sách', points:4.0, items:['Có thẻ &lt;ul&gt;','Có ít nhất 3 thẻ &lt;li&gt; bên trong &lt;ul&gt;']},
+      {name:'Định dạng in đậm', points:2.5, items:['Mỗi &lt;li&gt; có thẻ &lt;strong&gt; bao quanh tên môn']},
+      {name:'Cú pháp & Định dạng', points:1.5, items:['Tất cả thẻ đóng đúng','Code có thụt lề']}
+    ],
+    test_cases:[
+      {type:'tag_exist', tags:['ul','li','strong'], error:'Thiếu thẻ &lt;{tag}&gt;', hint:'Thêm thẻ &lt;{tag}&gt; vào code'},
+      {type:'tag_count_min', tag:'li', min:3, error:'Cần ít nhất 3 thẻ &lt;li&gt; (3 môn học)', hint:'Thêm đủ 3 thẻ &lt;li&gt;&lt;strong&gt;Tên môn&lt;/strong&gt;&lt;/li&gt;'},
+      {type:'tag_nesting', parent:'li', child:'strong', error:'Thẻ &lt;strong&gt; phải nằm bên trong &lt;li&gt;', hint:'Cấu trúc đúng: &lt;li&gt;&lt;strong&gt;Toán&lt;/strong&gt;&lt;/li&gt;'}
+    ]
+  },
+  {
+    id:'f2_apply2',
+    title:'F2 - Vận dụng 2: Trang thành viên lớp + liên kết',
+    description:'Tạo trang <code>thanhvienlop.html</code> với tiêu đề trang "Kỉ yếu lớp 12A", đề mục <code>&lt;h1&gt;</code> "Kỉ yếu lớp 12A", danh sách thành viên dùng thẻ <code>&lt;a href="..."&gt;</code> liên kết đến từng trang cá nhân.',
+    required_tags:['h1','a'],
+    grading_criteria:[
+      {name:'Cấu trúc HTML cơ bản', points:2.0, items:['Có đủ DOCTYPE, html, head, title, body']},
+      {name:'Thẻ bắt buộc', points:4.0, items:['Có thẻ &lt;h1&gt;','Có ít nhất 1 thẻ &lt;a&gt;']},
+      {name:'Thuộc tính liên kết', points:2.5, items:['Thẻ &lt;a&gt; có thuộc tính href="..."','Tiêu đề trang chứa "Kỉ yếu lớp 12A"']},
+      {name:'Cú pháp & Định dạng', points:1.5, items:['Tất cả thẻ đóng đúng']}
+    ],
+    test_cases:[
+      {type:'tag_exist', tags:['h1','a'], error:'Thiếu thẻ &lt;{tag}&gt;', hint:'Thêm thẻ &lt;{tag}&gt; vào code'},
+      {type:'attr_exist', tag:'a', attribute:'href', error:'Thẻ &lt;a&gt; thiếu thuộc tính href', hint:'Thêm href: &lt;a href="trang.html"&gt;Tên thành viên&lt;/a&gt;'},
+      {type:'title_contains', value:'Kỉ yếu lớp 12A', error:'Tiêu đề trang chưa đúng', hint:'Sửa &lt;title&gt;Kỉ yếu lớp 12A&lt;/title&gt;'}
+    ]
+  },
+  {
+    id:'f2_apply3',
+    title:'F2 - Vận dụng 3: Portfolio — Sở thích & Hoạt động',
+    description:'Cập nhật trang <code>portfolio.html</code> với danh sách <code>&lt;ul&gt;</code> liệt kê sở thích và danh sách <code>&lt;ol&gt;</code> liệt kê các hoạt động đã tham gia. Phân cách hai phần bằng <code>&lt;hr&gt;</code>.',
+    required_tags:['ul','ol','li','hr'],
+    grading_criteria:[
+      {name:'Cấu trúc HTML cơ bản', points:2.0, items:['Có đủ DOCTYPE, html, head, title, body']},
+      {name:'Danh sách không thứ tự', points:3.0, items:['Có thẻ &lt;ul&gt; cho sở thích','Có ít nhất 2 thẻ &lt;li&gt; trong &lt;ul&gt;']},
+      {name:'Danh sách có thứ tự', points:3.0, items:['Có thẻ &lt;ol&gt; cho hoạt động','Có ít nhất 2 thẻ &lt;li&gt; trong &lt;ol&gt;']},
+      {name:'Phân cách & Định dạng', points:2.0, items:['Có thẻ &lt;hr&gt; phân cách hai phần','Code có thụt lề']}
+    ],
+    test_cases:[
+      {type:'tag_exist', tags:['ul','ol','hr'], error:'Thiếu thẻ &lt;{tag}&gt;', hint:'Thêm thẻ &lt;{tag}&gt; vào code'},
+      {type:'tag_count_min', tag:'li', min:4, error:'Cần ít nhất 4 thẻ &lt;li&gt; (2 sở thích + 2 hoạt động)', hint:'Thêm đủ &lt;li&gt; vào cả &lt;ul&gt; và &lt;ol&gt;'}
+    ]
+  },
+
+  // ─── F3 ───────────────────────────────────────────────────────
+  {
+    id:'f3_apply1',
+    title:'F3 - Vận dụng 1: Bảng danh sách điểm thi',
+    description:'Tạo bảng HTML gồm 4 cột: <strong>STT, Họ tên, Điểm Toán, Điểm Văn</strong>. Hàng tiêu đề dùng <code>&lt;th&gt;</code> có <code>bgcolor="lightblue"</code>, ít nhất 2 hàng dữ liệu dùng <code>&lt;td&gt;</code>.',
+    required_tags:['table','tr','th','td'],
+    grading_criteria:[
+      {name:'Cấu trúc HTML cơ bản', points:2.0, items:['Có đủ DOCTYPE, html, head, title, body']},
+      {name:'Cấu trúc bảng', points:4.0, items:['Có thẻ &lt;table&gt;','Có thẻ &lt;tr&gt; (hàng)','Có thẻ &lt;th&gt; (tiêu đề cột)','Có thẻ &lt;td&gt; (dữ liệu)']},
+      {name:'Nội dung & Thuộc tính', points:2.5, items:['Hàng tiêu đề có đủ 4 cột (STT, Họ tên, Điểm Toán, Điểm Văn)','Thẻ &lt;th&gt; hoặc &lt;tr&gt; đầu có bgcolor="lightblue"','Có ít nhất 2 hàng dữ liệu']},
+      {name:'Cú pháp & Định dạng', points:1.5, items:['Tất cả thẻ đóng đúng','Code có thụt lề']}
+    ],
+    test_cases:[
+      {type:'tag_exist', tags:['table','tr','th','td'], error:'Thiếu thẻ &lt;{tag}&gt;', hint:'Bảng HTML cần có đủ: &lt;table&gt;, &lt;tr&gt;, &lt;th&gt;, &lt;td&gt;'},
+      {type:'tag_count_min', tag:'tr', min:3, error:'Cần ít nhất 3 hàng &lt;tr&gt; (1 tiêu đề + 2 dữ liệu)', hint:'Thêm hàng dữ liệu: &lt;tr&gt;&lt;td&gt;...&lt;/td&gt;&lt;/tr&gt;'},
+      {type:'attr_value_any', tag:'th', attribute:'bgcolor', value:'lightblue', error:'Hàng tiêu đề &lt;th&gt; chưa có bgcolor="lightblue"', hint:'Thêm bgcolor="lightblue" vào thẻ &lt;th&gt; hoặc &lt;tr&gt; đầu tiên'}
+    ]
+  },
+  {
+    id:'f3_apply2',
+    title:'F3 - Vận dụng 2: Bố cục trang web (Header-Menu-Nội dung-Footer)',
+    description:'Sử dụng <code>&lt;table&gt;</code> để tạo bố cục trang: <strong>Header</strong> (trên, gộp cột với colspan), <strong>Menu trái 20%</strong> và <strong>Nội dung phải 80%</strong> (dùng rowspan hoặc 2 cột), <strong>Footer</strong> (dưới, gộp cột).',
+    required_tags:['table','tr','td'],
+    grading_criteria:[
+      {name:'Cấu trúc HTML cơ bản', points:2.0, items:['Có đủ DOCTYPE, html, head, title, body']},
+      {name:'Cấu trúc bảng bố cục', points:4.0, items:['Có thẻ &lt;table&gt;','Có ít nhất 3 hàng &lt;tr&gt; (header, nội dung, footer)']},
+      {name:'Gộp ô (colspan/rowspan)', points:2.5, items:['Có thuộc tính colspan để gộp cột (header/footer)','Có phân chia 2 cột (menu + nội dung)']},
+      {name:'Cú pháp & Định dạng', points:1.5, items:['Tất cả thẻ đóng đúng','Code có thụt lề']}
+    ],
+    test_cases:[
+      {type:'tag_exist', tags:['table','tr','td'], error:'Thiếu thẻ &lt;{tag}&gt;', hint:'Bố cục dùng bảng HTML: &lt;table&gt;, &lt;tr&gt;, &lt;td&gt;'},
+      {type:'attr_exist_any', tag:'td', attribute:'colspan', error:'Chưa có thuộc tính colspan (gộp cột)', hint:'Thêm colspan="2" vào ô Header và Footer'},
+      {type:'tag_count_min', tag:'tr', min:3, error:'Cần ít nhất 3 hàng (header, nội dung, footer)', hint:'Thêm đủ 3 hàng &lt;tr&gt;'}
+    ]
+  },
+  {
+    id:'f3_apply3',
+    title:'F3 - Vận dụng 3: Nhúng video YouTube (iframe)',
+    description:'Nhúng một video YouTube vào trang web bằng thẻ <code>&lt;iframe&gt;</code> với kích thước <strong>width="560" height="315"</strong>. Thêm đề mục <code>&lt;h3&gt;</code> "Video giới thiệu" phía trên iframe.',
+    required_tags:['h3','iframe'],
+    grading_criteria:[
+      {name:'Cấu trúc HTML cơ bản', points:2.0, items:['Có đủ DOCTYPE, html, head, title, body']},
+      {name:'Thẻ bắt buộc', points:3.5, items:['Có thẻ &lt;h3&gt; "Video giới thiệu"','Có thẻ &lt;iframe&gt;']},
+      {name:'Thuộc tính iframe', points:3.0, items:['Có width="560"','Có height="315"','Có src trỏ đến YouTube']},
+      {name:'Cú pháp & Định dạng', points:1.5, items:['Tất cả thẻ đóng đúng']}
+    ],
+    test_cases:[
+      {type:'tag_exist', tags:['h3','iframe'], error:'Thiếu thẻ &lt;{tag}&gt;', hint:'Thêm thẻ &lt;{tag}&gt; vào code'},
+      {type:'attr_value_any', tag:'iframe', attribute:'width', value:'560', error:'Thẻ &lt;iframe&gt; chưa có width="560"', hint:'Thêm width="560" vào thẻ &lt;iframe&gt;'},
+      {type:'attr_value_any', tag:'iframe', attribute:'height', value:'315', error:'Thẻ &lt;iframe&gt; chưa có height="315"', hint:'Thêm height="315" vào thẻ &lt;iframe&gt;'},
+      {type:'attr_contains', tag:'iframe', attribute:'src', value:'youtube', error:'Thẻ &lt;iframe&gt; chưa nhúng YouTube', hint:'Thêm src="https://www.youtube.com/embed/VIDEO_ID"'}
+    ]
+  },
+
+  // ─── F4 ───────────────────────────────────────────────────────
+  {
+    id:'f4_apply1',
+    title:'F4 - Vận dụng 1: Video tự động phát, tắt tiếng',
+    description:'Viết mã HTML hiển thị video với <code>width="500"</code>, có các thuộc tính <strong>autoplay</strong>, <strong>muted</strong> và <strong>loop</strong>. Thêm đề mục <code>&lt;h3&gt;</code> mô tả video phía trên.',
+    required_tags:['h3','video'],
+    grading_criteria:[
+      {name:'Cấu trúc HTML cơ bản', points:2.0, items:['Có đủ DOCTYPE, html, head, title, body']},
+      {name:'Thẻ bắt buộc', points:2.5, items:['Có thẻ &lt;h3&gt;','Có thẻ &lt;video&gt;']},
+      {name:'Thuộc tính video', points:4.0, items:['Có thuộc tính autoplay','Có thuộc tính muted','Có thuộc tính loop','Có width="500"']},
+      {name:'Cú pháp & Định dạng', points:1.5, items:['Tất cả thẻ đóng đúng']}
+    ],
+    test_cases:[
+      {type:'tag_exist', tags:['h3','video'], error:'Thiếu thẻ &lt;{tag}&gt;', hint:'Thêm thẻ &lt;{tag}&gt; vào code'},
+      {type:'attr_exist_any', tag:'video', attribute:'autoplay', error:'Thẻ &lt;video&gt; thiếu thuộc tính autoplay', hint:'Thêm autoplay vào: &lt;video autoplay muted loop width="500"&gt;'},
+      {type:'attr_exist_any', tag:'video', attribute:'muted', error:'Thẻ &lt;video&gt; thiếu thuộc tính muted', hint:'Thêm muted vào: &lt;video autoplay muted loop&gt;'},
+      {type:'attr_exist_any', tag:'video', attribute:'loop', error:'Thẻ &lt;video&gt; thiếu thuộc tính loop', hint:'Thêm loop vào: &lt;video autoplay muted loop&gt;'},
+      {type:'attr_value_any', tag:'video', attribute:'width', value:'500', error:'Thẻ &lt;video&gt; chưa có width="500"', hint:'Thêm width="500" vào thẻ &lt;video&gt;'}
+    ]
+  },
+  {
+    id:'f4_apply2',
+    title:'F4 - Vận dụng 2: Trang nhạc + lời bài hát',
+    description:'Tạo trang web hiển thị tên bài hát bằng <code>&lt;h2&gt;</code>, lời bài hát bằng <code>&lt;p&gt;</code>, và nhúng tệp âm thanh bằng <code>&lt;audio controls&gt;</code> để người dùng có thể điều khiển phát nhạc.',
+    required_tags:['h2','p','audio'],
+    grading_criteria:[
+      {name:'Cấu trúc HTML cơ bản', points:2.0, items:['Có đủ DOCTYPE, html, head, title, body']},
+      {name:'Thẻ bắt buộc', points:4.5, items:['Có thẻ &lt;h2&gt; tên bài hát','Có thẻ &lt;p&gt; lời bài hát','Có thẻ &lt;audio&gt;']},
+      {name:'Thuộc tính audio', points:2.0, items:['Thẻ &lt;audio&gt; có thuộc tính controls']},
+      {name:'Cú pháp & Định dạng', points:1.5, items:['Tất cả thẻ đóng đúng']}
+    ],
+    test_cases:[
+      {type:'tag_exist', tags:['h2','p','audio'], error:'Thiếu thẻ &lt;{tag}&gt;', hint:'Thêm thẻ &lt;{tag}&gt; vào code'},
+      {type:'attr_exist_any', tag:'audio', attribute:'controls', error:'Thẻ &lt;audio&gt; thiếu thuộc tính controls', hint:'Sửa thành &lt;audio controls&gt;'}
+    ]
+  },
+  {
+    id:'f4_apply3',
+    title:'F4 - Vận dụng 3: Portfolio hoàn chỉnh (ảnh + video + audio)',
+    description:'Hoàn thiện trang portfolio với: ảnh đại diện <code>&lt;img src="..." alt="..."&gt;</code>, bố cục ảnh 3 cột dùng <code>&lt;table&gt;</code>, video hoạt động lớp <code>&lt;video controls&gt;</code>, bài hát yêu thích <code>&lt;audio controls&gt;</code>.',
+    required_tags:['img','table','video','audio'],
+    grading_criteria:[
+      {name:'Cấu trúc HTML cơ bản', points:2.0, items:['Có đủ DOCTYPE, html, head, title, body']},
+      {name:'Ảnh đại diện', points:2.0, items:['Có thẻ &lt;img&gt;','Thẻ &lt;img&gt; có src và alt']},
+      {name:'Bố cục ảnh 3 cột', points:2.0, items:['Có thẻ &lt;table&gt;','Có ít nhất 3 thẻ &lt;td&gt; chứa ảnh']},
+      {name:'Video & Audio', points:2.5, items:['Có thẻ &lt;video controls&gt;','Có thẻ &lt;audio controls&gt;']},
+      {name:'Cú pháp & Định dạng', points:1.5, items:['Tất cả thẻ đóng đúng']}
+    ],
+    test_cases:[
+      {type:'tag_exist', tags:['img','table','video','audio'], error:'Thiếu thẻ &lt;{tag}&gt;', hint:'Portfolio cần có đủ: &lt;img&gt;, &lt;table&gt;, &lt;video&gt;, &lt;audio&gt;'},
+      {type:'attr_exist_any', tag:'img', attribute:'alt', error:'Thẻ &lt;img&gt; thiếu thuộc tính alt', hint:'Thêm alt="mô tả ảnh" vào thẻ &lt;img&gt;'},
+      {type:'attr_exist_any', tag:'video', attribute:'controls', error:'Thẻ &lt;video&gt; thiếu thuộc tính controls', hint:'Sửa thành &lt;video controls&gt;'},
+      {type:'attr_exist_any', tag:'audio', attribute:'controls', error:'Thẻ &lt;audio&gt; thiếu thuộc tính controls', hint:'Sửa thành &lt;audio controls&gt;'}
+    ]
+  },
+
+  // ─── F5 ───────────────────────────────────────────────────────
+  {
+    id:'f5_apply1',
+    title:'F5 - Vận dụng 1: Biểu mẫu tìm kiếm',
+    description:'Tạo biểu mẫu tìm kiếm: thẻ <code>&lt;form method="get"&gt;</code>, ô nhập <code>&lt;input type="text" placeholder="..."&gt;</code>, nút bấm <code>&lt;button type="submit"&gt;Tìm kiếm&lt;/button&gt;</code>.',
+    required_tags:['form','input','button'],
+    grading_criteria:[
+      {name:'Cấu trúc HTML cơ bản', points:2.0, items:['Có đủ DOCTYPE, html, head, title, body']},
+      {name:'Thẻ biểu mẫu', points:3.5, items:['Có thẻ &lt;form&gt;','Có thẻ &lt;input&gt;','Có thẻ &lt;button&gt;']},
+      {name:'Thuộc tính form', points:3.0, items:['form có method="get"','input có type="text"','input có placeholder','button có type="submit"']},
+      {name:'Cú pháp & Định dạng', points:1.5, items:['Tất cả thẻ đóng đúng']}
+    ],
+    test_cases:[
+      {type:'tag_exist', tags:['form','input','button'], error:'Thiếu thẻ &lt;{tag}&gt;', hint:'Biểu mẫu cần có: &lt;form&gt;, &lt;input&gt;, &lt;button&gt;'},
+      {type:'attr_value_any', tag:'form', attribute:'method', value:'get', error:'Thẻ &lt;form&gt; chưa có method="get"', hint:'Sửa thành &lt;form method="get"&gt;'},
+      {type:'attr_value_any', tag:'input', attribute:'type', value:'text', error:'Thẻ &lt;input&gt; chưa có type="text"', hint:'Sửa thành &lt;input type="text"&gt;'},
+      {type:'attr_exist_any', tag:'input', attribute:'placeholder', error:'Thẻ &lt;input&gt; thiếu placeholder', hint:'Thêm placeholder="Nhập từ khóa..." vào &lt;input&gt;'},
+      {type:'attr_value_any', tag:'button', attribute:'type', value:'submit', error:'Thẻ &lt;button&gt; chưa có type="submit"', hint:'Sửa thành &lt;button type="submit"&gt;Tìm kiếm&lt;/button&gt;'}
+    ]
+  },
+  {
+    id:'f5_apply2',
+    title:'F5 - Vận dụng 2: Đăng ký nhận tin (email bắt buộc)',
+    description:'Tạo biểu mẫu "Đăng ký nhận tin mới" gồm: nhãn <code>&lt;label&gt;</code>, ô nhập <code>&lt;input type="email" required&gt;</code> (có thuộc tính <strong>required</strong>), nút <code>&lt;button&gt;Đăng ký&lt;/button&gt;</code>.',
+    required_tags:['form','label','input','button'],
+    grading_criteria:[
+      {name:'Cấu trúc HTML cơ bản', points:2.0, items:['Có đủ DOCTYPE, html, head, title, body']},
+      {name:'Thẻ biểu mẫu', points:3.5, items:['Có thẻ &lt;form&gt;','Có thẻ &lt;label&gt;','Có thẻ &lt;input&gt;','Có thẻ &lt;button&gt;']},
+      {name:'Thuộc tính email & required', points:3.0, items:['input có type="email"','input có thuộc tính required','Nội dung &lt;button&gt; là "Đăng ký"']},
+      {name:'Cú pháp & Định dạng', points:1.5, items:['Tất cả thẻ đóng đúng']}
+    ],
+    test_cases:[
+      {type:'tag_exist', tags:['form','label','input','button'], error:'Thiếu thẻ &lt;{tag}&gt;', hint:'Biểu mẫu cần có: &lt;form&gt;, &lt;label&gt;, &lt;input&gt;, &lt;button&gt;'},
+      {type:'attr_value_any', tag:'input', attribute:'type', value:'email', error:'Thẻ &lt;input&gt; chưa có type="email"', hint:'Sửa thành &lt;input type="email"&gt;'},
+      {type:'attr_exist_any', tag:'input', attribute:'required', error:'Thẻ &lt;input&gt; thiếu thuộc tính required', hint:'Thêm required: &lt;input type="email" required&gt;'}
+    ]
+  },
+  {
+    id:'f5_apply3',
+    title:'F5 - Vận dụng 3: Khảo sát ý kiến',
+    description:'Thiết kế biểu mẫu khảo sát gồm: Tên (<code>type="text"</code>), Tuổi (<code>type="number"</code> có min/max), Đánh giá mức độ hài lòng dùng <strong>3 radio button</strong> (Tốt/Khá/Trung bình), nút Gửi.',
+    required_tags:['form','input','button'],
+    grading_criteria:[
+      {name:'Cấu trúc HTML cơ bản', points:2.0, items:['Có đủ DOCTYPE, html, head, title, body']},
+      {name:'Thẻ biểu mẫu', points:2.5, items:['Có thẻ &lt;form&gt;','Có thẻ &lt;input&gt;','Có thẻ &lt;button&gt;']},
+      {name:'Các loại input', points:4.0, items:['Có input type="text" (tên)','Có input type="number" (tuổi)','Có ít nhất 3 input type="radio" (đánh giá)']},
+      {name:'Cú pháp & Định dạng', points:1.5, items:['Tất cả thẻ đóng đúng']}
+    ],
+    test_cases:[
+      {type:'tag_exist', tags:['form','input','button'], error:'Thiếu thẻ &lt;{tag}&gt;', hint:'Biểu mẫu cần có: &lt;form&gt;, &lt;input&gt;, &lt;button&gt;'},
+      {type:'attr_value_any', tag:'input', attribute:'type', value:'text', error:'Chưa có input type="text" (ô nhập tên)', hint:'Thêm &lt;input type="text"&gt; cho ô nhập tên'},
+      {type:'attr_value_any', tag:'input', attribute:'type', value:'number', error:'Chưa có input type="number" (ô nhập tuổi)', hint:'Thêm &lt;input type="number" min="1" max="100"&gt;'},
+      {type:'attr_value_count', tag:'input', attribute:'type', value:'radio', min:3, error:'Cần ít nhất 3 radio button (Tốt/Khá/Trung bình)', hint:'Thêm 3 thẻ &lt;input type="radio" name="rating"&gt;'}
+    ]
+  },
+  {
+    id:'f5_apply4',
+    title:'F5 - Thực hành: Trang đăng nhập hệ thống',
+    description:'Tạo trang <code>login.html</code> với biểu mẫu đăng nhập: tên người dùng (<code>type="text" required</code>), mật khẩu (<code>type="password" required</code>), nút Đăng nhập. Dùng <code>method="post"</code>.',
+    required_tags:['form','label','input','button'],
+    grading_criteria:[
+      {name:'Cấu trúc HTML cơ bản', points:2.0, items:['Có đủ DOCTYPE, html, head, title, body']},
+      {name:'Thẻ biểu mẫu', points:3.0, items:['Có thẻ &lt;form&gt;','Có thẻ &lt;label&gt;','Có thẻ &lt;input&gt;','Có thẻ &lt;button&gt;']},
+      {name:'Thuộc tính đăng nhập', points:3.5, items:['form có method="post"','Có input type="text" (tên người dùng)','Có input type="password" (mật khẩu)','Cả 2 input có thuộc tính required']},
+      {name:'Cú pháp & Định dạng', points:1.5, items:['Tất cả thẻ đóng đúng']}
+    ],
+    test_cases:[
+      {type:'tag_exist', tags:['form','input','button'], error:'Thiếu thẻ &lt;{tag}&gt;', hint:'Biểu mẫu cần có: &lt;form&gt;, &lt;input&gt;, &lt;button&gt;'},
+      {type:'attr_value_any', tag:'form', attribute:'method', value:'post', error:'Thẻ &lt;form&gt; chưa có method="post"', hint:'Sửa thành &lt;form method="post"&gt;'},
+      {type:'attr_value_any', tag:'input', attribute:'type', value:'text', error:'Chưa có input type="text" (tên người dùng)', hint:'Thêm &lt;input type="text" required&gt;'},
+      {type:'attr_value_any', tag:'input', attribute:'type', value:'password', error:'Chưa có input type="password" (mật khẩu)', hint:'Thêm &lt;input type="password" required&gt;'}
+    ]
+  },
+  {
+    id:'f5_apply5',
+    title:'F5 - Vận dụng: Đăng ký câu lạc bộ',
+    description:'Tạo biểu mẫu đăng ký CLB gồm: Họ tên (<code>type="text" required</code>), Lớp (<code>&lt;select&gt;</code> dropdown: 10A/11A/12A), Giới thiệu bản thân (<code>&lt;textarea&gt;</code>), nút Đăng ký và nút Làm lại (<code>type="reset"</code>).',
+    required_tags:['form','select','textarea','button'],
+    grading_criteria:[
+      {name:'Cấu trúc HTML cơ bản', points:2.0, items:['Có đủ DOCTYPE, html, head, title, body']},
+      {name:'Thẻ biểu mẫu', points:4.0, items:['Có thẻ &lt;form&gt;','Có thẻ &lt;select&gt;','Có thẻ &lt;textarea&gt;','Có thẻ &lt;button&gt;']},
+      {name:'Dropdown & Reset', points:2.5, items:['Có ít nhất 3 thẻ &lt;option&gt; (10A, 11A, 12A)','Có nút type="reset" (Làm lại)']},
+      {name:'Cú pháp & Định dạng', points:1.5, items:['Tất cả thẻ đóng đúng']}
+    ],
+    test_cases:[
+      {type:'tag_exist', tags:['form','select','textarea','button'], error:'Thiếu thẻ &lt;{tag}&gt;', hint:'Biểu mẫu cần có: &lt;form&gt;, &lt;select&gt;, &lt;textarea&gt;, &lt;button&gt;'},
+      {type:'tag_count_min', tag:'option', min:3, error:'Cần ít nhất 3 thẻ &lt;option&gt; (10A, 11A, 12A)', hint:'Thêm: &lt;option&gt;10A&lt;/option&gt; &lt;option&gt;11A&lt;/option&gt; &lt;option&gt;12A&lt;/option&gt;'},
+      {type:'attr_value_any', tag:'button', attribute:'type', value:'reset', error:'Chưa có nút Làm lại (type="reset")', hint:'Thêm &lt;button type="reset"&gt;Làm lại&lt;/button&gt;'}
+    ]
+  },
+
+  // ─── TỔNG HỢP ─────────────────────────────────────────────────
+  {
+    id:'tong1',
+    title:'Tổng hợp - Vận dụng 1: Hồ sơ cá nhân tổng hợp (F1+F2+F4)',
+    description:'Tạo trang giới thiệu bản thân gồm: tiêu đề lớn <code>&lt;h1&gt;</code>, ảnh đại diện <code>&lt;img width="150"&gt;</code>, danh sách <code>&lt;ul&gt;</code> ít nhất 3 sở thích, đường kẻ ngang <code>&lt;hr&gt;</code>, video giới thiệu <code>&lt;video controls&gt;</code>.',
+    required_tags:['h1','img','ul','li','hr','video'],
+    grading_criteria:[
+      {name:'Cấu trúc HTML cơ bản', points:2.0, items:['Có đủ DOCTYPE, html, head, title, body']},
+      {name:'Ảnh đại diện', points:2.0, items:['Có thẻ &lt;img&gt;','Có width="150"','Có thuộc tính alt']},
+      {name:'Danh sách sở thích', points:2.0, items:['Có thẻ &lt;ul&gt;','Có ít nhất 3 thẻ &lt;li&gt;']},
+      {name:'Phân cách & Video', points:2.5, items:['Có thẻ &lt;hr&gt;','Có thẻ &lt;video controls&gt;']},
+      {name:'Cú pháp & Định dạng', points:1.5, items:['Tất cả thẻ đóng đúng']}
+    ],
+    test_cases:[
+      {type:'tag_exist', tags:['h1','img','ul','hr','video'], error:'Thiếu thẻ &lt;{tag}&gt;', hint:'Hồ sơ cần có: &lt;h1&gt;, &lt;img&gt;, &lt;ul&gt;, &lt;hr&gt;, &lt;video&gt;'},
+      {type:'attr_value_any', tag:'img', attribute:'width', value:'150', error:'Thẻ &lt;img&gt; chưa có width="150"', hint:'Thêm width="150" vào thẻ &lt;img&gt;'},
+      {type:'tag_count_min', tag:'li', min:3, error:'Cần ít nhất 3 sở thích (&lt;li&gt;)', hint:'Thêm đủ 3 thẻ &lt;li&gt; trong &lt;ul&gt;'},
+      {type:'attr_exist_any', tag:'video', attribute:'controls', error:'Thẻ &lt;video&gt; thiếu thuộc tính controls', hint:'Sửa thành &lt;video controls&gt;'}
+    ]
+  },
+  {
+    id:'tong2',
+    title:'Tổng hợp - Vận dụng 2: Thời khóa biểu phức tạp (F3)',
+    description:'Tạo bảng thời khóa biểu gồm Thứ 2–4, ít nhất 4 hàng tiết. Hàng tiêu đề màu xanh nhạt, ô "Chào cờ" có <strong>rowspan="2"</strong>, ô "Nghỉ giải lao" có <strong>colspan="4"</strong>.',
+    required_tags:['table','tr','th','td'],
+    grading_criteria:[
+      {name:'Cấu trúc HTML cơ bản', points:2.0, items:['Có đủ DOCTYPE, html, head, title, body']},
+      {name:'Cấu trúc bảng', points:3.0, items:['Có thẻ &lt;table&gt;','Có thẻ &lt;th&gt; (tiêu đề)','Có ít nhất 4 hàng &lt;tr&gt;']},
+      {name:'Gộp ô nâng cao', points:3.5, items:['Có ô rowspan="2" (Chào cờ)','Có ô colspan="4" (Nghỉ giải lao)']},
+      {name:'Cú pháp & Định dạng', points:1.5, items:['Tất cả thẻ đóng đúng']}
+    ],
+    test_cases:[
+      {type:'tag_exist', tags:['table','tr','th','td'], error:'Thiếu thẻ &lt;{tag}&gt;', hint:'Bảng cần có: &lt;table&gt;, &lt;tr&gt;, &lt;th&gt;, &lt;td&gt;'},
+      {type:'attr_value_any', tag:'td', attribute:'rowspan', value:'2', error:'Chưa có ô rowspan="2" (Chào cờ)', hint:'Thêm rowspan="2" vào ô Chào cờ: &lt;td rowspan="2"&gt;Chào cờ&lt;/td&gt;'},
+      {type:'attr_value_any', tag:'td', attribute:'colspan', value:'4', error:'Chưa có ô colspan="4" (Nghỉ giải lao)', hint:'Thêm colspan="4" vào ô Nghỉ giải lao: &lt;td colspan="4"&gt;Nghỉ giải lao&lt;/td&gt;'},
+      {type:'tag_count_min', tag:'tr', min:4, error:'Cần ít nhất 4 hàng &lt;tr&gt;', hint:'Thêm đủ hàng cho bảng thời khóa biểu'}
+    ]
+  },
+  {
+    id:'tong3',
+    title:'Tổng hợp - Vận dụng 3: Đăng ký câu lạc bộ đầy đủ (F5)',
+    description:'Biểu mẫu đăng ký CLB hoàn chỉnh: họ tên (text, required), lớp (select), giới thiệu (textarea), nút Đăng ký + Làm lại. Kết hợp <code>&lt;label for="..."&gt;</code> và <code>id="..."</code> đúng chuẩn, <code>method="post"</code>.',
+    required_tags:['form','label','input','select','textarea','button'],
+    grading_criteria:[
+      {name:'Cấu trúc HTML cơ bản', points:2.0, items:['Có đủ DOCTYPE, html, head, title, body']},
+      {name:'Thẻ biểu mẫu đầy đủ', points:3.5, items:['Có &lt;form method="post"&gt;','Có &lt;label&gt;','Có &lt;input&gt;','Có &lt;select&gt;','Có &lt;textarea&gt;','Có &lt;button&gt;']},
+      {name:'Liên kết label-input', points:2.5, items:['label có thuộc tính for="..."','input/select/textarea có id tương ứng']},
+      {name:'Nút Reset & Định dạng', points:2.0, items:['Có nút type="reset" (Làm lại)','Code có thụt lề']}
+    ],
+    test_cases:[
+      {type:'tag_exist', tags:['form','label','input','select','textarea','button'], error:'Thiếu thẻ &lt;{tag}&gt;', hint:'Biểu mẫu cần có đủ: &lt;form&gt;, &lt;label&gt;, &lt;input&gt;, &lt;select&gt;, &lt;textarea&gt;, &lt;button&gt;'},
+      {type:'attr_value_any', tag:'form', attribute:'method', value:'post', error:'Thẻ &lt;form&gt; chưa có method="post"', hint:'Sửa thành &lt;form method="post"&gt;'},
+      {type:'attr_exist_any', tag:'label', attribute:'for', error:'Thẻ &lt;label&gt; thiếu thuộc tính for="..."', hint:'Thêm for: &lt;label for="ten"&gt;Họ tên:&lt;/label&gt;'},
+      {type:'attr_value_any', tag:'button', attribute:'type', value:'reset', error:'Chưa có nút Làm lại (type="reset")', hint:'Thêm &lt;button type="reset"&gt;Làm lại&lt;/button&gt;'}
+    ]
+  }
+];
+
+// ═══════════════════════════════════════════════════════════════════
 //  KHỞI TẠO DROPDOWN
-// ═══════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════════
 const GROUPS = {
-  'BÀI F1: HTML và Trang Web': EXERCISES.filter(e => e.id.startsWith('f1')),
-  'BÀI F2: Tạo và Định dạng':  EXERCISES.filter(e => e.id.startsWith('f2')),
-  'BÀI F3: Bảng và Khung':     EXERCISES.filter(e => e.id.startsWith('f3')),
-  'BÀI F4: Đa Phương Tiện':    EXERCISES.filter(e => e.id.startsWith('f4')),
-  'BÀI F5: Biểu Mẫu':          EXERCISES.filter(e => e.id.startsWith('f5')),
-  'Bộ Tổng Hợp (F1–F5)':       EXERCISES.filter(e => e.id.startsWith('tong')),
+  'BÀI F1: HTML và Trang Web':  EXERCISES.filter(e=>e.id.startsWith('f1')),
+  'BÀI F2: Tạo và Định dạng':   EXERCISES.filter(e=>e.id.startsWith('f2')),
+  'BÀI F3: Bảng và Khung':      EXERCISES.filter(e=>e.id.startsWith('f3')),
+  'BÀI F4: Đa Phương Tiện':     EXERCISES.filter(e=>e.id.startsWith('f4')),
+  'BÀI F5: Biểu Mẫu':           EXERCISES.filter(e=>e.id.startsWith('f5')),
+  'Bộ Tổng Hợp (F1–F5)':        EXERCISES.filter(e=>e.id.startsWith('tong')),
 };
-const exerciseMap = Object.fromEntries(EXERCISES.map(e => [e.id, e]));
+const exerciseMap = Object.fromEntries(EXERCISES.map(e=>[e.id,e]));
 
-(function initDropdown() {
+(function initDropdown(){
   const sel = document.getElementById('exerciseSelect');
-  for (const [groupName, exList] of Object.entries(GROUPS)) {
-    const og = document.createElement('optgroup');
-    og.label = groupName;
-    exList.forEach(ex => {
-      const opt = document.createElement('option');
-      opt.value = ex.id;
-      opt.textContent = ex.title;
-      og.appendChild(opt);
+  for(const [groupName,exList] of Object.entries(GROUPS)){
+    const og = document.createElement('optgroup'); og.label = groupName;
+    exList.forEach(ex=>{
+      const opt = document.createElement('option'); opt.value=ex.id; opt.textContent=ex.title; og.appendChild(opt);
     });
     sel.appendChild(og);
   }
   onExerciseChange();
 })();
 
-function onExerciseChange() {
+function onExerciseChange(){
   const ex = exerciseMap[document.getElementById('exerciseSelect').value];
-  if (!ex) return;
-  document.getElementById('exerciseDesc').innerHTML = ex.description || 'Không có mô tả.';
+  if(!ex) return;
+  document.getElementById('exerciseDesc').innerHTML = ex.description||'Không có mô tả.';
   const tagsEl = document.getElementById('requiredTags');
-  tagsEl.innerHTML = ex.required_tags.map(t => `<span class="tag-chip">&lt;${t}&gt;</span>`).join('');
-  if (ex.initial_code) document.getElementById('htmlCode').value = ex.initial_code;
+  tagsEl.innerHTML = (ex.required_tags||[]).map(t=>`<span class="tag-chip">&lt;${t}&gt;</span>`).join('');
+  renderCriteria(ex);
 }
 
-// ═══════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════════
+//  HIỂN THỊ TIÊU CHÍ CHẤM ĐIỂM
+// ═══════════════════════════════════════════════════════════════════
+function renderCriteria(ex){
+  const body = document.getElementById('criteriaBody');
+  if(!ex||!ex.grading_criteria){body.innerHTML='<div style="text-align:center;color:var(--muted);padding:40px"><div style="font-size:48px;opacity:.25">📋</div><p style="font-size:13px;margin-top:12px">Không có tiêu chí cho bài này</p></div>';return;}
+  const total = ex.grading_criteria.reduce((s,c)=>s+(c.points||0),0);
+  let html = `<div class="criteria-header">📋 Tiêu chí chấm điểm — ${ex.title}</div>`;
+  for(const c of ex.grading_criteria){
+    if(!c.name||!c.points) continue;
+    const items = c.items||[];
+    html += `<div class="criteria-card">
+      <div class="criteria-card-header">
+        <span class="criteria-card-title">${c.name}</span>
+        <span class="criteria-points">${c.points} điểm</span>
+      </div>
+      <div class="criteria-card-body">
+        ${items.map(item=>`<div class="criteria-item"><span class="criteria-item-icon">✦</span><span>${item}</span></div>`).join('')}
+        ${c.description?`<div class="criteria-item"><span class="criteria-item-icon">ℹ</span><span style="color:var(--muted)">${c.description}</span></div>`:''}
+      </div>
+    </div>`;
+  }
+  html += `<div class="criteria-total"><span class="criteria-total-label">Tổng điểm tối đa</span><span class="criteria-total-score">${total.toFixed(1)}/10</span></div>`;
+  body.innerHTML = html;
+}
+
+// ═══════════════════════════════════════════════════════════════════
 //  TAB SWITCHING
-// ═══════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════════
 let currentTab = 'grade';
-
-function switchTab(tab) {
+function switchTab(tab){
   currentTab = tab;
-  const panelGrade = document.getElementById('panelGrade');
-  const panelRun   = document.getElementById('panelRun');
-  const tabGrade   = document.getElementById('tabGrade');
-  const tabRun     = document.getElementById('tabRun');
-
-  if (tab === 'grade') {
-    panelGrade.classList.remove('hidden');
-    panelRun.classList.remove('visible');
-    tabGrade.className = 'tab-btn active-grade';
-    tabRun.className   = 'tab-btn';
+  ['grade','run','criteria'].forEach(t=>{
+    document.getElementById('panel'+t.charAt(0).toUpperCase()+t.slice(1)).classList.remove('hidden','visible');
+    document.getElementById('tab'+t.charAt(0).toUpperCase()+t.slice(1)).className='tab-btn';
+  });
+  if(tab==='grade'){
+    document.getElementById('panelGrade').classList.remove('hidden');
+    document.getElementById('tabGrade').className='tab-btn active-grade';
+  } else if(tab==='run'){
+    document.getElementById('panelRun').classList.add('visible');
+    document.getElementById('tabRun').className='tab-btn active-run';
   } else {
-    panelGrade.classList.add('hidden');
-    panelRun.classList.add('visible');
-    tabGrade.className = 'tab-btn';
-    tabRun.className   = 'tab-btn active-run';
+    document.getElementById('panelCriteria').classList.add('visible');
+    document.getElementById('tabCriteria').className='tab-btn active-criteria';
   }
 }
 
-// ═══════════════════════════════════════════════════════
-//  RUN — Hiển thị output HTML trong iframe
-// ═══════════════════════════════════════════════════════
-function runCode() {
+// ═══════════════════════════════════════════════════════════════════
+//  RUN
+// ═══════════════════════════════════════════════════════════════════
+function runCode(){
   const code = document.getElementById('htmlCode').value.trim();
-  if (!code) { alert('Vui lòng nhập code HTML!'); return; }
-
-  // Chuyển sang tab Preview
+  if(!code){alert('Vui lòng nhập code HTML!');return;}
   switchTab('run');
-
-  const frame  = document.getElementById('previewFrame');
-  const empty  = document.getElementById('previewEmpty');
-  const label  = document.getElementById('previewLabel');
-
-  // Ghi nội dung vào iframe
+  const frame = document.getElementById('previewFrame');
   frame.classList.add('visible');
-  empty.style.display = 'none';
-
-  const doc = frame.contentDocument || frame.contentWindow.document;
-  doc.open();
-  doc.write(code);
-  doc.close();
-
-  // Cập nhật label
+  document.getElementById('previewEmpty').style.display='none';
+  const doc = frame.contentDocument||frame.contentWindow.document;
+  doc.open(); doc.write(code); doc.close();
   const ex = exerciseMap[document.getElementById('exerciseSelect').value];
-  label.textContent = '▶ Đang hiển thị: ' + (ex ? ex.title : 'Code HTML');
+  document.getElementById('previewLabel').textContent='▶ Đang hiển thị: '+(ex?ex.title:'Code HTML');
 }
 
-// ═══════════════════════════════════════════════════════
-//  CLEAR
-// ═══════════════════════════════════════════════════════
-function clearCode() {
-  document.getElementById('htmlCode').value = '';
-  // Reset result
-  document.getElementById('resultArea').style.display = 'none';
-  document.getElementById('placeholder').style.display = 'flex';
-  // Reset preview
-  const frame = document.getElementById('previewFrame');
+function clearCode(){
+  document.getElementById('htmlCode').value='';
+  document.getElementById('resultArea').style.display='none';
+  document.getElementById('placeholder').style.display='flex';
+  const frame=document.getElementById('previewFrame');
   frame.classList.remove('visible');
-  document.getElementById('previewEmpty').style.display = 'flex';
-  document.getElementById('previewLabel').textContent = 'Chưa có output — nhấn ▶ Run để xem';
-  // Back to grade tab
+  document.getElementById('previewEmpty').style.display='flex';
+  document.getElementById('previewLabel').textContent='Chưa có output — nhấn ▶ Run để xem';
   switchTab('grade');
 }
 
-// ═══════════════════════════════════════════════════════
-//  LOGIC CHẤM ĐIỂM
-// ═══════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════════
+//  ENGINE CHẤM ĐIỂM v1.2.0
+// ═══════════════════════════════════════════════════════════════════
 const SELF_CLOSING = new Set(['img','br','hr','input','meta','link','area','base','col','embed','param','source','track','wbr']);
-const SCORES_MAX = { structure: 2.5, required: 3.0, syntax: 2.5, format: 1.0, attributes: 1.0 };
 
-function gradeHTML(htmlCode, testCase) {
-  const lines = htmlCode.split('\n');
-  const codeLower = htmlCode.toLowerCase();
-  const issues = [];
-  const scores = { structure: 0, required: 0, syntax: 0, format: 0, attributes: 0 };
-
-  // 1. Cấu trúc
-  const structureChecks = [
-    [/<!doctype\s+html/i,          '<!DOCTYPE html>',   0.5],
-    [/<html[\s>][\s\S]*<\/html>/i, '<html>...</html>',  0.5],
-    [/<head[\s>][\s\S]*<\/head>/i, '<head>...</head>',  0.5],
-    [/<title[\s>][\s\S]*<\/title>/i,'<title>...</title>',0.5],
-    [/<body[\s>][\s\S]*<\/body>/i, '<body>...</body>',  0.5],
-  ];
-  for (const [rx, name, pts] of structureChecks) {
-    if (rx.test(codeLower)) {
-      scores.structure += pts;
-    } else {
-      issues.push({ type:'error', title:`Thiếu ${name}`, message:`Thiếu ${name} — thành phần cơ bản của trang HTML.`, line: null });
+function parseHTML(code){
+  // Trả về: { tags, attrs, content, lines }
+  const lines = code.split('\n');
+  const lower = code.toLowerCase();
+  const tags = {}; // tag -> count
+  const attrs = {}; // "tag|attr" -> [values]
+  const tagRx = /<([a-zA-Z][a-zA-Z0-9]*)((?:\s+[^>]*)?)\/?>/gi;
+  let m;
+  while((m=tagRx.exec(code))!==null){
+    const tag = m[1].toLowerCase();
+    tags[tag] = (tags[tag]||0)+1;
+    const attrStr = m[2]||'';
+    // parse attributes
+    const attrRx = /(\w[\w-]*)(?:\s*=\s*(?:"([^"]*)"|'([^']*)'|(\S+)))?/g;
+    let am;
+    while((am=attrRx.exec(attrStr))!==null){
+      const aname = am[1].toLowerCase();
+      const aval = (am[2]||am[3]||am[4]||'').toLowerCase();
+      const key = tag+'|'+aname;
+      if(!attrs[key]) attrs[key]=[];
+      attrs[key].push(aval);
     }
   }
+  return {tags, attrs, content:lower, lines, code};
+}
 
-  // 2. Thẻ bắt buộc
-  const reqTags = testCase.required_tags || [];
-  if (!reqTags.length) {
-    scores.required = SCORES_MAX.required;
-  } else {
-    const ptsEach = SCORES_MAX.required / reqTags.length;
-    for (const tag of reqTags) {
-      const rx = new RegExp('<' + tag.replace(/[.*+?^${}()|[\]\\]/g,'\\$&') + '[\\s>/]', 'i');
-      if (rx.test(codeLower)) {
-        scores.required += ptsEach;
-        const lineNum = lines.findIndex(l => rx.test(l.toLowerCase())) + 1 || null;
-        issues.push({ type:'success', title:`Có thẻ <${tag}>`, message:`Thẻ <${tag}> được tìm thấy.`, line: lineNum });
-      } else {
-        issues.push({ type:'error', title:`Thiếu thẻ <${tag}>`, message:`Không tìm thấy <${tag}>. Bài tập yêu cầu thẻ này.`, line: null });
+function runTestCases(parsed, ex){
+  const issues = [];
+  const {tags, attrs, content, lines, code} = parsed;
+
+  for(const tc of (ex.test_cases||[])){
+    switch(tc.type){
+      case 'tag_exist':
+        for(const tag of (tc.tags||[])){
+          if(!tags[tag]){
+            issues.push({type:'error',title:`Thiếu thẻ &lt;${tag}&gt;`,message:(tc.error||'Thiếu thẻ').replace('{tag}',tag),hint:(tc.hint||'').replace('{tag}',tag)});
+          }
+        }
+        break;
+      case 'tag_count_min':{
+        const cnt = tags[tc.tag]||0;
+        if(cnt < tc.min){
+          issues.push({type:'error',title:`Không đủ thẻ &lt;${tc.tag}&gt; (có ${cnt}, cần ≥${tc.min})`,message:tc.error,hint:tc.hint});
+        }
+        break;
+      }
+      case 'tag_nesting':{
+        // Check if child appears after parent in code
+        const parentRx = new RegExp('<'+tc.parent+'[\\s>]','i');
+        const childRx  = new RegExp('<'+tc.child+'[\\s>]','i');
+        if(tags[tc.parent] && tags[tc.child]){
+          // Simple check: child must appear between parent open and close
+          const parentOpen = code.toLowerCase().indexOf('<'+tc.parent);
+          const childPos   = code.toLowerCase().indexOf('<'+tc.child);
+          if(childPos < parentOpen){
+            issues.push({type:'warning',title:tc.error,message:tc.error,hint:tc.hint});
+          }
+        }
+        break;
+      }
+      case 'title_contains':{
+        const titleM = code.match(/<title[^>]*>([\s\S]*?)<\/title>/i);
+        const titleText = titleM ? titleM[1] : '';
+        if(!titleText.toLowerCase().includes(tc.value.toLowerCase())){
+          issues.push({type:'warning',title:tc.error,message:`Tiêu đề hiện tại: "${titleText||'(trống)'}"`,hint:tc.hint});
+        }
+        break;
+      }
+      case 'content_contains':{
+        if(!content.includes(tc.value.toLowerCase())){
+          issues.push({type:'warning',title:tc.error,message:`Không tìm thấy nội dung "${tc.value}" trong code`,hint:tc.hint});
+        }
+        break;
+      }
+      case 'tag_content':{
+        const rx = new RegExp('<'+tc.tag+'[^>]*>([\\s\\S]*?)<\\/'+tc.tag+'>','i');
+        const m2 = code.match(rx);
+        const txt = m2 ? m2[1] : '';
+        if(!txt.toLowerCase().includes(tc.contains.toLowerCase())){
+          issues.push({type:'warning',title:tc.error||`Nội dung &lt;${tc.tag}&gt; chưa đúng`,message:`Tìm thấy: "${txt.trim().substring(0,50)||'(trống)'}"`,hint:tc.hint});
+        }
+        break;
+      }
+      case 'body_attr':{
+        const bodyM = code.match(/<body([^>]*)>/i);
+        const bodyAttrs = bodyM ? bodyM[1].toLowerCase() : '';
+        const attrRx2 = new RegExp(tc.attribute+'\\s*=\\s*["\']?'+tc.value+'["\']?','i');
+        if(!attrRx2.test(bodyAttrs)){
+          issues.push({type:'error',title:tc.error,message:`Thẻ &lt;body&gt; chưa có ${tc.attribute}="${tc.value}"`,hint:tc.hint});
+        }
+        break;
+      }
+      case 'attr_exist':{
+        const key = tc.tag+'|'+tc.attribute;
+        if(!attrs[key]||attrs[key].length===0){
+          issues.push({type:'error',title:tc.error,message:`Không tìm thấy thuộc tính ${tc.attribute} trong thẻ &lt;${tc.tag}&gt;`,hint:tc.hint});
+        }
+        break;
+      }
+      case 'attr_exist_any':{
+        // Check if attribute exists in any tag of this type (including boolean attrs)
+        const tagRx2 = new RegExp('<'+tc.tag+'([^>]*)>','gi');
+        let found = false; let m3;
+        while((m3=tagRx2.exec(code))!==null){
+          if(new RegExp('\\b'+tc.attribute+'\\b','i').test(m3[1])) found=true;
+        }
+        if(!found){
+          issues.push({type:'error',title:tc.error,message:`Không tìm thấy thuộc tính "${tc.attribute}" trong thẻ &lt;${tc.tag}&gt;`,hint:tc.hint});
+        }
+        break;
+      }
+      case 'attr_value_any':{
+        const tagRx3 = new RegExp('<'+tc.tag+'([^>]*)>','gi');
+        let found2 = false; let m4;
+        while((m4=tagRx3.exec(code))!==null){
+          const attrStr2 = m4[1].toLowerCase();
+          const valRx = new RegExp(tc.attribute+'\\s*=\\s*["\']?'+tc.value+'["\']?','i');
+          if(valRx.test(attrStr2)) found2=true;
+        }
+        if(!found2){
+          issues.push({type:'error',title:tc.error,message:`Không tìm thấy ${tc.attribute}="${tc.value}" trong thẻ &lt;${tc.tag}&gt;`,hint:tc.hint});
+        }
+        break;
+      }
+      case 'attr_value_count':{
+        const tagRx4 = new RegExp('<'+tc.tag+'([^>]*)>','gi');
+        let count2 = 0; let m5;
+        while((m5=tagRx4.exec(code))!==null){
+          const attrStr3 = m5[1].toLowerCase();
+          const valRx2 = new RegExp(tc.attribute+'\\s*=\\s*["\']?'+tc.value+'["\']?','i');
+          if(valRx2.test(attrStr3)) count2++;
+        }
+        if(count2 < (tc.min||1)){
+          issues.push({type:'error',title:tc.error,message:`Tìm thấy ${count2} thẻ có ${tc.attribute}="${tc.value}", cần ≥${tc.min}`,hint:tc.hint});
+        }
+        break;
+      }
+      case 'attr_contains':{
+        const tagRx5 = new RegExp('<'+tc.tag+'([^>]*)>','gi');
+        let found3 = false; let m6;
+        while((m6=tagRx5.exec(code))!==null){
+          if(m6[1].toLowerCase().includes(tc.value.toLowerCase())) found3=true;
+        }
+        if(!found3){
+          issues.push({type:'warning',title:tc.error,message:`Thuộc tính src của &lt;${tc.tag}&gt; chưa chứa "${tc.value}"`,hint:tc.hint});
+        }
+        break;
       }
     }
   }
+  return issues;
+}
 
-  // 3. Cú pháp
-  let syntaxErrors = 0;
+function checkStructure(code){
+  const issues = [];
+  const lower = code.toLowerCase();
+  const checks = [
+    [/<!doctype\s+html/i, '&lt;!DOCTYPE html&gt;', 'Thêm &lt;!DOCTYPE html&gt; ở dòng đầu tiên'],
+    [/<html[\s>]/i,       '&lt;html&gt;',           'Bọc toàn bộ nội dung trong &lt;html&gt;...&lt;/html&gt;'],
+    [/<head[\s>]/i,       '&lt;head&gt;',           'Thêm &lt;head&gt;...&lt;/head&gt; bên trong &lt;html&gt;'],
+    [/<title[\s>]/i,      '&lt;title&gt;',          'Thêm &lt;title&gt;Tiêu đề trang&lt;/title&gt; bên trong &lt;head&gt;'],
+    [/<body[\s>]/i,       '&lt;body&gt;',           'Thêm &lt;body&gt;...&lt;/body&gt; bên trong &lt;html&gt;'],
+  ];
+  for(const [rx,name,hint] of checks){
+    if(!rx.test(code)){
+      issues.push({type:'error',title:`Thiếu ${name}`,message:`${name} là thành phần bắt buộc của trang HTML chuẩn.`,hint});
+    }
+  }
+  return issues;
+}
+
+function checkSyntax(code){
+  const issues = [];
+  const lines = code.split('\n');
   const tagStack = [];
-  const tagRx = /<\/?([a-zA-Z][a-zA-Z0-9]*)[^>]*\/?>/g;
-  for (let i = 0; i < lines.length; i++) {
+  let syntaxErrors = 0;
+
+  for(let i=0;i<lines.length;i++){
     const trimmed = lines[i].trim();
-    if (!trimmed || trimmed.startsWith('<!--')) continue;
-    let m; tagRx.lastIndex = 0;
-    while ((m = tagRx.exec(trimmed)) !== null) {
-      const full = m[0], tagName = m[1].toLowerCase();
-      const isClosing = full.startsWith('</');
-      const isSelf = full.endsWith('/>') || SELF_CLOSING.has(tagName);
-      if (!isClosing && !isSelf) {
-        tagStack.push({ tag: tagName, line: i + 1 });
-      } else if (isClosing && !SELF_CLOSING.has(tagName)) {
-        if (tagStack.length && tagStack[tagStack.length-1].tag === tagName) {
-          tagStack.pop();
-        } else {
+    if(!trimmed||trimmed.startsWith('<!--')) continue;
+    const tagRx = /<\/?([a-zA-Z][a-zA-Z0-9]*)[^>]*\/?>/g;
+    let m;
+    while((m=tagRx.exec(trimmed))!==null){
+      const full=m[0], tag=m[1].toLowerCase();
+      const isClose = full.startsWith('</');
+      const isSelf  = full.endsWith('/>')||SELF_CLOSING.has(tag);
+      if(!isClose&&!isSelf) tagStack.push({tag,line:i+1});
+      else if(isClose&&!SELF_CLOSING.has(tag)){
+        if(tagStack.length&&tagStack[tagStack.length-1].tag===tag) tagStack.pop();
+        else{
           syntaxErrors++;
-          issues.push({ type:'error', title:`Thẻ đóng không khớp </${tagName}>`, message:`Dòng ${i+1}: </${tagName}> không có thẻ mở tương ứng.`, line: i+1 });
+          if(syntaxErrors<=5) issues.push({type:'error',title:`Thẻ đóng không khớp &lt;/${tag}&gt;`,message:`Dòng ${i+1}: &lt;/${tag}&gt; không có thẻ mở tương ứng.`,hint:`Kiểm tra lại thứ tự đóng thẻ ở dòng ${i+1}`});
         }
       }
     }
-    const quoteCount = (trimmed.match(/"/g) || []).length;
-    if (quoteCount % 2 !== 0) {
+    const q = (trimmed.match(/"/g)||[]).length;
+    if(q%2!==0){
       syntaxErrors++;
-      issues.push({ type:'error', title:'Dấu nháy chưa đóng', message:`Dòng ${i+1}: Dấu nháy " chưa đóng đúng.`, line: i+1 });
+      if(syntaxErrors<=5) issues.push({type:'error',title:'Dấu nháy chưa đóng',message:`Dòng ${i+1}: Số dấu nháy " lẻ — chưa đóng đúng.`,hint:`Kiểm tra dấu nháy ở dòng ${i+1}`});
     }
   }
-  for (const ti of tagStack) {
-    if (!['html','head','body'].includes(ti.tag)) {
+  for(const ti of tagStack){
+    if(!['html','head','body'].includes(ti.tag)){
       syntaxErrors++;
-      issues.push({ type:'error', title:`Thẻ <${ti.tag}> chưa đóng`, message:`Dòng ${ti.line}: <${ti.tag}> mở nhưng không có thẻ đóng.`, line: ti.line });
+      if(syntaxErrors<=5) issues.push({type:'error',title:`Thẻ &lt;${ti.tag}&gt; chưa đóng`,message:`Dòng ${ti.line}: &lt;${ti.tag}&gt; mở nhưng không có &lt;/${ti.tag}&gt;.`,hint:`Thêm &lt;/${ti.tag}&gt; sau nội dung của thẻ`});
     }
   }
-  const hasHTML = /<[a-zA-Z][a-zA-Z0-9]*[\s>/]/.test(htmlCode);
-  scores.syntax = hasHTML ? Math.max(0, SCORES_MAX.syntax - syntaxErrors * 0.5) : 0;
-
-  // 4. Định dạng
-  if (!hasHTML) {
-    scores.format = 0;
-  } else {
-    let fmtOk = true;
-    for (let i = 0; i < lines.length; i++) {
-      if (lines[i].trim() && lines[i].length > 200) {
-        fmtOk = false;
-        issues.push({ type:'info', title:'Dòng quá dài', message:`Dòng ${i+1}: ${lines[i].length} ký tự. Nên xuống dòng.`, line: i+1 });
-      }
-    }
-    const hasIndent = lines.some(l => l.startsWith('  ') || l.startsWith('\t'));
-    if (!hasIndent && lines.length > 5) {
-      fmtOk = false;
-      issues.push({ type:'info', title:'Không có thụt lề', message:'Code không có thụt lề. Nên indent các thẻ lồng nhau.', line: null });
-    }
-    scores.format = fmtOk ? SCORES_MAX.format : SCORES_MAX.format * 0.5;
-  }
-
-  // 5. Thuộc tính
-  if (!hasHTML) {
-    scores.attributes = 0;
-  } else {
-    let attrScore = SCORES_MAX.attributes;
-    const imgTags = htmlCode.match(/<img[^>]*>/gi) || [];
-    for (const img of imgTags) {
-      if (!/\balt\s*=/i.test(img)) { attrScore -= 0.25; issues.push({ type:'warning', title:'<img> thiếu alt', message:'Thẻ <img> cần thuộc tính alt="" (tốt cho SEO).', line: null }); }
-      if (!/\bsrc\s*=/i.test(img)) { attrScore -= 0.25; issues.push({ type:'error',   title:'<img> thiếu src', message:'Thẻ <img> phải có src="đường_dẫn_ảnh".', line: null }); }
-    }
-    const aTags = htmlCode.match(/<a[^>]*>/gi) || [];
-    for (const a of aTags) {
-      if (!/\bhref\s*=/i.test(a)) { attrScore -= 0.2; issues.push({ type:'warning', title:'<a> thiếu href', message:'Thẻ <a> nên có href="" để chỉ định liên kết.', line: null }); }
-    }
-    scores.attributes = Math.max(0, attrScore);
-  }
-
-  const total = Math.round((scores.structure + scores.required + scores.syntax + scores.format + scores.attributes) * 10) / 10;
-  return { total, scores, issues };
+  return {issues, syntaxErrors};
 }
 
-// ═══════════════════════════════════════════════════════
+function checkFormat(code){
+  const issues = [];
+  const lines = code.split('\n');
+  let fmtOk = true;
+  for(let i=0;i<lines.length;i++){
+    if(lines[i].trim()&&lines[i].length>200){
+      fmtOk=false;
+      issues.push({type:'info',title:'Dòng quá dài',message:`Dòng ${i+1}: ${lines[i].length} ký tự. Nên xuống dòng để dễ đọc.`,hint:'Tách thành nhiều dòng ngắn hơn'});
+      break;
+    }
+  }
+  const hasIndent = lines.some(l=>l.startsWith('  ')||l.startsWith('\t'));
+  if(!hasIndent&&lines.length>5){
+    fmtOk=false;
+    issues.push({type:'info',title:'Không có thụt lề (indent)',message:'Code không có thụt lề. Các thẻ lồng nhau nên được thụt lề để dễ đọc.',hint:'Dùng 2 dấu cách hoặc Tab để thụt lề các thẻ con'});
+  }
+  return {issues, fmtOk};
+}
+
+function checkAttributes(code){
+  const issues = [];
+  const imgTags = code.match(/<img[^>]*>/gi)||[];
+  for(const img of imgTags){
+    if(!/\balt\s*=/i.test(img)) issues.push({type:'warning',title:'Thẻ &lt;img&gt; thiếu alt',message:'Thuộc tính alt="" giúp mô tả ảnh (tốt cho SEO và người khiếm thị).',hint:'Thêm alt="mô tả ảnh" vào thẻ &lt;img&gt;'});
+    if(!/\bsrc\s*=/i.test(img)) issues.push({type:'error',title:'Thẻ &lt;img&gt; thiếu src',message:'Thẻ &lt;img&gt; phải có src="đường_dẫn_ảnh" để hiển thị ảnh.',hint:'Thêm src="ten_anh.jpg" vào thẻ &lt;img&gt;'});
+  }
+  const aTags = code.match(/<a[^>]*>/gi)||[];
+  for(const a of aTags){
+    if(!/\bhref\s*=/i.test(a)) issues.push({type:'warning',title:'Thẻ &lt;a&gt; thiếu href',message:'Thẻ &lt;a&gt; nên có href="..." để chỉ định liên kết.',hint:'Thêm href="trang.html" vào thẻ &lt;a&gt;'});
+  }
+  return issues;
+}
+
+function gradeHTML(code, ex){
+  const parsed = parseHTML(code);
+  const hasHTML = /<[a-zA-Z][a-zA-Z0-9]*[\s>/]/.test(code);
+
+  // 1. Cấu trúc (2.5đ)
+  const structIssues = checkStructure(code);
+  const structScore = Math.max(0, 2.5 - structIssues.length * 0.5);
+
+  // 2. Thẻ bắt buộc + test cases (3.0đ)
+  const tcIssues = runTestCases(parsed, ex);
+  const tcErrors = tcIssues.filter(i=>i.type==='error').length;
+  const reqTags = ex.required_tags||[];
+  const reqScore = reqTags.length ? Math.max(0, 3.0 - tcErrors * (3.0/Math.max(reqTags.length,1))) : 3.0;
+
+  // 3. Cú pháp (2.5đ)
+  const {issues:syntaxIssues, syntaxErrors} = checkSyntax(code);
+  const syntaxScore = hasHTML ? Math.max(0, 2.5 - syntaxErrors * 0.5) : 0;
+
+  // 4. Định dạng (1.0đ)
+  const {issues:fmtIssues, fmtOk} = checkFormat(code);
+  const fmtScore = hasHTML ? (fmtOk ? 1.0 : 0.5) : 0;
+
+  // 5. Thuộc tính (1.0đ)
+  const attrIssues = checkAttributes(code);
+  const attrScore = hasHTML ? Math.max(0, 1.0 - attrIssues.filter(i=>i.type==='error').length * 0.25) : 0;
+
+  const total = Math.round((structScore+reqScore+syntaxScore+fmtScore+attrScore)*10)/10;
+  const scores = {structure:structScore, required:reqScore, syntax:syntaxScore, format:fmtScore, attributes:attrScore};
+  const allIssues = [...structIssues, ...tcIssues, ...syntaxIssues, ...fmtIssues, ...attrIssues];
+
+  // Thêm success cho các test case pass
+  const passCount = (ex.required_tags||[]).filter(t=>parsed.tags[t]).length;
+  if(passCount>0){
+    allIssues.push({type:'success',title:`${passCount}/${reqTags.length} thẻ bắt buộc đúng`,message:`Tìm thấy đủ ${passCount} thẻ yêu cầu trong code.`});
+  }
+
+  return {total, scores, issues:allIssues};
+}
+
+// ═══════════════════════════════════════════════════════════════════
 //  RENDER KẾT QUẢ
-// ═══════════════════════════════════════════════════════
-function barColor(score, max) {
-  const p = score / max;
-  return p >= 0.8 ? '#22c55e' : p >= 0.5 ? '#f59e0b' : '#ef4444';
-}
+// ═══════════════════════════════════════════════════════════════════
+function barColor(s,m){const p=s/m;return p>=.8?'#22c55e':p>=.5?'#f59e0b':'#ef4444'}
 
-function renderResult(total, scores, issues, exerciseTitle) {
-  const scoreColor = total >= 8.5 ? '#22c55e' : total >= 7 ? '#a78bfa' : total >= 5 ? '#f59e0b' : '#ef4444';
-  const scoreLabel = total >= 8.5 ? '🏆 Xuất sắc!' : total >= 7 ? '👍 Khá tốt' : total >= 5 ? '⚠️ Trung bình' : '❌ Cần cải thiện';
-
-  const errors    = issues.filter(i => i.type === 'error');
-  const warnings  = issues.filter(i => i.type === 'warning');
-  const infos     = issues.filter(i => i.type === 'info');
-  const successes = issues.filter(i => i.type === 'success');
-  const nonSuccess = issues.filter(i => i.type !== 'success');
-
-  const ICONS = { error:'✕', warning:'⚠', info:'ℹ', success:'✓' };
-
-  const issueHTML = nonSuccess.map(issue => `
-    <div class="issue-item issue-${issue.type}">
-      <div class="issue-icon">${ICONS[issue.type]}</div>
-      <div>
-        <div class="issue-title-text">${issue.title}</div>
-        <div class="issue-msg">${issue.message}</div>
-        ${issue.line ? `<div class="issue-line">Dòng ${issue.line}</div>` : ''}
-      </div>
-    </div>
-  `).join('');
+function renderResult(total, scores, issues, exerciseTitle){
+  const sc = total>=8.5?'#22c55e':total>=7?'#a78bfa':total>=5?'#f59e0b':'#ef4444';
+  const sl = total>=8.5?'🏆 Xuất sắc!':total>=7?'👍 Khá tốt':total>=5?'⚠️ Trung bình':'❌ Cần cải thiện';
+  const errors   = issues.filter(i=>i.type==='error');
+  const warnings = issues.filter(i=>i.type==='warning');
+  const infos    = issues.filter(i=>i.type==='info');
+  const successes= issues.filter(i=>i.type==='success');
+  const nonSuccess = issues.filter(i=>i.type!=='success');
+  const ICONS = {error:'✕',warning:'⚠',info:'ℹ',success:'✓'};
 
   const barRows = [
-    ['Cấu trúc HTML', scores.structure, 2.5],
-    ['Thẻ bắt buộc',  scores.required,  3.0],
-    ['Cú pháp thẻ',   scores.syntax,    2.5],
-    ['Định dạng',     scores.format,    1.0],
-    ['Thuộc tính',    scores.attributes,1.0],
-  ].map(([label, score, max]) => `
-    <div class="bar-item">
-      <div class="bar-label">
-        <span>${label}</span>
-        <span style="color:${barColor(score,max)}">${score.toFixed(1)}/${max}</span>
-      </div>
-      <div class="bar-track">
-        <div class="bar-fill" style="width:${Math.round(score/max*100)}%;background:${barColor(score,max)}"></div>
-      </div>
-    </div>
-  `).join('');
+    ['Cấu trúc HTML',scores.structure,2.5],
+    ['Thẻ bắt buộc', scores.required, 3.0],
+    ['Cú pháp thẻ',  scores.syntax,   2.5],
+    ['Định dạng',    scores.format,   1.0],
+    ['Thuộc tính',   scores.attributes,1.0],
+  ].map(([l,s,m])=>`<div class="bar-item"><div class="bar-label"><span>${l}</span><span style="color:${barColor(s,m)}">${s.toFixed(1)}/${m}</span></div><div class="bar-track"><div class="bar-fill" style="width:${Math.round(s/m*100)}%;background:${barColor(s,m)}"></div></div></div>`).join('');
 
-  document.getElementById('resultArea').innerHTML = `
-    <div class="score-card">
-      <div class="score-header">
-        <div class="score-circle" style="border-color:${scoreColor}">
-          <span class="score-num" style="color:${scoreColor}">${total.toFixed(1)}</span>
-          <span class="score-denom">/10</span>
-        </div>
-        <div class="score-label" style="color:${scoreColor}">${scoreLabel}</div>
-        <div class="score-exercise">${exerciseTitle}</div>
+  const issueHTML = nonSuccess.map(i=>`<div class="issue-item issue-${i.type}"><div class="issue-icon">${ICONS[i.type]}</div><div><div class="issue-title-text">${i.title}</div><div class="issue-msg">${i.message}</div>${i.hint?`<div class="issue-line">💡 ${i.hint}</div>`:''}</div></div>`).join('');
+
+  document.getElementById('resultArea').innerHTML = `<div class="score-card">
+    <div class="score-header">
+      <div class="score-circle" style="border-color:${sc}">
+        <span class="score-num" style="color:${sc}">${total.toFixed(1)}</span>
+        <span class="score-denom">/10</span>
       </div>
-      <div class="score-bars">${barRows}</div>
-      <div class="stats-grid">
-        <div class="stat-card"><div class="stat-num" style="color:#ef4444">${errors.length}</div><div class="stat-lbl">Lỗi</div></div>
-        <div class="stat-card"><div class="stat-num" style="color:#f59e0b">${warnings.length}</div><div class="stat-lbl">Cảnh báo</div></div>
-        <div class="stat-card"><div class="stat-num" style="color:#3b82f6">${infos.length}</div><div class="stat-lbl">Gợi ý</div></div>
-        <div class="stat-card"><div class="stat-num" style="color:#22c55e">${successes.length}</div><div class="stat-lbl">Đúng</div></div>
-      </div>
-      ${nonSuccess.length > 0
-        ? `<div class="issues-title">Chi tiết lỗi & cảnh báo</div>${issueHTML}`
-        : '<div class="no-errors">✅ Không có lỗi nào! Code hoàn hảo!</div>'}
+      <div class="score-label" style="color:${sc}">${sl}</div>
+      <div class="score-exercise">${exerciseTitle}</div>
     </div>
-  `;
-  document.getElementById('resultArea').style.display = 'block';
+    <div class="score-bars">${barRows}</div>
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-num" style="color:#ef4444">${errors.length}</div><div class="stat-lbl">Lỗi</div></div>
+      <div class="stat-card"><div class="stat-num" style="color:#f59e0b">${warnings.length}</div><div class="stat-lbl">Cảnh báo</div></div>
+      <div class="stat-card"><div class="stat-num" style="color:#3b82f6">${infos.length}</div><div class="stat-lbl">Gợi ý</div></div>
+      <div class="stat-card"><div class="stat-num" style="color:#22c55e">${successes.length}</div><div class="stat-lbl">Đúng</div></div>
+    </div>
+    ${nonSuccess.length>0?`<div class="issues-title">Chi tiết lỗi & gợi ý sửa</div>${issueHTML}`:'<div class="no-errors">✅ Không có lỗi nào! Code hoàn hảo!</div>'}
+  </div>`;
+  document.getElementById('resultArea').style.display='block';
 }
 
-// ═══════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════════
 //  CHẤM ĐIỂM
-// ═══════════════════════════════════════════════════════
-function gradeCode() {
+// ═══════════════════════════════════════════════════════════════════
+function gradeCode(){
   const code = document.getElementById('htmlCode').value.trim();
-  const exerciseId = document.getElementById('exerciseSelect').value;
-  if (!code) { alert('Vui lòng nhập code HTML!'); return; }
-
-  // Chuyển sang tab kết quả
+  const exId = document.getElementById('exerciseSelect').value;
+  if(!code){alert('Vui lòng nhập code HTML!');return;}
   switchTab('grade');
-
-  document.getElementById('placeholder').style.display = 'none';
-  document.getElementById('resultArea').style.display = 'none';
-  document.getElementById('loading').style.display = 'block';
-
-  setTimeout(() => {
-    const ex = exerciseMap[exerciseId];
-    const { total, scores, issues } = gradeHTML(code, ex);
-    document.getElementById('loading').style.display = 'none';
+  document.getElementById('placeholder').style.display='none';
+  document.getElementById('resultArea').style.display='none';
+  document.getElementById('loading').style.display='block';
+  setTimeout(()=>{
+    const ex = exerciseMap[exId];
+    const {total,scores,issues} = gradeHTML(code, ex);
+    document.getElementById('loading').style.display='none';
     renderResult(total, scores, issues, ex.title);
-    document.getElementById('panelGrade').scrollTop = 0;
-  }, 300);
+    document.getElementById('panelGrade').scrollTop=0;
+  },300);
 }
 
-// ── Phím tắt ──
-document.addEventListener('keydown', e => {
-  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') gradeCode();
-});
-
-// ── Tab key trong textarea ──
-document.getElementById('htmlCode').addEventListener('keydown', function(e) {
-  if (e.key === 'Tab') {
-    e.preventDefault();
-    const s = this.selectionStart, end = this.selectionEnd;
-    this.value = this.value.substring(0, s) + '  ' + this.value.substring(end);
-    this.selectionStart = this.selectionEnd = s + 2;
-  }
+document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='Enter') gradeCode();});
+document.getElementById('htmlCode').addEventListener('keydown',function(e){
+  if(e.key==='Tab'){e.preventDefault();const s=this.selectionStart;this.value=this.value.substring(0,s)+'  '+this.value.substring(this.selectionEnd);this.selectionStart=this.selectionEnd=s+2;}
 });
 </script>
 </body>
