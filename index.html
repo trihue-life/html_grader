@@ -3,306 +3,232 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
   <title>HTML Grader | Công cụ chấm điểm code HTML tự động · THPT Thủ Thiêm</title>
   <style>
-    :root {
-      --bg:#0f1117; --surface:#1a1d27; --surface2:#22263a; --surface3:#2a2f45;
-      --border:#2e3250; --accent:#6c63ff; --accent2:#a78bfa;
-      --green:#22c55e; --red:#ef4444; --yellow:#f59e0b; --blue:#3b82f6; --cyan:#06b6d4;
-      --text:#e2e8f0; --muted:#94a3b8;
-    }
     *{box-sizing:border-box;margin:0;padding:0}
-    body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh}
-
-    /* ── HEADER ── */
-    header{
-      background:linear-gradient(135deg,#1e1b4b 0%,#312e81 50%,#1e1b4b 100%);
-      border-bottom:1px solid var(--border);
-      padding:18px 32px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px
+    :root{
+      --bg:#0d1117;--surface:#161b22;--surface2:#1c2128;--surface3:#21262d;
+      --border:#30363d;--text:#e6edf3;--muted:#8b949e;--accent:#6c63ff;
+      --green:#10b981;--red:#ef4444;--yellow:#f59e0b;--cyan:#22d3ee;
+      --blue:#3b82f6;
     }
-    .logo{display:flex;align-items:center;gap:14px}
-    .logo-icon{font-size:36px}
-    .logo-text h1{font-size:26px;font-weight:800;color:#fff;letter-spacing:.5px;text-shadow:0 0 20px rgba(167,139,250,.5)}
-    .logo-text p{font-size:13px;color:#c4b5fd;font-weight:500;margin-top:2px}
-    .header-right{display:flex;align-items:center;gap:8px}
-    .badge{background:var(--accent);color:#fff;padding:5px 14px;border-radius:20px;font-size:12px;font-weight:700;box-shadow:0 0 12px rgba(108,99,255,.4)}
-    .badge-author{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#e2e8f0;padding:5px 14px;border-radius:20px;font-size:12px;font-weight:500}
+    body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;height:100vh;display:flex;flex-direction:column;overflow:hidden}
 
-    /* ── LAYOUT ── */
-    .container{display:grid;grid-template-columns:1fr 1fr;height:calc(100vh - 76px)}
+    /* ══ HEADER ══ */
+    header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 16px;display:flex;align-items:center;gap:12px;height:52px;flex-shrink:0}
+    .logo{display:flex;align-items:center;gap:10px;margin-right:8px}
+    .logo-icon{font-size:22px}
+    .logo-text h1{font-size:17px;font-weight:800;color:var(--text);white-space:nowrap}
+    .logo-text p{font-size:10px;color:var(--muted);white-space:nowrap}
+    .header-nav{display:flex;align-items:center;gap:6px;flex:1}
+    .nav-label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;white-space:nowrap}
+    .nav-select{background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:5px 10px;border-radius:7px;font-size:12px;cursor:pointer;outline:none;max-width:220px}
+    .nav-select:focus{border-color:var(--accent)}
+    .header-right{display:flex;align-items:center;gap:8px;margin-left:auto}
+    .badge-version{background:var(--accent);color:#fff;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;white-space:nowrap}
 
-    /* ── LEFT PANEL ── */
-    .left-panel{display:grid;grid-template-rows:auto 1fr auto;border-right:1px solid var(--border);overflow:hidden}
-    .panel-top{background:var(--surface);border-bottom:1px solid var(--border);padding:10px 14px;display:flex;flex-direction:column;gap:6px}
-    .panel-top-row{display:flex;align-items:center;gap:8px}
-    .panel-label{font-size:12px;font-weight:600;color:var(--muted);white-space:nowrap}
-    select{flex:1;background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:7px 10px;border-radius:8px;font-size:12px;cursor:pointer;outline:none}
-    select:focus{border-color:var(--accent)}
-    .exercise-desc{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-size:12px;color:var(--text);line-height:1.7;max-height:90px;overflow-y:auto}
-    .exercise-desc code{background:rgba(108,99,255,.15);color:var(--accent2);padding:1px 5px;border-radius:4px;font-size:11px}
-    .required-tags{display:flex;flex-wrap:wrap;gap:4px;padding:2px 0}
-    .tag-chip{background:rgba(108,99,255,.15);border:1px solid rgba(108,99,255,.3);color:var(--accent2);padding:2px 8px;border-radius:12px;font-size:10px;font-family:monospace}
-    textarea{flex:1;background:#0d1117;color:#e6edf3;border:none;padding:14px 16px;font-family:'Cascadia Code','Fira Code',Consolas,monospace;font-size:13px;line-height:1.7;resize:none;outline:none;tab-size:2}
+    /* ══ EXERCISE BAR ══ */
+    .exercise-bar{background:#0f1923;border-bottom:2px solid var(--border);padding:7px 16px;display:flex;align-items:flex-start;gap:12px;flex-shrink:0;min-height:36px}
+    .ex-title{font-size:13px;font-weight:700;color:var(--yellow);white-space:nowrap;padding-top:1px}
+    .ex-desc{font-size:12px;color:var(--muted);line-height:1.6;flex:1}
+    .ex-desc strong{color:var(--cyan)}
+    .ex-desc code{background:rgba(108,99,255,.15);color:var(--accent);padding:1px 5px;border-radius:4px;font-family:monospace;font-size:11px}
+
+    /* ══ MAIN LAYOUT ══ */
+    .main{flex:1;display:grid;grid-template-columns:1fr 320px;overflow:hidden;min-height:0}
+
+    /* ══ LEFT: EDITOR ══ */
+    .editor-panel{display:flex;flex-direction:column;overflow:hidden;border-right:1px solid var(--border)}
+    .editor-header{background:var(--surface2);border-bottom:1px solid var(--border);padding:7px 16px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+    .editor-title{font-size:11px;font-weight:700;color:var(--green);letter-spacing:.5px}
+    .editor-pos{font-size:11px;color:var(--muted)}
+    textarea{flex:1;background:#0d1117;color:#e6edf3;border:none;padding:14px 16px;font-family:'Cascadia Code','Fira Code',Consolas,monospace;font-size:13px;line-height:1.7;resize:none;outline:none;tab-size:2;min-height:0}
     textarea::placeholder{color:#3d4451}
 
-    /* ── DESC PANEL (Tab Đề bài bên phải) ── */
-    .desc-panel{flex:1;overflow-y:auto;display:none;flex-direction:column}
+    /* ══ ACTION BAR ══ */
+    .action-bar{background:var(--surface);border-top:1px solid var(--border);padding:8px 16px;display:flex;align-items:center;gap:8px;flex-shrink:0}
+    .btn{border:none;padding:9px 18px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all .2s}
+    .btn-run{background:linear-gradient(135deg,#059669,#10b981);color:#fff}
+    .btn-run:hover{filter:brightness(1.1)}
+    .btn-grade{background:linear-gradient(135deg,#7c3aed,#6c63ff);color:#fff}
+    .btn-grade:hover{filter:brightness(1.1)}
+    .btn-run-grade{background:linear-gradient(135deg,#d97706,#f59e0b);color:#fff}
+    .btn-run-grade:hover{filter:brightness(1.1)}
+    .btn-clear{background:var(--surface2);border:1px solid var(--border);color:var(--red);padding:9px 14px}
+    .btn-clear:hover{background:rgba(239,68,68,.1)}
+    .shortcut{font-size:11px;color:var(--muted);margin-left:auto}
+
+    /* ══ OUTPUT BAR ══ */
+    .output-bar{background:var(--surface2);border-top:2px solid var(--border);flex-shrink:0}
+    .output-header{padding:6px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
+    .output-title{font-size:11px;font-weight:700;color:var(--green);letter-spacing:.5px}
+    .btn-clear-output{background:none;border:1px solid var(--border);color:var(--muted);padding:3px 10px;border-radius:5px;font-size:11px;cursor:pointer}
+    .btn-clear-output:hover{color:var(--text)}
+    .output-content{padding:10px 16px;font-family:'Cascadia Code','Fira Code',Consolas,monospace;font-size:12px;color:#e6edf3;min-height:60px;max-height:120px;overflow-y:auto;line-height:1.6}
+    .output-placeholder{color:#3d4451;font-style:italic}
+
+    /* ══ RIGHT: GRADING PANEL ══ */
+    .grade-panel{display:flex;flex-direction:column;overflow:hidden}
+    .grade-header{background:var(--surface2);border-bottom:1px solid var(--border);padding:7px 14px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+    .grade-title{font-size:11px;font-weight:700;color:var(--accent);letter-spacing:.5px}
+    .grade-tabs{display:flex;gap:4px}
+    .grade-tab{background:none;border:none;padding:5px 10px;border-radius:6px;font-size:11px;font-weight:600;color:var(--muted);cursor:pointer;transition:all .2s}
+    .grade-tab:hover{color:var(--text);background:var(--surface3)}
+    .grade-tab.active{background:var(--accent);color:#fff}
+    .grade-tab.active-desc{background:var(--yellow);color:#000}
+    .grade-tab.active-crit{background:var(--cyan);color:#000}
+
+    /* ══ SCORE CIRCLE ══ */
+    .score-panel{flex:1;display:none;flex-direction:column;overflow-y:auto}
+    .score-panel.visible{display:flex}
+    .score-circle-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px 16px 12px;gap:8px}
+    .score-circle{width:110px;height:110px;border-radius:50%;background:conic-gradient(var(--accent) 0deg, var(--surface3) 0deg);display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;border:3px solid var(--surface3)}
+    .score-circle::before{content:'';position:absolute;width:84px;height:84px;border-radius:50%;background:var(--surface)}
+    .score-num{font-size:26px;font-weight:900;position:relative;z-index:1;line-height:1}
+    .score-label{font-size:10px;color:var(--muted);position:relative;z-index:1;margin-top:2px}
+    .score-status{font-size:14px;font-weight:700;color:var(--muted)}
+    .stats-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;padding:0 12px 12px}
+    .stat-box{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px;text-align:center}
+    .stat-dot{width:8px;height:8px;border-radius:50%;margin:0 auto 4px}
+    .stat-dot.green{background:var(--green)}
+    .stat-dot.red{background:var(--red)}
+    .stat-dot.yellow{background:var(--yellow)}
+    .stat-num{font-size:18px;font-weight:800}
+    .stat-lbl{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+    .detail-header{padding:8px 14px;font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.5px;border-top:1px solid var(--border)}
+    .detail-list{padding:0 12px 12px;display:flex;flex-direction:column;gap:6px}
+    .detail-item{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 10px;font-size:11px}
+    .detail-item.pass{border-left:3px solid var(--green)}
+    .detail-item.fail{border-left:3px solid var(--red)}
+    .detail-item.warn{border-left:3px solid var(--yellow)}
+    .detail-title{font-weight:700;margin-bottom:3px}
+    .detail-msg{color:var(--muted);font-size:10px;line-height:1.5}
+    .detail-hint{color:var(--cyan);font-size:10px;margin-top:3px}
+    .score-placeholder{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:var(--muted);padding:30px}
+    .score-placeholder .ph-icon{font-size:48px;opacity:.2}
+    .score-placeholder p{font-size:12px;text-align:center;line-height:1.6}
+
+    /* ══ DESC PANEL ══ */
+    .desc-panel{flex:1;display:none;flex-direction:column;overflow-y:auto;padding:14px}
     .desc-panel.visible{display:flex}
-    .panel-desc-right{padding:16px;display:flex;flex-direction:column;gap:10px}
-    .panel-desc-right .exercise-desc{max-height:none;font-size:13px;line-height:1.8;background:transparent;border:none;padding:0;color:var(--text)}
-    .panel-desc-right .required-tags{flex-wrap:wrap;gap:6px;display:flex}
-    .panel-desc-right .tag-chip{font-size:11px;padding:3px 10px}
+    .desc-content{font-size:12px;color:var(--text);line-height:1.8;margin-bottom:12px}
+    .desc-content strong{color:var(--cyan)}
+    .desc-content code{background:rgba(108,99,255,.15);color:var(--accent);padding:1px 5px;border-radius:4px;font-family:monospace;font-size:11px}
+    .tags-label{font-size:11px;font-weight:700;color:var(--muted);margin-bottom:6px;letter-spacing:.5px}
+    .tags-wrap{display:flex;flex-wrap:wrap;gap:5px}
+    .tag-chip{background:rgba(108,99,255,.15);border:1px solid rgba(108,99,255,.3);color:var(--accent);padding:3px 10px;border-radius:12px;font-size:10px;font-family:monospace}
 
-    /* ── RESULT-PREVIEW PANEL (Tab Kết quả & Preview) ── */
-    .result-preview-panel{flex:1;display:none;flex-direction:column;overflow:hidden}
-    .result-preview-panel.visible{display:flex}
-    .result-section{flex:1;overflow-y:auto;border-bottom:2px solid var(--border);min-height:0}
-    .preview-section{flex:1;display:flex;flex-direction:column;min-height:0}
-    .section-header{background:var(--surface2);border-bottom:1px solid var(--border);padding:7px 14px;display:flex;align-items:center;justify-content:space-between;font-size:12px;font-weight:600;color:var(--muted);flex-shrink:0}
-    .section-header span{color:var(--text)}
+    /* ══ CRITERIA PANEL ══ */
+    .crit-panel{flex:1;display:none;flex-direction:column;overflow-y:auto}
+    .crit-panel.visible{display:flex}
+    .crit-body{padding:12px;display:flex;flex-direction:column;gap:8px}
+    .crit-card{background:var(--surface2);border:1px solid var(--border);border-radius:8px;overflow:hidden}
+    .crit-card-head{background:var(--surface3);padding:8px 12px;display:flex;align-items:center;justify-content:space-between}
+    .crit-card-title{font-size:11px;font-weight:700;color:var(--text)}
+    .crit-points{background:var(--accent);color:#fff;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700}
+    .crit-card-body{padding:8px 12px;display:flex;flex-direction:column;gap:4px}
+    .crit-item{font-size:10px;color:var(--muted);display:flex;gap:6px;align-items:flex-start}
+    .crit-item-icon{color:var(--cyan);flex-shrink:0;margin-top:1px}
+    .crit-total{background:var(--surface3);border:1px solid var(--border);border-radius:8px;padding:10px 12px;display:flex;align-items:center;justify-content:space-between}
+    .crit-total-label{font-size:12px;font-weight:700;color:var(--muted)}
+    .crit-total-score{font-size:18px;font-weight:900;color:var(--accent)}
 
-    /* ── ACTION BAR ── */
-    .action-bar{background:var(--surface);border-top:1px solid var(--border);padding:10px 16px;display:flex;gap:8px;align-items:center}
-    .btn-run{flex:1;background:linear-gradient(135deg,#059669,#10b981);color:#fff;border:none;padding:10px 16px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s}
-    .btn-run:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(16,185,129,.4)}
-    .btn-grade{flex:1.4;background:linear-gradient(135deg,var(--accent),#8b5cf6);color:#fff;border:none;padding:10px 16px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s}
-    .btn-grade:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(108,99,255,.4)}
-    .btn-clear{background:var(--surface2);color:var(--muted);border:1px solid var(--border);padding:10px 12px;border-radius:8px;font-size:12px;cursor:pointer}
-    .btn-clear:hover{color:var(--text)}
-    .shortcut-hint{font-size:10px;color:var(--muted);white-space:nowrap}
-
-    /* ── RIGHT PANEL ── */
-    .right-panel{display:flex;flex-direction:column;overflow:hidden}
-    .tab-bar{background:var(--surface);border-bottom:1px solid var(--border);display:flex;flex-shrink:0}
-    .tab-btn{flex:1;padding:10px 12px;background:transparent;border:none;border-bottom:2px solid transparent;color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;transition:all .2s}
-    .tab-btn:hover{color:var(--text)}
-    .tab-btn.active-grade{color:var(--accent2);border-bottom-color:var(--accent2)}
-    .tab-btn.active-run{color:#10b981;border-bottom-color:#10b981}
-    .tab-btn.active-criteria{color:var(--cyan);border-bottom-color:var(--cyan)}
-    .tab-btn.active-desc{color:#f59e0b;border-bottom-color:#f59e0b}
-    .tab-btn.active-result{color:var(--accent2);border-bottom-color:var(--accent2)}
-
-    /* ── GRADE PANEL ── */
-    .result-panel{flex:1;display:flex;flex-direction:column;overflow-y:auto}
-    .result-panel.hidden{display:none}
-    .result-placeholder{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:var(--muted);padding:40px}
-    .result-placeholder .ph-icon{font-size:56px;opacity:.25}
-    .result-placeholder p{font-size:13px;text-align:center;line-height:1.6}
-    .loading{display:none;text-align:center;padding:60px 20px}
-    .spinner{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 14px}
-    @keyframes spin{to{transform:rotate(360deg)}}
-
-    /* ── PREVIEW PANEL ── */
-    .preview-panel{flex:1;display:none;flex-direction:column}
+    /* ══ PREVIEW PANEL ══ */
+    .preview-panel{flex:1;display:none;flex-direction:column;overflow:hidden}
     .preview-panel.visible{display:flex}
-    .preview-toolbar{background:var(--surface2);border-bottom:1px solid var(--border);padding:6px 12px;display:flex;align-items:center;gap:8px;flex-shrink:0}
-    .preview-toolbar span{font-size:11px;color:var(--muted);flex:1}
-    .btn-refresh{background:var(--surface);border:1px solid var(--border);color:var(--muted);padding:4px 10px;border-radius:6px;font-size:11px;cursor:pointer}
+    .preview-toolbar{background:var(--surface2);border-bottom:1px solid var(--border);padding:5px 10px;display:flex;align-items:center;justify-content:space-between;font-size:11px;color:var(--muted);flex-shrink:0}
+    .btn-refresh{background:none;border:1px solid var(--border);color:var(--muted);padding:3px 8px;border-radius:5px;font-size:10px;cursor:pointer}
     .btn-refresh:hover{color:var(--text)}
-    .preview-empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:var(--muted);background:var(--bg)}
-    .preview-empty .ph-icon{font-size:48px;opacity:.25}
-    .preview-empty p{font-size:13px;text-align:center;line-height:1.6}
+    .preview-empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--muted);padding:20px}
+    .preview-empty .ph-icon{font-size:36px;opacity:.2}
+    .preview-empty p{font-size:11px;text-align:center;line-height:1.6}
     .preview-iframe{flex:1;border:none;width:100%;background:#fff;display:none}
     .preview-iframe.visible{display:block}
 
-    /* ── CRITERIA PANEL ── */
-    .criteria-panel{flex:1;overflow-y:auto;display:none;flex-direction:column;overflow-x:hidden}
-    .criteria-panel.visible{display:flex}
-    .criteria-body{padding:16px;display:flex;flex-direction:column;gap:12px}
-    .criteria-header{font-size:13px;font-weight:700;color:var(--accent2);border-bottom:1px solid var(--border);padding-bottom:8px;margin-bottom:4px}
-    .criteria-card{background:var(--surface2);border:1px solid var(--border);border-radius:10px;overflow:hidden}
-    .criteria-card-header{background:var(--surface3);padding:10px 14px;display:flex;align-items:center;justify-content:space-between;gap:8px}
-    .criteria-card-title{font-size:13px;font-weight:700;color:var(--text)}
-    .criteria-points{background:var(--accent);color:#fff;padding:2px 10px;border-radius:12px;font-size:11px;font-weight:700;white-space:nowrap}
-    .criteria-card-body{padding:10px 14px;display:flex;flex-direction:column;gap:6px}
-    .criteria-item{display:flex;align-items:flex-start;gap:8px;font-size:12px;color:var(--muted);line-height:1.5}
-    .criteria-item-icon{font-size:11px;margin-top:2px;flex-shrink:0}
-    .criteria-total{background:linear-gradient(135deg,rgba(108,99,255,.2),rgba(139,92,246,.1));border:1px solid rgba(108,99,255,.3);border-radius:10px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between}
-    .criteria-total-label{font-size:13px;font-weight:700;color:var(--text)}
-    .criteria-total-score{font-size:20px;font-weight:800;color:var(--accent2)}
+    /* ══ FOOTER ══ */
+    .grade-footer{padding:6px 12px;border-top:1px solid var(--border);font-size:10px;color:var(--muted);text-align:center;flex-shrink:0}
+    .grade-footer a{color:var(--accent);text-decoration:none}
 
-    /* ── SCORE CARD ── */
-    .score-card{padding:20px}
-    .score-header{text-align:center;margin-bottom:20px}
-    .score-circle{width:110px;height:110px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 12px;border:4px solid;background:var(--surface2)}
-    .score-num{font-size:30px;font-weight:800}
-    .score-denom{font-size:12px;color:var(--muted)}
-    .score-label{font-size:17px;font-weight:700;margin-bottom:4px}
-    .score-exercise{font-size:11px;color:var(--muted);max-width:280px;margin:0 auto}
-    .score-bars{margin-bottom:18px}
-    .bar-item{margin-bottom:10px}
-    .bar-label{display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px}
-    .bar-label span:first-child{color:var(--muted)}
-    .bar-label span:last-child{font-weight:700}
-    .bar-track{background:var(--surface2);border-radius:4px;height:7px;overflow:hidden}
-    .bar-fill{height:100%;border-radius:4px;transition:width .6s ease}
-    .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:18px}
-    .stat-card{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px;text-align:center}
-    .stat-num{font-size:20px;font-weight:800}
-    .stat-lbl{font-size:10px;color:var(--muted);margin-top:2px}
-    .issues-title{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px}
-    .issue-item{background:var(--surface2);border-radius:8px;padding:9px 12px;margin-bottom:7px;border-left:3px solid;display:flex;gap:9px}
-    .issue-icon{font-size:13px;flex-shrink:0;margin-top:1px}
-    .issue-title-text{font-size:12px;font-weight:600;margin-bottom:2px}
-    .issue-msg{font-size:11px;color:var(--muted);line-height:1.5}
-    .issue-line{font-size:10px;color:var(--accent2);margin-top:2px}
-    .issue-error{border-color:var(--red)}
-    .issue-warning{border-color:var(--yellow)}
-    .issue-info{border-color:var(--blue)}
-    .issue-success{border-color:var(--green)}
-    .no-errors{text-align:center;color:var(--green);padding:16px;font-size:13px;font-weight:600}
-
-    /* ── FOOTER ── */
-    .footer{background:var(--surface);border-top:1px solid var(--border);padding:8px 16px;font-size:10px;color:var(--muted);text-align:center;flex-shrink:0}
-    .footer a{color:var(--accent2);text-decoration:none}
-    .footer a:hover{text-decoration:underline}
-
-    /* ── MOBILE PORTRAIT (dọc) ── */
+    /* ══ MOBILE PORTRAIT ══ */
     @media(max-width:768px) and (orientation:portrait){
-      header{padding:8px 14px;gap:6px;flex-wrap:nowrap}
-      .logo{gap:8px;min-width:0;flex:1}
-      .logo-icon{font-size:22px;flex-shrink:0}
-      .logo-text{min-width:0}
-      .logo-text h1{font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+      header{padding:0 10px;height:46px;gap:6px}
+      .logo-text h1{font-size:14px}
       .logo-text p{display:none}
-      .header-right{flex-shrink:0;gap:5px}
-      .badge-author{display:none}
-      .badge{font-size:11px;padding:4px 10px;font-weight:700;white-space:nowrap}
-      .container{display:flex;flex-direction:column;height:calc(100vh - 54px)}
-      .left-panel{height:52vh;border-right:none;border-bottom:1px solid var(--border);display:grid;grid-template-rows:auto 1fr auto}
-      .right-panel{height:48vh}
-      .panel-top{padding:6px 10px;gap:4px}
-      .exercise-desc{max-height:55px;font-size:11px;padding:6px 8px}
-      .required-tags{gap:3px}
-      .tag-chip{font-size:9px;padding:1px 6px}
-      textarea{font-size:12px;padding:8px 10px}
-      .action-bar{padding:7px 10px;gap:6px}
-      .btn-run,.btn-grade,.btn-clear{padding:8px 10px;font-size:12px}
-      .shortcut-hint{display:none}
-      .tab-btn{font-size:10px;padding:7px 6px}
-      .section-header{padding:5px 10px;font-size:10px}
-      .panel-desc-right{padding:8px 10px;gap:6px}
-      .panel-desc-right .exercise-desc{font-size:11px}
-      .result-section{flex:1;min-height:60px}
-      .preview-section{flex:1;min-height:60px}
+      .header-nav{gap:4px}
+      .nav-label{display:none}
+      .nav-select{font-size:11px;padding:4px 6px;max-width:100px}
+      .badge-version{font-size:10px;padding:3px 8px}
+      .main{grid-template-columns:1fr;grid-template-rows:1fr 280px}
+      .editor-panel{border-right:none;border-bottom:1px solid var(--border)}
+      .grade-panel{height:280px}
+      .exercise-bar{padding:5px 10px;min-height:30px}
+      .ex-title{font-size:11px}
+      .ex-desc{font-size:10px}
+      .action-bar{padding:6px 10px;gap:5px}
+      .btn{padding:7px 12px;font-size:11px}
+      .output-content{min-height:40px;max-height:80px;font-size:11px}
+      .shortcut{display:none}
     }
 
-    /* ── MOBILE LANDSCAPE (ngang) ── */
+    /* ══ MOBILE LANDSCAPE ══ */
     @media(max-width:900px) and (orientation:landscape){
-      header{padding:6px 16px;gap:6px;flex-wrap:nowrap}
-      .logo{gap:8px;min-width:0;flex:1}
-      .logo-icon{font-size:20px;flex-shrink:0}
-      .logo-text h1{font-size:14px;white-space:nowrap}
-      .logo-text p{font-size:9px;display:block}
-      .badge-author{display:none}
-      .badge{font-size:11px;padding:3px 10px;font-weight:700;white-space:nowrap}
-
-      /* Layout 2 cột — chiều cao cố định */
-      .container{display:grid;grid-template-columns:1fr 1fr;height:calc(100vh - 46px)}
-
-      /* Left panel: grid 3 hàng (dropdown + editor + action) */
-      .left-panel{
-        height:100%;
-        border-right:1px solid var(--border);
-        display:grid;
-        grid-template-rows:auto 1fr auto;
-        overflow:hidden
-      }
-      .panel-top{padding:4px 10px;gap:2px;background:var(--surface);border-bottom:1px solid var(--border)}
-      .panel-top-row{gap:6px}
-      select{padding:4px 8px;font-size:11px}
-      textarea{font-size:11px;padding:6px 10px;line-height:1.5;width:100%;height:100%;min-height:0}
+      header{height:42px;padding:0 12px;gap:8px}
+      .logo-text h1{font-size:13px}
+      .logo-text p{display:none}
+      .nav-label{display:none}
+      .nav-select{font-size:10px;padding:3px 6px;max-width:90px}
+      .badge-version{font-size:10px;padding:2px 8px}
+      .exercise-bar{padding:4px 12px;min-height:28px}
+      .ex-title{font-size:11px}
+      .ex-desc{font-size:10px}
+      .main{grid-template-columns:1fr 260px}
       .action-bar{padding:5px 10px;gap:5px}
-      .btn-run,.btn-grade{padding:6px 10px;font-size:11px}
-      .btn-clear{padding:6px 8px;font-size:11px}
-      .shortcut-hint{display:none}
-
-      /* Right panel */
-      .right-panel{height:100%;display:flex;flex-direction:column;overflow:hidden}
-      .tab-btn{padding:6px 8px;font-size:11px}
-      .footer{padding:4px 10px;font-size:9px}
-
-      /* Tab Kết quả & Preview */
-      .result-preview-panel{overflow:hidden}
-      .result-section{min-height:50px}
-      .preview-section{min-height:50px}
-      .section-header{padding:4px 8px;font-size:10px}
-      .score-card{padding:10px}
-      .stats-grid{grid-template-columns:repeat(4,1fr);gap:5px}
-      .stat-card{padding:6px}
-      .stat-num{font-size:16px}
-      .score-circle{width:80px;height:80px}
-      .score-num{font-size:22px}
-      /* Tab Đề bài */
-      .desc-panel{overflow-y:auto}
-      .panel-desc-right{padding:6px 10px;gap:5px}
-      .panel-desc-right .exercise-desc{font-size:10px;line-height:1.5}
-      .panel-desc-right .tag-chip{font-size:9px;padding:1px 5px}
-
-      /* Tab Tiêu chí — hiển thị đầy đủ */
-      .criteria-panel{
-        display:none;
-        flex-direction:column;
-        overflow-y:auto;
-        height:100%
-      }
-      .criteria-panel.visible{
-        display:flex !important
-      }
-      .criteria-body{padding:8px;gap:6px}
-      .criteria-header{font-size:11px;padding-bottom:5px;margin-bottom:2px}
-      .criteria-card{border-radius:7px}
-      .criteria-card-header{padding:5px 10px}
-      .criteria-card-title{font-size:11px}
-      .criteria-points{font-size:10px;padding:2px 7px}
-      .criteria-card-body{padding:5px 10px;gap:3px}
-      .criteria-item{font-size:10px;gap:5px}
-      .criteria-total{padding:7px 10px}
-      .criteria-total-label{font-size:11px}
-      .criteria-total-score{font-size:15px}
-    }
-
-    /* ── TABLET PORTRAIT ── */
-    @media(min-width:600px) and (max-width:900px) and (orientation:portrait){
-      .container{display:flex;flex-direction:column;height:calc(100vh - 70px)}
-      .left-panel{height:50vh;border-right:none;border-bottom:1px solid var(--border)}
-      .right-panel{height:50vh}
+      .btn{padding:6px 10px;font-size:11px}
+      .output-content{min-height:36px;max-height:70px;font-size:10px}
+      .shortcut{display:none}
     }
   </style>
 </head>
 <body>
 
+<!-- ══ HEADER ══ -->
 <header>
   <div class="logo">
-    <div class="logo-icon">🏷️</div>
+    <span class="logo-icon">🏷️</span>
     <div class="logo-text">
       <h1>HTML Grader</h1>
       <p>Công cụ chấm điểm code HTML tự động · THPT Thủ Thiêm</p>
     </div>
   </div>
+  <div class="header-nav">
+    <span class="nav-label">Chủ đề</span>
+    <select class="nav-select" id="topicSelect" onchange="onTopicChange()"></select>
+    <span class="nav-label">Bài tập</span>
+    <select class="nav-select" id="exerciseSelect" onchange="onExerciseChange()"></select>
+  </div>
   <div class="header-right">
-    <span class="badge-author">✍️ Trí Huệ</span>
-    <span class="badge" id="versionBadge">v1.2.0</span>
+    <span class="badge-version" id="versionBadge">v1.2.3</span>
   </div>
 </header>
 
-<div class="container">
-  <!-- ═══ LEFT: Editor ═══ -->
-  <div class="left-panel">
-    <!-- Dropdown chọn bài -->
-    <div class="panel-top">
-      <div class="panel-top-row">
-        <span class="panel-label">📚 Bài tập:</span>
-        <select id="exerciseSelect" onchange="onExerciseChange()"></select>
-      </div>
-    </div>
-    <!-- Editor code -->
-    <textarea id="htmlCode"
-      placeholder="Nhập code HTML của bạn vào đây...
+<!-- ══ EXERCISE BAR ══ -->
+<div class="exercise-bar">
+  <span class="ex-title" id="exTitle">—</span>
+  <span class="ex-desc" id="exDesc">Chọn bài tập để xem đề bài...</span>
+</div>
 
-Ví dụ:
+<!-- ══ MAIN ══ -->
+<div class="main">
+
+  <!-- LEFT: EDITOR -->
+  <div class="editor-panel">
+    <div class="editor-header">
+      <span class="editor-title">● CODE EDITOR — HTML</span>
+      <span class="editor-pos" id="editorPos">LN 1, COL 1</span>
+    </div>
+    <textarea id="htmlCode"
+      placeholder="# Nhập code HTML tại đây...
+# Ví dụ:
 &lt;!DOCTYPE html&gt;
 &lt;html&gt;
   &lt;head&gt;
@@ -312,77 +238,108 @@ Ví dụ:
     &lt;h1&gt;Xin chào!&lt;/h1&gt;
     &lt;p&gt;Đây là trang web của tôi.&lt;/p&gt;
   &lt;/body&gt;
-&lt;/html&gt;"></textarea>
+&lt;/html&gt;"
+      spellcheck="false"></textarea>
     <div class="action-bar">
-      <button class="btn-run"   onclick="runCode()">▶ Run</button>
-      <button class="btn-grade" onclick="gradeCode()">⚡ Chấm điểm</button>
-      <button class="btn-clear" onclick="clearCode()">🗑 Xóa</button>
-      <span class="shortcut-hint">Ctrl+Enter</span>
+      <button class="btn btn-run" onclick="runCode()">▶ Chạy code</button>
+      <button class="btn btn-grade" onclick="gradeCode()">⚡ Chấm điểm</button>
+      <button class="btn btn-run-grade" onclick="runAndGrade()">⚡ Chạy &amp; Chấm</button>
+      <button class="btn btn-clear" onclick="clearCode()">🗑 Xóa</button>
+      <span class="shortcut">Ctrl+Enter</span>
+    </div>
+    <!-- OUTPUT -->
+    <div class="output-bar">
+      <div class="output-header">
+        <span class="output-title">● KẾT QUẢ THỰC THI</span>
+        <button class="btn-clear-output" onclick="clearOutput()">Xóa</button>
+      </div>
+      <div class="output-content" id="outputContent">
+        <span class="output-placeholder">// Kết quả sẽ hiển thị tại đây sau khi nhấn Chạy code…</span>
+      </div>
     </div>
   </div>
 
-  <!-- ═══ RIGHT: 3 Tabs ═══ -->
-  <div class="right-panel">
-    <div class="tab-bar">
-      <button class="tab-btn active-desc" id="tabDesc"     onclick="switchTab('desc')">📝 Đề bài</button>
-      <button class="tab-btn"             id="tabCriteria" onclick="switchTab('criteria')">📋 Tiêu chí</button>
-      <button class="tab-btn"             id="tabResult"   onclick="switchTab('result')">⚡ Kết quả &amp; Preview</button>
+  <!-- RIGHT: GRADING -->
+  <div class="grade-panel">
+    <div class="grade-header">
+      <span class="grade-title">● CHẤM ĐIỂM</span>
+      <div class="grade-tabs">
+        <button class="grade-tab active" id="tabResult" onclick="switchGradeTab('result')">📊 Kết quả</button>
+        <button class="grade-tab" id="tabDesc" onclick="switchGradeTab('desc')">📝 Đề bài</button>
+        <button class="grade-tab" id="tabCrit" onclick="switchGradeTab('crit')">⚙ Tiêu chí</button>
+        <button class="grade-tab" id="tabPreview" onclick="switchGradeTab('preview')">▶</button>
+      </div>
+    </div>
+
+    <!-- Tab: Kết quả -->
+    <div class="score-panel visible" id="panelResult">
+      <div class="score-placeholder" id="scorePlaceholder">
+        <div class="ph-icon">📊</div>
+        <p>Nhấn <strong style="color:var(--accent)">⚡ Chấm điểm</strong> để xem kết quả</p>
+      </div>
+      <div id="scoreContent" style="display:none">
+        <div class="score-circle-wrap">
+          <div class="score-circle" id="scoreCircle">
+            <span class="score-num" id="scoreNum">—</span>
+            <span class="score-label">ĐIỂM / 10</span>
+          </div>
+          <span class="score-status" id="scoreStatus">Chưa chấm</span>
+        </div>
+        <div class="stats-row">
+          <div class="stat-box">
+            <div class="stat-dot green"></div>
+            <div class="stat-num" id="statPass" style="color:var(--green)">0</div>
+            <div class="stat-lbl">Đúng</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-dot red"></div>
+            <div class="stat-num" id="statFail" style="color:var(--red)">0</div>
+            <div class="stat-lbl">Sai</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-dot yellow"></div>
+            <div class="stat-num" id="statWarn" style="color:var(--yellow)">0</div>
+            <div class="stat-lbl">Bỏ qua</div>
+          </div>
+        </div>
+        <div class="detail-header">CHI TIẾT TỪNG DÒNG</div>
+        <div class="detail-list" id="detailList"></div>
+      </div>
     </div>
 
     <!-- Tab: Đề bài -->
     <div class="desc-panel" id="panelDesc">
-      <div class="panel-desc-right">
-        <div class="exercise-desc" id="exerciseDesc">Chọn bài tập để xem mô tả...</div>
-        <div class="required-tags" id="requiredTags"></div>
-      </div>
+      <div class="desc-content" id="descContent">Chọn bài tập để xem đề bài...</div>
+      <div class="tags-label">THẺ BẮT BUỘC</div>
+      <div class="tags-wrap" id="tagsWrap"></div>
     </div>
 
     <!-- Tab: Tiêu chí -->
-    <div class="criteria-panel" id="panelCriteria">
-      <div class="criteria-body" id="criteriaBody">
-        <div style="text-align:center;color:var(--muted);padding:40px">
-          <div style="font-size:48px;opacity:.25">📋</div>
-          <p style="font-size:13px;margin-top:12px">Chọn bài tập để xem tiêu chí chấm điểm</p>
+    <div class="crit-panel" id="panelCrit">
+      <div class="crit-body" id="critBody">
+        <div style="text-align:center;color:var(--muted);padding:30px">
+          <div style="font-size:40px;opacity:.2">📋</div>
+          <p style="font-size:11px;margin-top:8px">Chọn bài tập để xem tiêu chí</p>
         </div>
       </div>
     </div>
 
-    <!-- Tab: Kết quả & Preview (gộp 2 tab cũ) -->
-    <div class="result-preview-panel" id="panelResult">
-      <!-- Phần Kết quả -->
-      <div class="result-section">
-        <div class="section-header">
-          <span>📊 Kết quả chấm điểm</span>
-          <button class="btn-refresh" onclick="gradeCode()">⚡ Chấm lại</button>
-        </div>
-        <div class="result-placeholder" id="placeholder">
-          <div class="ph-icon">📊</div>
-          <p>Nhập code HTML và nhấn <strong style="color:var(--accent2)">⚡ Chấm điểm</strong></p>
-        </div>
-        <div class="loading" id="loading">
-          <div class="spinner"></div>
-          <p style="color:var(--muted);font-size:12px">Đang phân tích code...</p>
-        </div>
-        <div id="resultArea" style="display:none"></div>
+    <!-- Tab: Preview -->
+    <div class="preview-panel" id="panelPreview">
+      <div class="preview-toolbar">
+        <span id="previewLabel">Chưa có output</span>
+        <button class="btn-refresh" onclick="runCode()">↺ Chạy lại</button>
       </div>
-      <!-- Phần Preview -->
-      <div class="preview-section">
-        <div class="section-header">
-          <span id="previewLabel">▶ Preview output</span>
-          <button class="btn-refresh" onclick="runCode()">↺ Chạy lại</button>
-        </div>
-        <div class="preview-empty" id="previewEmpty">
-          <div class="ph-icon">▶</div>
-          <p>Nhấn <strong style="color:#10b981">▶ Run</strong> để xem preview</p>
-        </div>
-        <iframe id="previewFrame" class="preview-iframe"
-          sandbox="allow-scripts allow-same-origin allow-forms allow-modals"></iframe>
+      <div class="preview-empty" id="previewEmpty">
+        <div class="ph-icon">▶</div>
+        <p>Nhấn <strong style="color:var(--green)">▶ Chạy code</strong><br>để xem preview</p>
       </div>
+      <iframe id="previewFrame" class="preview-iframe"
+        sandbox="allow-scripts allow-same-origin allow-forms allow-modals"></iframe>
     </div>
 
-    <div class="footer">
-      Tác giả: <strong>Trí Huệ</strong> &nbsp;·&nbsp;
-      <a href="mailto:trihue.life@gmail.com">trihue.life@gmail.com</a> &nbsp;·&nbsp;
+    <div class="grade-footer">
+      <a href="mailto:trihue.life@gmail.com">trihue.life@gmail.com</a> ·
       <a href="https://github.com/TriHue-life/html_grader" target="_blank">GitHub</a>
     </div>
   </div>
@@ -390,874 +347,363 @@ Ví dụ:
 
 <script>
 // ═══════════════════════════════════════════════════════════════════
-//  VERSION (tự động)
+//  VERSION (tự động bump)
 // ═══════════════════════════════════════════════════════════════════
-const VERSION = '1.2.3';
+const VERSION = '1.2.4';
 document.getElementById('versionBadge').textContent = 'v' + VERSION;
-document.title = `HTML Grader | Công cụ chấm điểm code HTML tự động · THPT Thủ Thiêm`;
+document.title = 'HTML Grader | Công cụ chấm điểm code HTML tự động · THPT Thủ Thiêm';
 
 // ═══════════════════════════════════════════════════════════════════
-//  DỮ LIỆU BÀI TẬP v1.2.0 — ĐẦY ĐỦ TIÊU CHÍ & TEST CASE
+//  DỮ LIỆU BÀI TẬP
 // ═══════════════════════════════════════════════════════════════════
-const EXERCISES = [
-  // ─── F1 ───────────────────────────────────────────────────────
-  {
-    id:'f1_apply1',
-    title:'F1 - Vận dụng 1: Trang thông tin cá nhân',
-    description:'Viết mã HTML hoàn chỉnh tạo trang web có <strong>tiêu đề trang</strong> là "Thông tin cá nhân", thuộc tính <code>bgcolor="lightblue"</code> cho thẻ <code>&lt;body&gt;</code>, chứa một đề mục lớn <code>&lt;h1&gt;</code> ghi tên và một đoạn văn <code>&lt;p&gt;</code> giới thiệu sở thích.',
-    required_tags:['h1','p'],
-    grading_criteria:[
-      {name:'Cấu trúc HTML cơ bản', points:2.5, items:['Có &lt;!DOCTYPE html&gt;','Có thẻ &lt;html&gt;...&lt;/html&gt;','Có thẻ &lt;head&gt;...&lt;/head&gt;','Có thẻ &lt;title&gt;...&lt;/title&gt;','Có thẻ &lt;body&gt;...&lt;/body&gt;']},
-      {name:'Thẻ bắt buộc', points:3.0, items:['Có thẻ &lt;h1&gt; ghi tên','Có thẻ &lt;p&gt; giới thiệu sở thích']},
-      {name:'Nội dung & Thuộc tính', points:3.0, items:['Tiêu đề trang &lt;title&gt; chứa "Thông tin cá nhân"','Thẻ &lt;body&gt; có bgcolor="lightblue"']},
-      {name:'Cú pháp & Định dạng', points:1.5, items:['Tất cả thẻ đóng đúng','Dấu nháy thuộc tính đúng','Code có thụt lề']}
-    ],
-    test_cases:[
-      {type:'tag_exist', tags:['h1','p'], error:'Thiếu thẻ &lt;{tag}&gt;', hint:'Thêm thẻ &lt;{tag}&gt; vào trong &lt;body&gt;'},
-      {type:'title_contains', value:'Thông tin cá nhân', error:'Tiêu đề trang chưa đúng', hint:'Sửa &lt;title&gt;Thông tin cá nhân&lt;/title&gt;'},
-      {type:'body_attr', attribute:'bgcolor', value:'lightblue', error:'Thiếu bgcolor="lightblue" cho &lt;body&gt;', hint:'Sửa thành &lt;body bgcolor="lightblue"&gt;'}
-    ]
-  },
-  {
-    id:'f1_apply2',
-    title:'F1 - Vận dụng 2: Trang có ô nhập số điện thoại',
-    description:'Sử dụng thẻ <code>&lt;input&gt;</code> để tạo trang web hoàn chỉnh có đề mục <code>&lt;h1&gt;</code> "Liên hệ với chúng tôi", nhãn <code>&lt;p&gt;</code> "Số điện thoại:" và ô nhập liệu <code>&lt;input type="text"&gt;</code>.',
-    required_tags:['h1','p','input'],
-    grading_criteria:[
-      {name:'Cấu trúc HTML cơ bản', points:2.5, items:['Có đủ DOCTYPE, html, head, title, body']},
-      {name:'Thẻ bắt buộc', points:4.0, items:['Có thẻ &lt;h1&gt;','Có thẻ &lt;p&gt;','Có thẻ &lt;input&gt;']},
-      {name:'Nội dung', points:2.0, items:['Thẻ &lt;h1&gt; chứa "Liên hệ với chúng tôi"','Có nhãn "Số điện thoại"']},
-      {name:'Cú pháp & Định dạng', points:1.5, items:['Tất cả thẻ đóng đúng','Code có thụt lề']}
-    ],
-    test_cases:[
-      {type:'tag_exist', tags:['h1','p','input'], error:'Thiếu thẻ &lt;{tag}&gt;', hint:'Thêm thẻ &lt;{tag}&gt; vào trong &lt;body&gt;'},
-      {type:'tag_content', tag:'h1', contains:'Liên hệ với chúng tôi', error:'Thẻ &lt;h1&gt; chưa có nội dung "Liên hệ với chúng tôi"', hint:'Sửa &lt;h1&gt;Liên hệ với chúng tôi&lt;/h1&gt;'},
-      {type:'content_contains', value:'Số điện thoại', error:'Thiếu nhãn "Số điện thoại"', hint:'Thêm &lt;p&gt;Số điện thoại:&lt;/p&gt;'}
-    ]
-  },
-  {
-    id:'f1_apply3',
-    title:'F1 - Vận dụng 3: Lí lịch trích ngang (có &lt;hr&gt;)',
-    description:'Tạo trang web dùng thẻ <code>&lt;hr&gt;</code> để ngăn cách rõ ràng giữa hai phần "Thông tin cá nhân" và "Thành tích học tập". Mỗi phần có <code>&lt;h1&gt;</code> và ít nhất một <code>&lt;p&gt;</code>.',
-    required_tags:['h1','p','hr'],
-    grading_criteria:[
-      {name:'Cấu trúc HTML cơ bản', points:2.5, items:['Có đủ DOCTYPE, html, head, title, body']},
-      {name:'Thẻ bắt buộc', points:4.0, items:['Có ít nhất 2 thẻ &lt;h1&gt;','Có ít nhất 2 thẻ &lt;p&gt;','Có thẻ &lt;hr&gt; phân cách']},
-      {name:'Nội dung', points:2.0, items:['Phần 1: "Thông tin cá nhân"','Phần 2: "Thành tích học tập"']},
-      {name:'Cú pháp & Định dạng', points:1.5, items:['Tất cả thẻ đóng đúng','Code có thụt lề']}
-    ],
-    test_cases:[
-      {type:'tag_exist', tags:['hr'], error:'Thiếu thẻ &lt;hr&gt; phân cách', hint:'Thêm &lt;hr&gt; giữa hai phần nội dung'},
-      {type:'tag_count_min', tag:'h1', min:2, error:'Cần ít nhất 2 thẻ &lt;h1&gt; (cho 2 phần)', hint:'Thêm &lt;h1&gt; cho mỗi phần nội dung'},
-      {type:'tag_count_min', tag:'p', min:2, error:'Cần ít nhất 2 thẻ &lt;p&gt;', hint:'Mỗi phần cần ít nhất 1 đoạn văn &lt;p&gt;'},
-      {type:'content_contains', value:'Thông tin cá nhân', error:'Thiếu nội dung "Thông tin cá nhân"', hint:'Thêm &lt;h1&gt;Thông tin cá nhân&lt;/h1&gt;'},
-      {type:'content_contains', value:'Thành tích', error:'Thiếu nội dung "Thành tích học tập"', hint:'Thêm &lt;h1&gt;Thành tích học tập&lt;/h1&gt;'}
-    ]
-  },
-  {
-    id:'f1_analyze1',
-    title:'F1 - Phân tích: Sửa lỗi cú pháp thuộc tính',
-    description:'Đoạn mã có lỗi <strong>cú pháp thuộc tính</strong> khiến màu nền không hiển thị đúng màu xanh lá. Học sinh cần sửa lại cho đúng.<br><code style="color:#f7c948">Lỗi điển hình: &lt;body bgcolor:"green";&gt; → Đúng: &lt;body bgcolor="green"&gt;</code>',
-    required_tags:['h1'],
-    grading_criteria:[
-      {name:'Cấu trúc HTML cơ bản', points:2.5, items:['Có đủ DOCTYPE, html, head, title, body']},
-      {name:'Sửa lỗi cú pháp thuộc tính', points:5.0, items:['Thuộc tính bgcolor dùng dấu = (không dùng :)','Giá trị thuộc tính trong dấu nháy kép "..."','Không có dấu ; sau giá trị']},
-      {name:'Cú pháp & Định dạng', points:2.5, items:['Tất cả thẻ đóng đúng','Không còn lỗi cú pháp khác']}
-    ],
-    test_cases:[
-      {type:'body_attr', attribute:'bgcolor', value:'green', error:'Thuộc tính bgcolor="green" chưa đúng', hint:'Sửa thành &lt;body bgcolor="green"&gt; — dùng dấu = và nháy kép, không dùng : hay ;'}
-    ]
-  },
-
-  // ─── F2 ───────────────────────────────────────────────────────
-  {
-    id:'f2_apply1',
-    title:'F2 - Vận dụng 1: Danh sách môn học yêu thích (in đậm)',
-    description:'Viết mã HTML tạo danh sách <strong>không thứ tự</strong> <code>&lt;ul&gt;</code> gồm ít nhất 3 môn học yêu thích. Tên mỗi môn được in đậm bằng thẻ <code>&lt;strong&gt;</code> bên trong thẻ <code>&lt;li&gt;</code>.',
-    required_tags:['ul','li','strong'],
-    grading_criteria:[
-      {name:'Cấu trúc HTML cơ bản', points:2.0, items:['Có đủ DOCTYPE, html, head, title, body']},
-      {name:'Thẻ danh sách', points:4.0, items:['Có thẻ &lt;ul&gt;','Có ít nhất 3 thẻ &lt;li&gt; bên trong &lt;ul&gt;']},
-      {name:'Định dạng in đậm', points:2.5, items:['Mỗi &lt;li&gt; có thẻ &lt;strong&gt; bao quanh tên môn']},
-      {name:'Cú pháp & Định dạng', points:1.5, items:['Tất cả thẻ đóng đúng','Code có thụt lề']}
-    ],
-    test_cases:[
-      {type:'tag_exist', tags:['ul','li','strong'], error:'Thiếu thẻ &lt;{tag}&gt;', hint:'Thêm thẻ &lt;{tag}&gt; vào code'},
-      {type:'tag_count_min', tag:'li', min:3, error:'Cần ít nhất 3 thẻ &lt;li&gt; (3 môn học)', hint:'Thêm đủ 3 thẻ &lt;li&gt;&lt;strong&gt;Tên môn&lt;/strong&gt;&lt;/li&gt;'},
-      {type:'tag_nesting', parent:'li', child:'strong', error:'Thẻ &lt;strong&gt; phải nằm bên trong &lt;li&gt;', hint:'Cấu trúc đúng: &lt;li&gt;&lt;strong&gt;Toán&lt;/strong&gt;&lt;/li&gt;'}
-    ]
-  },
-  {
-    id:'f2_apply2',
-    title:'F2 - Vận dụng 2: Trang thành viên lớp + liên kết',
-    description:'Tạo trang <code>thanhvienlop.html</code> với tiêu đề trang "Kỉ yếu lớp 12A", đề mục <code>&lt;h1&gt;</code> "Kỉ yếu lớp 12A", danh sách thành viên dùng thẻ <code>&lt;a href="..."&gt;</code> liên kết đến từng trang cá nhân.',
-    required_tags:['h1','a'],
-    grading_criteria:[
-      {name:'Cấu trúc HTML cơ bản', points:2.0, items:['Có đủ DOCTYPE, html, head, title, body']},
-      {name:'Thẻ bắt buộc', points:4.0, items:['Có thẻ &lt;h1&gt;','Có ít nhất 1 thẻ &lt;a&gt;']},
-      {name:'Thuộc tính liên kết', points:2.5, items:['Thẻ &lt;a&gt; có thuộc tính href="..."','Tiêu đề trang chứa "Kỉ yếu lớp 12A"']},
-      {name:'Cú pháp & Định dạng', points:1.5, items:['Tất cả thẻ đóng đúng']}
-    ],
-    test_cases:[
-      {type:'tag_exist', tags:['h1','a'], error:'Thiếu thẻ &lt;{tag}&gt;', hint:'Thêm thẻ &lt;{tag}&gt; vào code'},
-      {type:'attr_exist', tag:'a', attribute:'href', error:'Thẻ &lt;a&gt; thiếu thuộc tính href', hint:'Thêm href: &lt;a href="trang.html"&gt;Tên thành viên&lt;/a&gt;'},
-      {type:'title_contains', value:'Kỉ yếu lớp 12A', error:'Tiêu đề trang chưa đúng', hint:'Sửa &lt;title&gt;Kỉ yếu lớp 12A&lt;/title&gt;'}
-    ]
-  },
-  {
-    id:'f2_apply3',
-    title:'F2 - Vận dụng 3: Portfolio — Sở thích & Hoạt động',
-    description:'Cập nhật trang <code>portfolio.html</code> với danh sách <code>&lt;ul&gt;</code> liệt kê sở thích và danh sách <code>&lt;ol&gt;</code> liệt kê các hoạt động đã tham gia. Phân cách hai phần bằng <code>&lt;hr&gt;</code>.',
-    required_tags:['ul','ol','li','hr'],
-    grading_criteria:[
-      {name:'Cấu trúc HTML cơ bản', points:2.0, items:['Có đủ DOCTYPE, html, head, title, body']},
-      {name:'Danh sách không thứ tự', points:3.0, items:['Có thẻ &lt;ul&gt; cho sở thích','Có ít nhất 2 thẻ &lt;li&gt; trong &lt;ul&gt;']},
-      {name:'Danh sách có thứ tự', points:3.0, items:['Có thẻ &lt;ol&gt; cho hoạt động','Có ít nhất 2 thẻ &lt;li&gt; trong &lt;ol&gt;']},
-      {name:'Phân cách & Định dạng', points:2.0, items:['Có thẻ &lt;hr&gt; phân cách hai phần','Code có thụt lề']}
-    ],
-    test_cases:[
-      {type:'tag_exist', tags:['ul','ol','hr'], error:'Thiếu thẻ &lt;{tag}&gt;', hint:'Thêm thẻ &lt;{tag}&gt; vào code'},
-      {type:'tag_count_min', tag:'li', min:4, error:'Cần ít nhất 4 thẻ &lt;li&gt; (2 sở thích + 2 hoạt động)', hint:'Thêm đủ &lt;li&gt; vào cả &lt;ul&gt; và &lt;ol&gt;'}
-    ]
-  },
-
-  // ─── F3 ───────────────────────────────────────────────────────
-  {
-    id:'f3_apply1',
-    title:'F3 - Vận dụng 1: Bảng danh sách điểm thi',
-    description:'Tạo bảng HTML gồm 4 cột: <strong>STT, Họ tên, Điểm Toán, Điểm Văn</strong>. Hàng tiêu đề dùng <code>&lt;th&gt;</code> có <code>bgcolor="lightblue"</code>, ít nhất 2 hàng dữ liệu dùng <code>&lt;td&gt;</code>.',
-    required_tags:['table','tr','th','td'],
-    grading_criteria:[
-      {name:'Cấu trúc HTML cơ bản', points:2.0, items:['Có đủ DOCTYPE, html, head, title, body']},
-      {name:'Cấu trúc bảng', points:4.0, items:['Có thẻ &lt;table&gt;','Có thẻ &lt;tr&gt; (hàng)','Có thẻ &lt;th&gt; (tiêu đề cột)','Có thẻ &lt;td&gt; (dữ liệu)']},
-      {name:'Nội dung & Thuộc tính', points:2.5, items:['Hàng tiêu đề có đủ 4 cột (STT, Họ tên, Điểm Toán, Điểm Văn)','Thẻ &lt;th&gt; hoặc &lt;tr&gt; đầu có bgcolor="lightblue"','Có ít nhất 2 hàng dữ liệu']},
-      {name:'Cú pháp & Định dạng', points:1.5, items:['Tất cả thẻ đóng đúng','Code có thụt lề']}
-    ],
-    test_cases:[
-      {type:'tag_exist', tags:['table','tr','th','td'], error:'Thiếu thẻ &lt;{tag}&gt;', hint:'Bảng HTML cần có đủ: &lt;table&gt;, &lt;tr&gt;, &lt;th&gt;, &lt;td&gt;'},
-      {type:'tag_count_min', tag:'tr', min:3, error:'Cần ít nhất 3 hàng &lt;tr&gt; (1 tiêu đề + 2 dữ liệu)', hint:'Thêm hàng dữ liệu: &lt;tr&gt;&lt;td&gt;...&lt;/td&gt;&lt;/tr&gt;'},
-      {type:'attr_value_any', tag:'th', attribute:'bgcolor', value:'lightblue', error:'Hàng tiêu đề &lt;th&gt; chưa có bgcolor="lightblue"', hint:'Thêm bgcolor="lightblue" vào thẻ &lt;th&gt; hoặc &lt;tr&gt; đầu tiên'}
-    ]
-  },
-  {
-    id:'f3_apply2',
-    title:'F3 - Vận dụng 2: Bố cục trang web (Header-Menu-Nội dung-Footer)',
-    description:'Sử dụng <code>&lt;table&gt;</code> để tạo bố cục trang: <strong>Header</strong> (trên, gộp cột với colspan), <strong>Menu trái 20%</strong> và <strong>Nội dung phải 80%</strong> (dùng rowspan hoặc 2 cột), <strong>Footer</strong> (dưới, gộp cột).',
-    required_tags:['table','tr','td'],
-    grading_criteria:[
-      {name:'Cấu trúc HTML cơ bản', points:2.0, items:['Có đủ DOCTYPE, html, head, title, body']},
-      {name:'Cấu trúc bảng bố cục', points:4.0, items:['Có thẻ &lt;table&gt;','Có ít nhất 3 hàng &lt;tr&gt; (header, nội dung, footer)']},
-      {name:'Gộp ô (colspan/rowspan)', points:2.5, items:['Có thuộc tính colspan để gộp cột (header/footer)','Có phân chia 2 cột (menu + nội dung)']},
-      {name:'Cú pháp & Định dạng', points:1.5, items:['Tất cả thẻ đóng đúng','Code có thụt lề']}
-    ],
-    test_cases:[
-      {type:'tag_exist', tags:['table','tr','td'], error:'Thiếu thẻ &lt;{tag}&gt;', hint:'Bố cục dùng bảng HTML: &lt;table&gt;, &lt;tr&gt;, &lt;td&gt;'},
-      {type:'attr_exist_any', tag:'td', attribute:'colspan', error:'Chưa có thuộc tính colspan (gộp cột)', hint:'Thêm colspan="2" vào ô Header và Footer'},
-      {type:'tag_count_min', tag:'tr', min:3, error:'Cần ít nhất 3 hàng (header, nội dung, footer)', hint:'Thêm đủ 3 hàng &lt;tr&gt;'}
-    ]
-  },
-  {
-    id:'f3_apply3',
-    title:'F3 - Vận dụng 3: Nhúng video YouTube (iframe)',
-    description:'Nhúng một video YouTube vào trang web bằng thẻ <code>&lt;iframe&gt;</code> với kích thước <strong>width="560" height="315"</strong>. Thêm đề mục <code>&lt;h3&gt;</code> "Video giới thiệu" phía trên iframe.',
-    required_tags:['h3','iframe'],
-    grading_criteria:[
-      {name:'Cấu trúc HTML cơ bản', points:2.0, items:['Có đủ DOCTYPE, html, head, title, body']},
-      {name:'Thẻ bắt buộc', points:3.5, items:['Có thẻ &lt;h3&gt; "Video giới thiệu"','Có thẻ &lt;iframe&gt;']},
-      {name:'Thuộc tính iframe', points:3.0, items:['Có width="560"','Có height="315"','Có src trỏ đến YouTube']},
-      {name:'Cú pháp & Định dạng', points:1.5, items:['Tất cả thẻ đóng đúng']}
-    ],
-    test_cases:[
-      {type:'tag_exist', tags:['h3','iframe'], error:'Thiếu thẻ &lt;{tag}&gt;', hint:'Thêm thẻ &lt;{tag}&gt; vào code'},
-      {type:'attr_value_any', tag:'iframe', attribute:'width', value:'560', error:'Thẻ &lt;iframe&gt; chưa có width="560"', hint:'Thêm width="560" vào thẻ &lt;iframe&gt;'},
-      {type:'attr_value_any', tag:'iframe', attribute:'height', value:'315', error:'Thẻ &lt;iframe&gt; chưa có height="315"', hint:'Thêm height="315" vào thẻ &lt;iframe&gt;'},
-      {type:'attr_contains', tag:'iframe', attribute:'src', value:'youtube', error:'Thẻ &lt;iframe&gt; chưa nhúng YouTube', hint:'Thêm src="https://www.youtube.com/embed/VIDEO_ID"'}
-    ]
-  },
-
-  // ─── F4 ───────────────────────────────────────────────────────
-  {
-    id:'f4_apply1',
-    title:'F4 - Vận dụng 1: Video tự động phát, tắt tiếng',
-    description:'Viết mã HTML hiển thị video với <code>width="500"</code>, có các thuộc tính <strong>autoplay</strong>, <strong>muted</strong> và <strong>loop</strong>. Thêm đề mục <code>&lt;h3&gt;</code> mô tả video phía trên.',
-    required_tags:['h3','video'],
-    grading_criteria:[
-      {name:'Cấu trúc HTML cơ bản', points:2.0, items:['Có đủ DOCTYPE, html, head, title, body']},
-      {name:'Thẻ bắt buộc', points:2.5, items:['Có thẻ &lt;h3&gt;','Có thẻ &lt;video&gt;']},
-      {name:'Thuộc tính video', points:4.0, items:['Có thuộc tính autoplay','Có thuộc tính muted','Có thuộc tính loop','Có width="500"']},
-      {name:'Cú pháp & Định dạng', points:1.5, items:['Tất cả thẻ đóng đúng']}
-    ],
-    test_cases:[
-      {type:'tag_exist', tags:['h3','video'], error:'Thiếu thẻ &lt;{tag}&gt;', hint:'Thêm thẻ &lt;{tag}&gt; vào code'},
-      {type:'attr_exist_any', tag:'video', attribute:'autoplay', error:'Thẻ &lt;video&gt; thiếu thuộc tính autoplay', hint:'Thêm autoplay vào: &lt;video autoplay muted loop width="500"&gt;'},
-      {type:'attr_exist_any', tag:'video', attribute:'muted', error:'Thẻ &lt;video&gt; thiếu thuộc tính muted', hint:'Thêm muted vào: &lt;video autoplay muted loop&gt;'},
-      {type:'attr_exist_any', tag:'video', attribute:'loop', error:'Thẻ &lt;video&gt; thiếu thuộc tính loop', hint:'Thêm loop vào: &lt;video autoplay muted loop&gt;'},
-      {type:'attr_value_any', tag:'video', attribute:'width', value:'500', error:'Thẻ &lt;video&gt; chưa có width="500"', hint:'Thêm width="500" vào thẻ &lt;video&gt;'}
-    ]
-  },
-  {
-    id:'f4_apply2',
-    title:'F4 - Vận dụng 2: Trang nhạc + lời bài hát',
-    description:'Tạo trang web hiển thị tên bài hát bằng <code>&lt;h2&gt;</code>, lời bài hát bằng <code>&lt;p&gt;</code>, và nhúng tệp âm thanh bằng <code>&lt;audio controls&gt;</code> để người dùng có thể điều khiển phát nhạc.',
-    required_tags:['h2','p','audio'],
-    grading_criteria:[
-      {name:'Cấu trúc HTML cơ bản', points:2.0, items:['Có đủ DOCTYPE, html, head, title, body']},
-      {name:'Thẻ bắt buộc', points:4.5, items:['Có thẻ &lt;h2&gt; tên bài hát','Có thẻ &lt;p&gt; lời bài hát','Có thẻ &lt;audio&gt;']},
-      {name:'Thuộc tính audio', points:2.0, items:['Thẻ &lt;audio&gt; có thuộc tính controls']},
-      {name:'Cú pháp & Định dạng', points:1.5, items:['Tất cả thẻ đóng đúng']}
-    ],
-    test_cases:[
-      {type:'tag_exist', tags:['h2','p','audio'], error:'Thiếu thẻ &lt;{tag}&gt;', hint:'Thêm thẻ &lt;{tag}&gt; vào code'},
-      {type:'attr_exist_any', tag:'audio', attribute:'controls', error:'Thẻ &lt;audio&gt; thiếu thuộc tính controls', hint:'Sửa thành &lt;audio controls&gt;'}
-    ]
-  },
-  {
-    id:'f4_apply3',
-    title:'F4 - Vận dụng 3: Portfolio hoàn chỉnh (ảnh + video + audio)',
-    description:'Hoàn thiện trang portfolio với: ảnh đại diện <code>&lt;img src="..." alt="..."&gt;</code>, bố cục ảnh 3 cột dùng <code>&lt;table&gt;</code>, video hoạt động lớp <code>&lt;video controls&gt;</code>, bài hát yêu thích <code>&lt;audio controls&gt;</code>.',
-    required_tags:['img','table','video','audio'],
-    grading_criteria:[
-      {name:'Cấu trúc HTML cơ bản', points:2.0, items:['Có đủ DOCTYPE, html, head, title, body']},
-      {name:'Ảnh đại diện', points:2.0, items:['Có thẻ &lt;img&gt;','Thẻ &lt;img&gt; có src và alt']},
-      {name:'Bố cục ảnh 3 cột', points:2.0, items:['Có thẻ &lt;table&gt;','Có ít nhất 3 thẻ &lt;td&gt; chứa ảnh']},
-      {name:'Video & Audio', points:2.5, items:['Có thẻ &lt;video controls&gt;','Có thẻ &lt;audio controls&gt;']},
-      {name:'Cú pháp & Định dạng', points:1.5, items:['Tất cả thẻ đóng đúng']}
-    ],
-    test_cases:[
-      {type:'tag_exist', tags:['img','table','video','audio'], error:'Thiếu thẻ &lt;{tag}&gt;', hint:'Portfolio cần có đủ: &lt;img&gt;, &lt;table&gt;, &lt;video&gt;, &lt;audio&gt;'},
-      {type:'attr_exist_any', tag:'img', attribute:'alt', error:'Thẻ &lt;img&gt; thiếu thuộc tính alt', hint:'Thêm alt="mô tả ảnh" vào thẻ &lt;img&gt;'},
-      {type:'attr_exist_any', tag:'video', attribute:'controls', error:'Thẻ &lt;video&gt; thiếu thuộc tính controls', hint:'Sửa thành &lt;video controls&gt;'},
-      {type:'attr_exist_any', tag:'audio', attribute:'controls', error:'Thẻ &lt;audio&gt; thiếu thuộc tính controls', hint:'Sửa thành &lt;audio controls&gt;'}
-    ]
-  },
-
-  // ─── F5 ───────────────────────────────────────────────────────
-  {
-    id:'f5_apply1',
-    title:'F5 - Vận dụng 1: Biểu mẫu tìm kiếm',
-    description:'Tạo biểu mẫu tìm kiếm: thẻ <code>&lt;form method="get"&gt;</code>, ô nhập <code>&lt;input type="text" placeholder="..."&gt;</code>, nút bấm <code>&lt;button type="submit"&gt;Tìm kiếm&lt;/button&gt;</code>.',
-    required_tags:['form','input','button'],
-    grading_criteria:[
-      {name:'Cấu trúc HTML cơ bản', points:2.0, items:['Có đủ DOCTYPE, html, head, title, body']},
-      {name:'Thẻ biểu mẫu', points:3.5, items:['Có thẻ &lt;form&gt;','Có thẻ &lt;input&gt;','Có thẻ &lt;button&gt;']},
-      {name:'Thuộc tính form', points:3.0, items:['form có method="get"','input có type="text"','input có placeholder','button có type="submit"']},
-      {name:'Cú pháp & Định dạng', points:1.5, items:['Tất cả thẻ đóng đúng']}
-    ],
-    test_cases:[
-      {type:'tag_exist', tags:['form','input','button'], error:'Thiếu thẻ &lt;{tag}&gt;', hint:'Biểu mẫu cần có: &lt;form&gt;, &lt;input&gt;, &lt;button&gt;'},
-      {type:'attr_value_any', tag:'form', attribute:'method', value:'get', error:'Thẻ &lt;form&gt; chưa có method="get"', hint:'Sửa thành &lt;form method="get"&gt;'},
-      {type:'attr_value_any', tag:'input', attribute:'type', value:'text', error:'Thẻ &lt;input&gt; chưa có type="text"', hint:'Sửa thành &lt;input type="text"&gt;'},
-      {type:'attr_exist_any', tag:'input', attribute:'placeholder', error:'Thẻ &lt;input&gt; thiếu placeholder', hint:'Thêm placeholder="Nhập từ khóa..." vào &lt;input&gt;'},
-      {type:'attr_value_any', tag:'button', attribute:'type', value:'submit', error:'Thẻ &lt;button&gt; chưa có type="submit"', hint:'Sửa thành &lt;button type="submit"&gt;Tìm kiếm&lt;/button&gt;'}
-    ]
-  },
-  {
-    id:'f5_apply2',
-    title:'F5 - Vận dụng 2: Đăng ký nhận tin (email bắt buộc)',
-    description:'Tạo biểu mẫu "Đăng ký nhận tin mới" gồm: nhãn <code>&lt;label&gt;</code>, ô nhập <code>&lt;input type="email" required&gt;</code> (có thuộc tính <strong>required</strong>), nút <code>&lt;button&gt;Đăng ký&lt;/button&gt;</code>.',
-    required_tags:['form','label','input','button'],
-    grading_criteria:[
-      {name:'Cấu trúc HTML cơ bản', points:2.0, items:['Có đủ DOCTYPE, html, head, title, body']},
-      {name:'Thẻ biểu mẫu', points:3.5, items:['Có thẻ &lt;form&gt;','Có thẻ &lt;label&gt;','Có thẻ &lt;input&gt;','Có thẻ &lt;button&gt;']},
-      {name:'Thuộc tính email & required', points:3.0, items:['input có type="email"','input có thuộc tính required','Nội dung &lt;button&gt; là "Đăng ký"']},
-      {name:'Cú pháp & Định dạng', points:1.5, items:['Tất cả thẻ đóng đúng']}
-    ],
-    test_cases:[
-      {type:'tag_exist', tags:['form','label','input','button'], error:'Thiếu thẻ &lt;{tag}&gt;', hint:'Biểu mẫu cần có: &lt;form&gt;, &lt;label&gt;, &lt;input&gt;, &lt;button&gt;'},
-      {type:'attr_value_any', tag:'input', attribute:'type', value:'email', error:'Thẻ &lt;input&gt; chưa có type="email"', hint:'Sửa thành &lt;input type="email"&gt;'},
-      {type:'attr_exist_any', tag:'input', attribute:'required', error:'Thẻ &lt;input&gt; thiếu thuộc tính required', hint:'Thêm required: &lt;input type="email" required&gt;'}
-    ]
-  },
-  {
-    id:'f5_apply3',
-    title:'F5 - Vận dụng 3: Khảo sát ý kiến',
-    description:'Thiết kế biểu mẫu khảo sát gồm: Tên (<code>type="text"</code>), Tuổi (<code>type="number"</code> có min/max), Đánh giá mức độ hài lòng dùng <strong>3 radio button</strong> (Tốt/Khá/Trung bình), nút Gửi.',
-    required_tags:['form','input','button'],
-    grading_criteria:[
-      {name:'Cấu trúc HTML cơ bản', points:2.0, items:['Có đủ DOCTYPE, html, head, title, body']},
-      {name:'Thẻ biểu mẫu', points:2.5, items:['Có thẻ &lt;form&gt;','Có thẻ &lt;input&gt;','Có thẻ &lt;button&gt;']},
-      {name:'Các loại input', points:4.0, items:['Có input type="text" (tên)','Có input type="number" (tuổi)','Có ít nhất 3 input type="radio" (đánh giá)']},
-      {name:'Cú pháp & Định dạng', points:1.5, items:['Tất cả thẻ đóng đúng']}
-    ],
-    test_cases:[
-      {type:'tag_exist', tags:['form','input','button'], error:'Thiếu thẻ &lt;{tag}&gt;', hint:'Biểu mẫu cần có: &lt;form&gt;, &lt;input&gt;, &lt;button&gt;'},
-      {type:'attr_value_any', tag:'input', attribute:'type', value:'text', error:'Chưa có input type="text" (ô nhập tên)', hint:'Thêm &lt;input type="text"&gt; cho ô nhập tên'},
-      {type:'attr_value_any', tag:'input', attribute:'type', value:'number', error:'Chưa có input type="number" (ô nhập tuổi)', hint:'Thêm &lt;input type="number" min="1" max="100"&gt;'},
-      {type:'attr_value_count', tag:'input', attribute:'type', value:'radio', min:3, error:'Cần ít nhất 3 radio button (Tốt/Khá/Trung bình)', hint:'Thêm 3 thẻ &lt;input type="radio" name="rating"&gt;'}
-    ]
-  },
-  {
-    id:'f5_apply4',
-    title:'F5 - Thực hành: Trang đăng nhập hệ thống',
-    description:'Tạo trang <code>login.html</code> với biểu mẫu đăng nhập: tên người dùng (<code>type="text" required</code>), mật khẩu (<code>type="password" required</code>), nút Đăng nhập. Dùng <code>method="post"</code>.',
-    required_tags:['form','label','input','button'],
-    grading_criteria:[
-      {name:'Cấu trúc HTML cơ bản', points:2.0, items:['Có đủ DOCTYPE, html, head, title, body']},
-      {name:'Thẻ biểu mẫu', points:3.0, items:['Có thẻ &lt;form&gt;','Có thẻ &lt;label&gt;','Có thẻ &lt;input&gt;','Có thẻ &lt;button&gt;']},
-      {name:'Thuộc tính đăng nhập', points:3.5, items:['form có method="post"','Có input type="text" (tên người dùng)','Có input type="password" (mật khẩu)','Cả 2 input có thuộc tính required']},
-      {name:'Cú pháp & Định dạng', points:1.5, items:['Tất cả thẻ đóng đúng']}
-    ],
-    test_cases:[
-      {type:'tag_exist', tags:['form','input','button'], error:'Thiếu thẻ &lt;{tag}&gt;', hint:'Biểu mẫu cần có: &lt;form&gt;, &lt;input&gt;, &lt;button&gt;'},
-      {type:'attr_value_any', tag:'form', attribute:'method', value:'post', error:'Thẻ &lt;form&gt; chưa có method="post"', hint:'Sửa thành &lt;form method="post"&gt;'},
-      {type:'attr_value_any', tag:'input', attribute:'type', value:'text', error:'Chưa có input type="text" (tên người dùng)', hint:'Thêm &lt;input type="text" required&gt;'},
-      {type:'attr_value_any', tag:'input', attribute:'type', value:'password', error:'Chưa có input type="password" (mật khẩu)', hint:'Thêm &lt;input type="password" required&gt;'}
-    ]
-  },
-  {
-    id:'f5_apply5',
-    title:'F5 - Vận dụng: Đăng ký câu lạc bộ',
-    description:'Tạo biểu mẫu đăng ký CLB gồm: Họ tên (<code>type="text" required</code>), Lớp (<code>&lt;select&gt;</code> dropdown: 10A/11A/12A), Giới thiệu bản thân (<code>&lt;textarea&gt;</code>), nút Đăng ký và nút Làm lại (<code>type="reset"</code>).',
-    required_tags:['form','select','textarea','button'],
-    grading_criteria:[
-      {name:'Cấu trúc HTML cơ bản', points:2.0, items:['Có đủ DOCTYPE, html, head, title, body']},
-      {name:'Thẻ biểu mẫu', points:4.0, items:['Có thẻ &lt;form&gt;','Có thẻ &lt;select&gt;','Có thẻ &lt;textarea&gt;','Có thẻ &lt;button&gt;']},
-      {name:'Dropdown & Reset', points:2.5, items:['Có ít nhất 3 thẻ &lt;option&gt; (10A, 11A, 12A)','Có nút type="reset" (Làm lại)']},
-      {name:'Cú pháp & Định dạng', points:1.5, items:['Tất cả thẻ đóng đúng']}
-    ],
-    test_cases:[
-      {type:'tag_exist', tags:['form','select','textarea','button'], error:'Thiếu thẻ &lt;{tag}&gt;', hint:'Biểu mẫu cần có: &lt;form&gt;, &lt;select&gt;, &lt;textarea&gt;, &lt;button&gt;'},
-      {type:'tag_count_min', tag:'option', min:3, error:'Cần ít nhất 3 thẻ &lt;option&gt; (10A, 11A, 12A)', hint:'Thêm: &lt;option&gt;10A&lt;/option&gt; &lt;option&gt;11A&lt;/option&gt; &lt;option&gt;12A&lt;/option&gt;'},
-      {type:'attr_value_any', tag:'button', attribute:'type', value:'reset', error:'Chưa có nút Làm lại (type="reset")', hint:'Thêm &lt;button type="reset"&gt;Làm lại&lt;/button&gt;'}
-    ]
-  },
-
-  // ─── TỔNG HỢP ─────────────────────────────────────────────────
-  {
-    id:'tong1',
-    title:'Tổng hợp - Vận dụng 1: Hồ sơ cá nhân tổng hợp (F1+F2+F4)',
-    description:'Tạo trang giới thiệu bản thân gồm: tiêu đề lớn <code>&lt;h1&gt;</code>, ảnh đại diện <code>&lt;img width="150"&gt;</code>, danh sách <code>&lt;ul&gt;</code> ít nhất 3 sở thích, đường kẻ ngang <code>&lt;hr&gt;</code>, video giới thiệu <code>&lt;video controls&gt;</code>.',
-    required_tags:['h1','img','ul','li','hr','video'],
-    grading_criteria:[
-      {name:'Cấu trúc HTML cơ bản', points:2.0, items:['Có đủ DOCTYPE, html, head, title, body']},
-      {name:'Ảnh đại diện', points:2.0, items:['Có thẻ &lt;img&gt;','Có width="150"','Có thuộc tính alt']},
-      {name:'Danh sách sở thích', points:2.0, items:['Có thẻ &lt;ul&gt;','Có ít nhất 3 thẻ &lt;li&gt;']},
-      {name:'Phân cách & Video', points:2.5, items:['Có thẻ &lt;hr&gt;','Có thẻ &lt;video controls&gt;']},
-      {name:'Cú pháp & Định dạng', points:1.5, items:['Tất cả thẻ đóng đúng']}
-    ],
-    test_cases:[
-      {type:'tag_exist', tags:['h1','img','ul','hr','video'], error:'Thiếu thẻ &lt;{tag}&gt;', hint:'Hồ sơ cần có: &lt;h1&gt;, &lt;img&gt;, &lt;ul&gt;, &lt;hr&gt;, &lt;video&gt;'},
-      {type:'attr_value_any', tag:'img', attribute:'width', value:'150', error:'Thẻ &lt;img&gt; chưa có width="150"', hint:'Thêm width="150" vào thẻ &lt;img&gt;'},
-      {type:'tag_count_min', tag:'li', min:3, error:'Cần ít nhất 3 sở thích (&lt;li&gt;)', hint:'Thêm đủ 3 thẻ &lt;li&gt; trong &lt;ul&gt;'},
-      {type:'attr_exist_any', tag:'video', attribute:'controls', error:'Thẻ &lt;video&gt; thiếu thuộc tính controls', hint:'Sửa thành &lt;video controls&gt;'}
-    ]
-  },
-  {
-    id:'tong2',
-    title:'Tổng hợp - Vận dụng 2: Thời khóa biểu phức tạp (F3)',
-    description:'Tạo bảng thời khóa biểu gồm Thứ 2–4, ít nhất 4 hàng tiết. Hàng tiêu đề màu xanh nhạt, ô "Chào cờ" có <strong>rowspan="2"</strong>, ô "Nghỉ giải lao" có <strong>colspan="4"</strong>.',
-    required_tags:['table','tr','th','td'],
-    grading_criteria:[
-      {name:'Cấu trúc HTML cơ bản', points:2.0, items:['Có đủ DOCTYPE, html, head, title, body']},
-      {name:'Cấu trúc bảng', points:3.0, items:['Có thẻ &lt;table&gt;','Có thẻ &lt;th&gt; (tiêu đề)','Có ít nhất 4 hàng &lt;tr&gt;']},
-      {name:'Gộp ô nâng cao', points:3.5, items:['Có ô rowspan="2" (Chào cờ)','Có ô colspan="4" (Nghỉ giải lao)']},
-      {name:'Cú pháp & Định dạng', points:1.5, items:['Tất cả thẻ đóng đúng']}
-    ],
-    test_cases:[
-      {type:'tag_exist', tags:['table','tr','th','td'], error:'Thiếu thẻ &lt;{tag}&gt;', hint:'Bảng cần có: &lt;table&gt;, &lt;tr&gt;, &lt;th&gt;, &lt;td&gt;'},
-      {type:'attr_value_any', tag:'td', attribute:'rowspan', value:'2', error:'Chưa có ô rowspan="2" (Chào cờ)', hint:'Thêm rowspan="2" vào ô Chào cờ: &lt;td rowspan="2"&gt;Chào cờ&lt;/td&gt;'},
-      {type:'attr_value_any', tag:'td', attribute:'colspan', value:'4', error:'Chưa có ô colspan="4" (Nghỉ giải lao)', hint:'Thêm colspan="4" vào ô Nghỉ giải lao: &lt;td colspan="4"&gt;Nghỉ giải lao&lt;/td&gt;'},
-      {type:'tag_count_min', tag:'tr', min:4, error:'Cần ít nhất 4 hàng &lt;tr&gt;', hint:'Thêm đủ hàng cho bảng thời khóa biểu'}
-    ]
-  },
-  {
-    id:'tong3',
-    title:'Tổng hợp - Vận dụng 3: Đăng ký câu lạc bộ đầy đủ (F5)',
-    description:'Biểu mẫu đăng ký CLB hoàn chỉnh: họ tên (text, required), lớp (select), giới thiệu (textarea), nút Đăng ký + Làm lại. Kết hợp <code>&lt;label for="..."&gt;</code> và <code>id="..."</code> đúng chuẩn, <code>method="post"</code>.',
-    required_tags:['form','label','input','select','textarea','button'],
-    grading_criteria:[
-      {name:'Cấu trúc HTML cơ bản', points:2.0, items:['Có đủ DOCTYPE, html, head, title, body']},
-      {name:'Thẻ biểu mẫu đầy đủ', points:3.5, items:['Có &lt;form method="post"&gt;','Có &lt;label&gt;','Có &lt;input&gt;','Có &lt;select&gt;','Có &lt;textarea&gt;','Có &lt;button&gt;']},
-      {name:'Liên kết label-input', points:2.5, items:['label có thuộc tính for="..."','input/select/textarea có id tương ứng']},
-      {name:'Nút Reset & Định dạng', points:2.0, items:['Có nút type="reset" (Làm lại)','Code có thụt lề']}
-    ],
-    test_cases:[
-      {type:'tag_exist', tags:['form','label','input','select','textarea','button'], error:'Thiếu thẻ &lt;{tag}&gt;', hint:'Biểu mẫu cần có đủ: &lt;form&gt;, &lt;label&gt;, &lt;input&gt;, &lt;select&gt;, &lt;textarea&gt;, &lt;button&gt;'},
-      {type:'attr_value_any', tag:'form', attribute:'method', value:'post', error:'Thẻ &lt;form&gt; chưa có method="post"', hint:'Sửa thành &lt;form method="post"&gt;'},
-      {type:'attr_exist_any', tag:'label', attribute:'for', error:'Thẻ &lt;label&gt; thiếu thuộc tính for="..."', hint:'Thêm for: &lt;label for="ten"&gt;Họ tên:&lt;/label&gt;'},
-      {type:'attr_value_any', tag:'button', attribute:'type', value:'reset', error:'Chưa có nút Làm lại (type="reset")', hint:'Thêm &lt;button type="reset"&gt;Làm lại&lt;/button&gt;'}
-    ]
-  }
-];
+const EXERCISES = [{"id":"f1_apply1","title":"F1 - Vận dụng 1: Trang thông tin cá nhân","description":"Viết mã HTML hoàn chỉnh tạo trang web có <strong>tiêu đề trang</strong> là \"Thông tin cá nhân\", thuộc tính <code>bgcolor=\"lightblue\"</code> cho thẻ <code>&lt;body&gt;</code>, chứa một đề mục lớn <code>&lt;h1&gt;</code> ghi tên và một đoạn văn <code>&lt;p&gt;</code> giới thiệu sở thích.","required_tags":["h1","p"],"criteria":[{"name":"Cấu trúc HTML cơ bản","points":2.5,"items":["Có <!DOCTYPE html>","Có thẻ <html>...</html>","Có thẻ <head>...</head>","Có thẻ <title>...</title>","Có thẻ <body>...</body>"]},{"name":"Thẻ bắt buộc","points":3.0,"items":["Có thẻ <h1> ghi tên","Có thẻ <p> giới thiệu sở thích"]},{"name":"Nội dung & Thuộc tính","points":3.0,"items":["Tiêu đề trang <title> chứa \"Thông tin cá nhân\"","Thẻ <body> có bgcolor=\"lightblue\""]},{"name":"Cú pháp & Định dạng","points":1.5,"items":["Tất cả thẻ đóng đúng","Dấu nháy thuộc tính đúng","Code có thụt lề"]}],"test_cases":[{"type":"tag_exist","tags":["h1","p"],"error":"Thiếu thẻ <{tag}>","hint":"Thêm thẻ <{tag}>...</{tag}> vào trong <body>"},{"type":"attr_value","tag":"body","attr":"bgcolor","value":"lightblue","error":"Thẻ <body> thiếu bgcolor=\"lightblue\"","hint":"Sửa: <body bgcolor=\"lightblue\">"},{"type":"title_contains","value":"Thông tin cá nhân","error":"<title> phải chứa \"Thông tin cá nhân\"","hint":"Sửa: <title>Thông tin cá nhân</title>"}]},{"id":"f1_apply2","title":"F1 - Vận dụng 2: Trang có ô nhập số điện thoại","description":"Tạo trang HTML có <strong>tiêu đề</strong> \"Nhập thông tin\", chứa một nhãn <code>&lt;label&gt;</code> \"Số điện thoại:\", một ô nhập <code>&lt;input type=\"tel\"&gt;</code> và một nút <code>&lt;button&gt;</code> \"Gửi\".","required_tags":["label","input","button"],"criteria":[{"name":"Cấu trúc HTML cơ bản","points":2.5,"items":["Có <!DOCTYPE html>","Có thẻ <html>, <head>, <title>, <body>"]},{"name":"Thẻ bắt buộc","points":4.0,"items":["Có thẻ <label>","Có thẻ <input>","Có thẻ <button>"]},{"name":"Nội dung & Thuộc tính","points":2.0,"items":["<input> có type=\"tel\"","<button> có nội dung \"Gửi\""]},{"name":"Cú pháp & Định dạng","points":1.5,"items":["Thẻ đóng đúng","Thụt lề"]}],"test_cases":[{"type":"tag_exist","tags":["label","input","button"],"error":"Thiếu thẻ <{tag}>","hint":"Thêm thẻ <{tag}> vào trong <body>"},{"type":"attr_value","tag":"input","attr":"type","value":"tel","error":"<input> phải có type=\"tel\"","hint":"Sửa: <input type=\"tel\">"}]},{"id":"f1_apply3","title":"F1 - Vận dụng 3: Lí lịch trích ngang (có <hr>)","description":"Tạo trang HTML \"Lí lịch trích ngang\" gồm: tiêu đề <code>&lt;h1&gt;</code> họ tên, thẻ phân cách <code>&lt;hr&gt;</code>, các đoạn <code>&lt;p&gt;</code> thông tin cá nhân (ngày sinh, địa chỉ, nghề nghiệp).","required_tags":["h1","hr","p"],"criteria":[{"name":"Cấu trúc HTML cơ bản","points":2.5,"items":["Có <!DOCTYPE html>","Có đầy đủ html/head/title/body"]},{"name":"Thẻ bắt buộc","points":4.0,"items":["Có thẻ <h1> họ tên","Có thẻ <hr>","Có ít nhất 2 thẻ <p>"]},{"name":"Nội dung","points":2.0,"items":["<title> chứa \"Lí lịch\" hoặc tên"]},{"name":"Cú pháp & Định dạng","points":1.5,"items":["Thẻ đóng đúng","Thụt lề"]}],"test_cases":[{"type":"tag_exist","tags":["h1","hr","p"],"error":"Thiếu thẻ <{tag}>","hint":"Thêm thẻ <{tag}> vào <body>"},{"type":"tag_count","tag":"p","min":2,"error":"Cần ít nhất 2 thẻ <p> cho thông tin cá nhân","hint":"Thêm các thẻ <p> cho ngày sinh, địa chỉ, nghề nghiệp"}]},{"id":"f1_analyze1","title":"F1 - Phân tích: Sửa lỗi cú pháp thuộc tính","description":"Viết lại đoạn HTML sau đây đúng cú pháp: sửa lỗi thiếu dấu nháy thuộc tính, thẻ không đóng, và thuộc tính sai tên. Đảm bảo trang có <code>&lt;h2&gt;</code>, <code>&lt;p&gt;</code> và <code>&lt;a href&gt;</code>.","required_tags":["h2","p","a"],"criteria":[{"name":"Cấu trúc HTML cơ bản","points":2.5,"items":["Có <!DOCTYPE html>","Có đầy đủ html/head/title/body"]},{"name":"Thẻ bắt buộc","points":3.5,"items":["Có thẻ <h2>","Có thẻ <p>","Có thẻ <a> với href"]},{"name":"Cú pháp đúng","points":2.5,"items":["Dấu nháy thuộc tính đầy đủ","Tất cả thẻ đóng đúng"]},{"name":"Định dạng","points":1.5,"items":["Code có thụt lề"]}],"test_cases":[{"type":"tag_exist","tags":["h2","p","a"],"error":"Thiếu thẻ <{tag}>","hint":"Thêm thẻ <{tag}> vào <body>"},{"type":"attr_exist","tag":"a","attr":"href","error":"Thẻ <a> phải có thuộc tính href","hint":"Sửa: <a href=\"url\">..."}]},{"id":"f2_apply1","title":"F2 - Vận dụng 1: Danh sách môn học yêu thích (in đậm)","description":"Tạo trang HTML có tiêu đề <code>&lt;h2&gt;</code> \"Môn học yêu thích\", danh sách không thứ tự <code>&lt;ul&gt;</code> gồm ít nhất 3 mục <code>&lt;li&gt;</code>, trong đó tên môn học được in <strong>đậm</strong> bằng thẻ <code>&lt;strong&gt;</code>.","required_tags":["h2","ul","li","strong"],"criteria":[{"name":"Cấu trúc HTML cơ bản","points":2.0,"items":["Có <!DOCTYPE html>","Có html/head/title/body"]},{"name":"Thẻ bắt buộc","points":4.5,"items":["Có thẻ <h2>","Có thẻ <ul>","Có ít nhất 3 thẻ <li>","Có thẻ <strong> trong <li>"]},{"name":"Nội dung","points":2.0,"items":["<h2> chứa \"Môn học\"","<li> có nội dung tên môn"]},{"name":"Cú pháp","points":1.5,"items":["Thẻ đóng đúng","Thụt lề"]}],"test_cases":[{"type":"tag_exist","tags":["h2","ul","li","strong"],"error":"Thiếu thẻ <{tag}>","hint":"Thêm thẻ <{tag}> vào <body>"},{"type":"tag_count","tag":"li","min":3,"error":"Cần ít nhất 3 thẻ <li>","hint":"Thêm các mục <li> vào trong <ul>"}]},{"id":"f2_apply2","title":"F2 - Vận dụng 2: Trang thành viên lớp + liên kết","description":"Tạo trang HTML \"Thành viên lớp\" gồm: danh sách có thứ tự <code>&lt;ol&gt;</code> với tên thành viên, mỗi tên là một liên kết <code>&lt;a href&gt;</code>, và một đoạn giới thiệu <code>&lt;p&gt;</code>.","required_tags":["ol","li","a","p"],"criteria":[{"name":"Cấu trúc HTML cơ bản","points":2.0,"items":["Có <!DOCTYPE html>","Có html/head/title/body"]},{"name":"Thẻ bắt buộc","points":4.5,"items":["Có thẻ <ol>","Có ít nhất 3 thẻ <li>","Có thẻ <a> với href","Có thẻ <p>"]},{"name":"Thuộc tính","points":2.0,"items":["<a> có href hợp lệ"]},{"name":"Cú pháp","points":1.5,"items":["Thẻ đóng đúng","Thụt lề"]}],"test_cases":[{"type":"tag_exist","tags":["ol","li","a","p"],"error":"Thiếu thẻ <{tag}>","hint":"Thêm thẻ <{tag}> vào <body>"},{"type":"attr_exist","tag":"a","attr":"href","error":"Thẻ <a> phải có href","hint":"Sửa: <a href=\"#\">tên</a>"}]},{"id":"f2_apply3","title":"F2 - Vận dụng 3: Portfolio — Sở thích & Hoạt động","description":"Tạo trang Portfolio cá nhân gồm: tiêu đề <code>&lt;h1&gt;</code> tên, phần <strong>Sở thích</strong> dùng <code>&lt;ul&gt;</code>, phần <strong>Hoạt động</strong> dùng <code>&lt;ol&gt;</code>, và ít nhất một liên kết <code>&lt;a&gt;</code>.","required_tags":["h1","ul","ol","li","a"],"criteria":[{"name":"Cấu trúc HTML cơ bản","points":2.0,"items":["Có <!DOCTYPE html>","Có html/head/title/body"]},{"name":"Thẻ bắt buộc","points":4.5,"items":["Có <h1>","Có <ul> (sở thích)","Có <ol> (hoạt động)","Có <a>"]},{"name":"Nội dung","points":2.0,"items":["<ul> và <ol> đều có ít nhất 2 <li>"]},{"name":"Cú pháp","points":1.5,"items":["Thẻ đóng đúng","Thụt lề"]}],"test_cases":[{"type":"tag_exist","tags":["h1","ul","ol","li","a"],"error":"Thiếu thẻ <{tag}>","hint":"Thêm thẻ <{tag}>"},{"type":"tag_count","tag":"li","min":4,"error":"Cần ít nhất 4 thẻ <li> (2 cho ul, 2 cho ol)","hint":"Thêm các mục <li>"}]},{"id":"f3_apply1","title":"F3 - Vận dụng 1: Bảng danh sách điểm thi","description":"Tạo bảng HTML <code>&lt;table&gt;</code> danh sách điểm thi gồm: hàng tiêu đề <code>&lt;thead&gt;</code> với <code>&lt;th&gt;</code> (STT, Họ tên, Điểm), ít nhất 3 hàng dữ liệu <code>&lt;tbody&gt;</code>.","required_tags":["table","thead","tbody","tr","th","td"],"criteria":[{"name":"Cấu trúc HTML cơ bản","points":2.0,"items":["Có <!DOCTYPE html>","Có html/head/title/body"]},{"name":"Thẻ bảng","points":5.0,"items":["Có <table>","Có <thead>","Có <tbody>","Có <th> trong thead","Có ít nhất 3 hàng <tr> trong tbody","Có <td> trong tbody"]},{"name":"Nội dung","points":1.5,"items":["<th> có STT, Họ tên, Điểm"]},{"name":"Cú pháp","points":1.5,"items":["Thẻ đóng đúng","Thụt lề"]}],"test_cases":[{"type":"tag_exist","tags":["table","thead","tbody","tr","th","td"],"error":"Thiếu thẻ <{tag}>","hint":"Bảng cần có <table><thead><tbody><tr><th><td>"},{"type":"tag_count","tag":"tr","min":4,"error":"Cần ít nhất 4 hàng <tr> (1 header + 3 data)","hint":"Thêm hàng <tr> vào <tbody>"}]},{"id":"f3_apply2","title":"F3 - Vận dụng 2: Bố cục trang web (Header-Menu-Nội dung-Footer)","description":"Tạo trang HTML có bố cục đầy đủ: <code>&lt;header&gt;</code>, <code>&lt;nav&gt;</code> (menu), <code>&lt;main&gt;</code> (nội dung chính), <code>&lt;footer&gt;</code>. Dùng thẻ ngữ nghĩa HTML5.","required_tags":["header","nav","main","footer"],"criteria":[{"name":"Cấu trúc HTML cơ bản","points":2.0,"items":["Có <!DOCTYPE html>","Có html/head/title/body"]},{"name":"Thẻ ngữ nghĩa","points":5.0,"items":["Có <header>","Có <nav>","Có <main>","Có <footer>"]},{"name":"Nội dung","points":1.5,"items":["<nav> có ít nhất 2 liên kết <a>","<main> có nội dung"]},{"name":"Cú pháp","points":1.5,"items":["Thẻ đóng đúng","Thụt lề"]}],"test_cases":[{"type":"tag_exist","tags":["header","nav","main","footer"],"error":"Thiếu thẻ ngữ nghĩa <{tag}>","hint":"Thêm thẻ <{tag}>...</{tag}> vào <body>"}]},{"id":"f3_apply3","title":"F3 - Vận dụng 3: Nhúng video YouTube (iframe)","description":"Tạo trang HTML nhúng video YouTube bằng <code>&lt;iframe&gt;</code> với src là URL YouTube, có thuộc tính <code>width</code>, <code>height</code>, và <code>allowfullscreen</code>.","required_tags":["iframe"],"criteria":[{"name":"Cấu trúc HTML cơ bản","points":2.5,"items":["Có <!DOCTYPE html>","Có html/head/title/body"]},{"name":"Thẻ iframe","points":4.5,"items":["Có thẻ <iframe>","Có thuộc tính src","Có width và height","Có allowfullscreen"]},{"name":"Nội dung","points":1.5,"items":["src trỏ đến youtube.com hoặc youtu.be"]},{"name":"Cú pháp","points":1.5,"items":["Thẻ đóng đúng","Thụt lề"]}],"test_cases":[{"type":"tag_exist","tags":["iframe"],"error":"Thiếu thẻ <iframe>","hint":"Thêm <iframe src=\"https://www.youtube.com/embed/...\">"},{"type":"attr_exist","tag":"iframe","attr":"src","error":"<iframe> phải có thuộc tính src","hint":"Thêm src=\"https://www.youtube.com/embed/VIDEO_ID\""},{"type":"attr_exist","tag":"iframe","attr":"allowfullscreen","error":"<iframe> nên có allowfullscreen","hint":"Thêm allowfullscreen vào thẻ <iframe>"}]},{"id":"f4_apply1","title":"F4 - Vận dụng 1: Video tự động phát, tắt tiếng","description":"Tạo trang HTML có thẻ <code>&lt;video&gt;</code> với các thuộc tính: <code>autoplay</code>, <code>muted</code>, <code>controls</code>, <code>loop</code>, và thẻ <code>&lt;source&gt;</code> bên trong.","required_tags":["video","source"],"criteria":[{"name":"Cấu trúc HTML cơ bản","points":2.0,"items":["Có <!DOCTYPE html>","Có html/head/title/body"]},{"name":"Thẻ video","points":5.0,"items":["Có <video>","Có <source> bên trong","Có autoplay","Có muted","Có controls"]},{"name":"Nội dung","points":1.5,"items":["<source> có src và type"]},{"name":"Cú pháp","points":1.5,"items":["Thẻ đóng đúng","Thụt lề"]}],"test_cases":[{"type":"tag_exist","tags":["video","source"],"error":"Thiếu thẻ <{tag}>","hint":"Thêm <video autoplay muted controls><source src=\"...\" type=\"video/mp4\"></video>"},{"type":"bool_attr","tag":"video","attr":"autoplay","error":"<video> thiếu autoplay","hint":"Thêm autoplay vào thẻ <video>"},{"type":"bool_attr","tag":"video","attr":"muted","error":"<video> thiếu muted","hint":"Thêm muted vào thẻ <video>"},{"type":"bool_attr","tag":"video","attr":"controls","error":"<video> thiếu controls","hint":"Thêm controls vào thẻ <video>"}]},{"id":"f4_apply2","title":"F4 - Vận dụng 2: Trang nhạc + lời bài hát","description":"Tạo trang HTML có thẻ <code>&lt;audio&gt;</code> với <code>controls</code>, thẻ <code>&lt;source&gt;</code>, tiêu đề bài hát <code>&lt;h2&gt;</code>, và lời bài hát trong <code>&lt;pre&gt;</code> hoặc <code>&lt;p&gt;</code>.","required_tags":["audio","source","h2"],"criteria":[{"name":"Cấu trúc HTML cơ bản","points":2.0,"items":["Có <!DOCTYPE html>","Có html/head/title/body"]},{"name":"Thẻ audio","points":4.5,"items":["Có <audio>","Có <source>","Có controls","Có <h2> tiêu đề"]},{"name":"Nội dung","points":2.0,"items":["<source> có src","Có lời bài hát trong <p> hoặc <pre>"]},{"name":"Cú pháp","points":1.5,"items":["Thẻ đóng đúng","Thụt lề"]}],"test_cases":[{"type":"tag_exist","tags":["audio","source","h2"],"error":"Thiếu thẻ <{tag}>","hint":"Thêm thẻ <{tag}>"},{"type":"bool_attr","tag":"audio","attr":"controls","error":"<audio> thiếu controls","hint":"Thêm controls vào thẻ <audio>"}]},{"id":"f4_apply3","title":"F4 - Vận dụng 3: Portfolio hoàn chỉnh (ảnh + video + audio)","description":"Tạo trang Portfolio có: ảnh <code>&lt;img&gt;</code> với alt, video <code>&lt;video&gt;</code>, audio <code>&lt;audio&gt;</code>, tiêu đề <code>&lt;h1&gt;</code>, và mô tả <code>&lt;p&gt;</code>.","required_tags":["img","video","audio","h1","p"],"criteria":[{"name":"Cấu trúc HTML cơ bản","points":2.0,"items":["Có <!DOCTYPE html>","Có html/head/title/body"]},{"name":"Thẻ media","points":4.5,"items":["Có <img> với alt","Có <video>","Có <audio>"]},{"name":"Nội dung","points":2.0,"items":["Có <h1>","Có <p> mô tả"]},{"name":"Cú pháp","points":1.5,"items":["Thẻ đóng đúng","Thụt lề"]}],"test_cases":[{"type":"tag_exist","tags":["img","video","audio","h1","p"],"error":"Thiếu thẻ <{tag}>","hint":"Thêm thẻ <{tag}>"},{"type":"attr_exist","tag":"img","attr":"alt","error":"<img> phải có thuộc tính alt","hint":"Thêm alt=\"mô tả ảnh\" vào <img>"}]},{"id":"f5_apply1","title":"F5 - Vận dụng 1: Biểu mẫu tìm kiếm","description":"Tạo form tìm kiếm HTML: thẻ <code>&lt;form&gt;</code> với <code>action</code>, <code>&lt;input type=\"search\"&gt;</code>, <code>&lt;button type=\"submit\"&gt;</code>.","required_tags":["form","input","button"],"criteria":[{"name":"Cấu trúc HTML cơ bản","points":2.0,"items":["Có <!DOCTYPE html>","Có html/head/title/body"]},{"name":"Thẻ form","points":4.5,"items":["Có <form>","Có <input type=\"search\">","Có <button type=\"submit\">"]},{"name":"Thuộc tính","points":2.0,"items":["<form> có action","<input> có placeholder"]},{"name":"Cú pháp","points":1.5,"items":["Thẻ đóng đúng","Thụt lề"]}],"test_cases":[{"type":"tag_exist","tags":["form","input","button"],"error":"Thiếu thẻ <{tag}>","hint":"Thêm thẻ <{tag}>"},{"type":"attr_value","tag":"input","attr":"type","value":"search","error":"<input> phải có type=\"search\"","hint":"Sửa: <input type=\"search\">"}]},{"id":"f5_apply2","title":"F5 - Vận dụng 2: Đăng ký nhận tin (email bắt buộc)","description":"Tạo form đăng ký nhận tin: <code>&lt;input type=\"email\"&gt;</code> với <code>required</code>, <code>&lt;input type=\"text\"&gt;</code> tên, và nút submit.","required_tags":["form","input","button"],"criteria":[{"name":"Cấu trúc HTML cơ bản","points":2.0,"items":["Có <!DOCTYPE html>","Có html/head/title/body"]},{"name":"Thẻ form","points":4.5,"items":["Có <form>","Có <input type=\"email\">","Có required trên email","Có <button>"]},{"name":"Thuộc tính","points":2.0,"items":["<input type=\"text\"> cho tên","<label> cho mỗi input"]},{"name":"Cú pháp","points":1.5,"items":["Thẻ đóng đúng","Thụt lề"]}],"test_cases":[{"type":"attr_value","tag":"input","attr":"type","value":"email","error":"Thiếu <input type=\"email\">","hint":"Thêm <input type=\"email\" required>"},{"type":"bool_attr","tag":"input","attr":"required","error":"<input type=\"email\"> phải có required","hint":"Thêm required vào <input type=\"email\">"}]},{"id":"f5_apply3","title":"F5 - Vận dụng 3: Khảo sát ý kiến","description":"Tạo form khảo sát có: <code>&lt;input type=\"radio\"&gt;</code> (ít nhất 3 lựa chọn), <code>&lt;input type=\"checkbox\"&gt;</code>, <code>&lt;textarea&gt;</code> góp ý, và nút submit.","required_tags":["form","input","textarea","button"],"criteria":[{"name":"Cấu trúc HTML cơ bản","points":2.0,"items":["Có <!DOCTYPE html>","Có html/head/title/body"]},{"name":"Thẻ form","points":4.5,"items":["Có <form>","Có <input type=\"radio\"> (ít nhất 3)","Có <input type=\"checkbox\">","Có <textarea>","Có <button>"]},{"name":"Thuộc tính","points":2.0,"items":["Radio có name chung","Checkbox có value"]},{"name":"Cú pháp","points":1.5,"items":["Thẻ đóng đúng","Thụt lề"]}],"test_cases":[{"type":"attr_value","tag":"input","attr":"type","value":"radio","error":"Thiếu <input type=\"radio\">","hint":"Thêm ít nhất 3 <input type=\"radio\" name=\"q\">"},{"type":"attr_value","tag":"input","attr":"type","value":"checkbox","error":"Thiếu <input type=\"checkbox\">","hint":"Thêm <input type=\"checkbox\">"},{"type":"tag_exist","tags":["textarea"],"error":"Thiếu <textarea>","hint":"Thêm <textarea> cho góp ý"}]},{"id":"f5_apply4","title":"F5 - Thực hành: Trang đăng nhập hệ thống","description":"Tạo trang đăng nhập: <code>&lt;form&gt;</code> với <code>&lt;input type=\"text\"&gt;</code> tên đăng nhập, <code>&lt;input type=\"password\"&gt;</code> mật khẩu, cả hai có <code>required</code>, và nút \"Đăng nhập\".","required_tags":["form","input","button"],"criteria":[{"name":"Cấu trúc HTML cơ bản","points":2.0,"items":["Có <!DOCTYPE html>","Có html/head/title/body"]},{"name":"Thẻ form","points":4.5,"items":["Có <form>","Có <input type=\"text\"> tên đăng nhập","Có <input type=\"password\">","Có <button> Đăng nhập"]},{"name":"Thuộc tính","points":2.0,"items":["required trên cả 2 input","<label> cho mỗi input"]},{"name":"Cú pháp","points":1.5,"items":["Thẻ đóng đúng","Thụt lề"]}],"test_cases":[{"type":"attr_value","tag":"input","attr":"type","value":"password","error":"Thiếu <input type=\"password\">","hint":"Thêm <input type=\"password\" required>"},{"type":"bool_attr","tag":"input","attr":"required","error":"Input phải có required","hint":"Thêm required vào các <input>"}]},{"id":"f5_apply5","title":"F5 - Vận dụng: Đăng ký câu lạc bộ","description":"Tạo form đăng ký câu lạc bộ có: <code>&lt;select&gt;</code> chọn câu lạc bộ (ít nhất 3 <code>&lt;option&gt;</code>), <code>&lt;input type=\"text\"&gt;</code> họ tên, <code>&lt;input type=\"email\"&gt;</code>, và nút submit.","required_tags":["form","select","option","input","button"],"criteria":[{"name":"Cấu trúc HTML cơ bản","points":2.0,"items":["Có <!DOCTYPE html>","Có html/head/title/body"]},{"name":"Thẻ form","points":4.5,"items":["Có <form>","Có <select>","Có ít nhất 3 <option>","Có <input type=\"email\">","Có <button>"]},{"name":"Nội dung","points":2.0,"items":["<option> có nội dung tên CLB"]},{"name":"Cú pháp","points":1.5,"items":["Thẻ đóng đúng","Thụt lề"]}],"test_cases":[{"type":"tag_exist","tags":["select","option"],"error":"Thiếu thẻ <{tag}>","hint":"Thêm <select><option>...</option></select>"},{"type":"tag_count","tag":"option","min":3,"error":"Cần ít nhất 3 <option>","hint":"Thêm các <option> vào <select>"}]},{"id":"tong1","title":"Tổng hợp - Vận dụng 1: Hồ sơ cá nhân tổng hợp (F1+F2+F4)","description":"Tạo trang Hồ sơ cá nhân tổng hợp gồm: <code>&lt;h1&gt;</code> tên, <code>&lt;img&gt;</code> ảnh đại diện (có alt), danh sách <code>&lt;ul&gt;</code> sở thích, liên kết <code>&lt;a&gt;</code>, và nhúng <code>&lt;audio&gt;</code> hoặc <code>&lt;video&gt;</code>.","required_tags":["h1","img","ul","li","a"],"criteria":[{"name":"Cấu trúc HTML cơ bản","points":2.0,"items":["Có <!DOCTYPE html>","Có html/head/title/body"]},{"name":"Thẻ bắt buộc","points":4.5,"items":["Có <h1>","Có <img> với alt","Có <ul> và <li>","Có <a>"]},{"name":"Media","points":2.0,"items":["Có <audio> hoặc <video>"]},{"name":"Cú pháp","points":1.5,"items":["Thẻ đóng đúng","Thụt lề"]}],"test_cases":[{"type":"tag_exist","tags":["h1","img","ul","li","a"],"error":"Thiếu thẻ <{tag}>","hint":"Thêm thẻ <{tag}>"},{"type":"attr_exist","tag":"img","attr":"alt","error":"<img> phải có alt","hint":"Thêm alt=\"mô tả\" vào <img>"}]},{"id":"tong2","title":"Tổng hợp - Vận dụng 2: Thời khóa biểu phức tạp (F3)","description":"Tạo bảng thời khóa biểu: <code>&lt;table&gt;</code> với <code>border</code>, hàng tiêu đề <code>&lt;thead&gt;</code>, ít nhất 5 hàng dữ liệu <code>&lt;tbody&gt;</code>, dùng <code>colspan</code> hoặc <code>rowspan</code>.","required_tags":["table","thead","tbody","tr","th","td"],"criteria":[{"name":"Cấu trúc HTML cơ bản","points":2.0,"items":["Có <!DOCTYPE html>","Có html/head/title/body"]},{"name":"Thẻ bảng","points":4.5,"items":["Có <table>","Có <thead> và <tbody>","Có <th> trong thead","Có ít nhất 5 hàng <tr>"]},{"name":"Thuộc tính nâng cao","points":2.0,"items":["<table> có border","Dùng colspan hoặc rowspan"]},{"name":"Cú pháp","points":1.5,"items":["Thẻ đóng đúng","Thụt lề"]}],"test_cases":[{"type":"tag_exist","tags":["table","thead","tbody","tr","th","td"],"error":"Thiếu thẻ <{tag}>","hint":"Thêm thẻ <{tag}>"},{"type":"tag_count","tag":"tr","min":6,"error":"Cần ít nhất 6 hàng <tr>","hint":"Thêm hàng <tr> vào <tbody>"}]},{"id":"tong3","title":"Tổng hợp - Vận dụng 3: Đăng ký câu lạc bộ đầy đủ (F5)","description":"Tạo form đăng ký câu lạc bộ đầy đủ: họ tên, email (<code>required</code>), <code>&lt;select&gt;</code> câu lạc bộ, <code>&lt;input type=\"radio\"&gt;</code> giới tính, <code>&lt;textarea&gt;</code> lý do, nút submit.","required_tags":["form","input","select","textarea","button"],"criteria":[{"name":"Cấu trúc HTML cơ bản","points":2.0,"items":["Có <!DOCTYPE html>","Có html/head/title/body"]},{"name":"Thẻ form đầy đủ","points":4.5,"items":["Có <form>","Có <input type=\"email\" required>","Có <select>","Có <input type=\"radio\">","Có <textarea>","Có <button>"]},{"name":"Thuộc tính","points":2.0,"items":["required trên email","<select> có ít nhất 3 <option>"]},{"name":"Cú pháp","points":1.5,"items":["Thẻ đóng đúng","Thụt lề"]}],"test_cases":[{"type":"tag_exist","tags":["form","select","textarea","button"],"error":"Thiếu thẻ <{tag}>","hint":"Thêm thẻ <{tag}>"},{"type":"attr_value","tag":"input","attr":"type","value":"email","error":"Thiếu <input type=\"email\">","hint":"Thêm <input type=\"email\" required>"},{"type":"bool_attr","tag":"input","attr":"required","error":"Email phải có required","hint":"Thêm required vào <input type=\"email\">"}]}];
 
 // ═══════════════════════════════════════════════════════════════════
-//  KHỞI TẠO DROPDOWN
+//  KHỞI TẠO
 // ═══════════════════════════════════════════════════════════════════
-const GROUPS = {
-  'BÀI F1: HTML và Trang Web':  EXERCISES.filter(e=>e.id.startsWith('f1')),
-  'BÀI F2: Tạo và Định dạng':   EXERCISES.filter(e=>e.id.startsWith('f2')),
-  'BÀI F3: Bảng và Khung':      EXERCISES.filter(e=>e.id.startsWith('f3')),
-  'BÀI F4: Đa Phương Tiện':     EXERCISES.filter(e=>e.id.startsWith('f4')),
-  'BÀI F5: Biểu Mẫu':           EXERCISES.filter(e=>e.id.startsWith('f5')),
-  'Bộ Tổng Hợp (F1–F5)':        EXERCISES.filter(e=>e.id.startsWith('tong')),
+const TOPICS = {
+  'F1 — HTML Cơ bản': ['f1_apply1','f1_apply2','f1_apply3','f1_analyze1'],
+  'F2 — Danh sách & Liên kết': ['f2_apply1','f2_apply2','f2_apply3'],
+  'F3 — Bảng & Bố cục': ['f3_apply1','f3_apply2','f3_apply3'],
+  'F4 — Media (Ảnh/Video/Audio)': ['f4_apply1','f4_apply2','f4_apply3'],
+  'F5 — Biểu mẫu (Form)': ['f5_apply1','f5_apply2','f5_apply3','f5_apply4','f5_apply5'],
+  'Tổng hợp': ['tong1','tong2','tong3'],
 };
-const exerciseMap = Object.fromEntries(EXERCISES.map(e=>[e.id,e]));
+const exMap = {};
+EXERCISES.forEach(ex => exMap[ex.id] = ex);
 
-(function initDropdown(){
-  const sel = document.getElementById('exerciseSelect');
-  for(const [groupName,exList] of Object.entries(GROUPS)){
-    const og = document.createElement('optgroup'); og.label = groupName;
-    exList.forEach(ex=>{
-      const opt = document.createElement('option'); opt.value=ex.id; opt.textContent=ex.title; og.appendChild(opt);
-    });
-    sel.appendChild(og);
-  }
-  onExerciseChange();
-  switchTab('desc');
+(function init(){
+  const topicSel = document.getElementById('topicSelect');
+  Object.keys(TOPICS).forEach(t => {
+    const opt = document.createElement('option');
+    opt.value = t; opt.textContent = t;
+    topicSel.appendChild(opt);
+  });
+  onTopicChange();
+  // Keyboard shortcut
+  document.getElementById('htmlCode').addEventListener('keydown', e => {
+    if(e.key === 'Tab'){
+      e.preventDefault();
+      const ta = e.target;
+      const s = ta.selectionStart, end = ta.selectionEnd;
+      ta.value = ta.value.substring(0,s) + '  ' + ta.value.substring(end);
+      ta.selectionStart = ta.selectionEnd = s + 2;
+    }
+    if((e.ctrlKey||e.metaKey) && e.key === 'Enter'){
+      e.preventDefault();
+      runAndGrade();
+    }
+    updatePos(e.target);
+  });
+  document.getElementById('htmlCode').addEventListener('click', e => updatePos(e.target));
+  document.getElementById('htmlCode').addEventListener('input', e => updatePos(e.target));
 })();
 
-function onExerciseChange(){
-  const ex = exerciseMap[document.getElementById('exerciseSelect').value];
-  if(!ex) return;
-  document.getElementById('exerciseDesc').innerHTML = ex.description||'Không có mô tả.';
-  const tagsEl = document.getElementById('requiredTags');
-  tagsEl.innerHTML = (ex.required_tags||[]).map(t=>`<span class="tag-chip">&lt;${t}&gt;</span>`).join('');
-  renderCriteria(ex);
+function updatePos(ta){
+  const val = ta.value.substring(0, ta.selectionStart);
+  const lines = val.split('\n');
+  const ln = lines.length, col = lines[lines.length-1].length + 1;
+  document.getElementById('editorPos').textContent = `LN ${ln}, COL ${col}`;
 }
 
-// ═══════════════════════════════════════════════════════════════════
-//  HIỂN THỊ TIÊU CHÍ CHẤM ĐIỂM
-// ═══════════════════════════════════════════════════════════════════
-function renderCriteria(ex){
-  // Build HTML tiêu chí
-  function buildCriteriaHTML(ex, compact){
-    if(!ex||!ex.grading_criteria) return '<div style="text-align:center;color:var(--muted);padding:20px"><div style="font-size:36px;opacity:.25">📋</div><p style="font-size:12px;margin-top:8px">Không có tiêu chí</p></div>';
-    const total = ex.grading_criteria.reduce((s,c)=>s+(c.points||0),0);
-    let html = `<div class="criteria-header">📋 Tiêu chí — ${ex.title}</div>`;
-    for(const c of ex.grading_criteria){
-      if(!c.name||!c.points) continue;
-      const items = c.items||[];
-      html += `<div class="criteria-card">
-        <div class="criteria-card-header">
-          <span class="criteria-card-title">${c.name}</span>
-          <span class="criteria-points">${c.points} điểm</span>
-        </div>
-        <div class="criteria-card-body">
-          ${items.map(item=>`<div class="criteria-item"><span class="criteria-item-icon">❆</span><span>${item}</span></div>`).join('')}
-          ${c.description?`<div class="criteria-item"><span class="criteria-item-icon">ℹ</span><span style="color:var(--muted)">${c.description}</span></div>`:''}
-        </div>
-      </div>`;
-    }
-    html += `<div class="criteria-total"><span class="criteria-total-label">Tổng điểm tối đa</span><span class="criteria-total-score">${total.toFixed(1)}/10</span></div>`;
-    return html;
-  }
-  // Render vào tab Tiêu chí (panel phải)
-  const body = document.getElementById('criteriaBody');
-  if(body) body.innerHTML = buildCriteriaHTML(ex);
+function onTopicChange(){
+  const topic = document.getElementById('topicSelect').value;
+  const exSel = document.getElementById('exerciseSelect');
+  exSel.innerHTML = '';
+  (TOPICS[topic]||[]).forEach(id => {
+    const ex = exMap[id];
+    if(!ex) return;
+    const opt = document.createElement('option');
+    opt.value = id;
+    opt.textContent = ex.title.replace(/^F\d+ - |^Tổng hợp - /,'');
+    exSel.appendChild(opt);
+  });
+  onExerciseChange();
+}
+
+function onExerciseChange(){
+  const id = document.getElementById('exerciseSelect').value;
+  const ex = exMap[id];
+  if(!ex) return;
+  // Exercise bar
+  document.getElementById('exTitle').textContent = ex.title;
+  document.getElementById('exDesc').innerHTML = ex.description || '';
+  // Desc panel
+  document.getElementById('descContent').innerHTML = ex.description || '';
+  const tagsWrap = document.getElementById('tagsWrap');
+  tagsWrap.innerHTML = (ex.required_tags||[]).map(t=>`<span class="tag-chip">&lt;${t}&gt;</span>`).join('');
+  // Criteria panel
+  renderCriteria(ex);
 }
 
 // ═══════════════════════════════════════════════════════════════════
 //  TAB SWITCHING
 // ═══════════════════════════════════════════════════════════════════
-let currentTab = 'desc';
-function switchTab(tab){
-  currentTab = tab;
-  // Ẩn tất cả panels
-  const panels = {
-    desc:     {panel:'panelDesc',     btn:'tabDesc',     cls:'active-desc'},
-    criteria: {panel:'panelCriteria', btn:'tabCriteria', cls:'active-criteria'},
-    result:   {panel:'panelResult',   btn:'tabResult',   cls:'active-result'},
+let currentGradeTab = 'result';
+function switchGradeTab(tab){
+  currentGradeTab = tab;
+  const tabs = {
+    result:  {panel:'panelResult',  btn:'tabResult',  cls:'active'},
+    desc:    {panel:'panelDesc',    btn:'tabDesc',    cls:'active-desc'},
+    crit:    {panel:'panelCrit',    btn:'tabCrit',    cls:'active-crit'},
+    preview: {panel:'panelPreview', btn:'tabPreview', cls:'active'},
   };
-  Object.values(panels).forEach(({panel,btn})=>{
+  Object.values(tabs).forEach(({panel,btn})=>{
     const p = document.getElementById(panel);
     const b = document.getElementById(btn);
-    if(p){ p.classList.remove('visible'); p.style.display='none'; }
-    if(b) b.className='tab-btn';
+    if(p) p.classList.remove('visible');
+    if(b) b.className = 'grade-tab';
   });
-  // Hiển panel được chọn
-  const sel = panels[tab];
+  const sel = tabs[tab];
   if(sel){
     const p = document.getElementById(sel.panel);
     const b = document.getElementById(sel.btn);
-    if(p){ p.style.display=''; p.classList.add('visible'); }
-    if(b) b.className='tab-btn '+sel.cls;
+    if(p) p.classList.add('visible');
+    if(b) b.className = 'grade-tab ' + sel.cls;
   }
 }
 
 // ═══════════════════════════════════════════════════════════════════
-//  RUN
+//  RENDER CRITERIA
+// ═══════════════════════════════════════════════════════════════════
+function renderCriteria(ex){
+  if(!ex || !ex.criteria) return;
+  let html = '';
+  let total = 0;
+  ex.criteria.forEach(c => {
+    total += c.points || 0;
+    const items = Array.isArray(c.items) ? c.items : [];
+    html += `<div class="crit-card">
+      <div class="crit-card-head">
+        <span class="crit-card-title">${c.name}</span>
+        <span class="crit-points">${c.points} đ</span>
+      </div>
+      <div class="crit-card-body">
+        ${items.map(item=>`<div class="crit-item"><span class="crit-item-icon">❆</span><span>${item}</span></div>`).join('')}
+      </div>
+    </div>`;
+  });
+  html += `<div class="crit-total"><span class="crit-total-label">Tổng điểm tối đa</span><span class="crit-total-score">${total.toFixed(1)}/10</span></div>`;
+  document.getElementById('critBody').innerHTML = html;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  RUN CODE
 // ═══════════════════════════════════════════════════════════════════
 function runCode(){
   const code = document.getElementById('htmlCode').value.trim();
-  if(!code){alert('Vui lòng nhập code HTML!');return;}
-  switchTab('result');
+  if(!code){ alert('Vui lòng nhập code HTML!'); return; }
+  switchGradeTab('preview');
   const frame = document.getElementById('previewFrame');
   frame.classList.add('visible');
-  document.getElementById('previewEmpty').style.display='none';
-  const doc = frame.contentDocument||frame.contentWindow.document;
+  document.getElementById('previewEmpty').style.display = 'none';
+  const doc = frame.contentDocument || frame.contentWindow.document;
   doc.open(); doc.write(code); doc.close();
-  const ex = exerciseMap[document.getElementById('exerciseSelect').value];
-  document.getElementById('previewLabel').textContent='▶ Đang hiển thị: '+(ex?ex.title:'Code HTML');
+  const ex = exMap[document.getElementById('exerciseSelect').value];
+  document.getElementById('previewLabel').textContent = '▶ ' + (ex ? ex.title : 'Preview HTML');
+  // Output bar
+  document.getElementById('outputContent').innerHTML = `<span style="color:var(--green)">✓ Đã render HTML — xem Preview bên phải</span>`;
+}
+
+function clearOutput(){
+  document.getElementById('outputContent').innerHTML = '<span class="output-placeholder">// Kết quả sẽ hiển thị tại đây sau khi nhấn Chạy code…</span>';
 }
 
 function clearCode(){
-  document.getElementById('htmlCode').value='';
-  document.getElementById('resultArea').style.display='none';
-  document.getElementById('placeholder').style.display='flex';
-  const frame=document.getElementById('previewFrame');
-  frame.classList.remove('visible');
-  document.getElementById('previewEmpty').style.display='flex';
-  document.getElementById('previewLabel').textContent='▶ Preview output';
-  switchTab('desc');
+  document.getElementById('htmlCode').value = '';
+  clearOutput();
+  document.getElementById('previewFrame').classList.remove('visible');
+  document.getElementById('previewEmpty').style.display = 'flex';
+  document.getElementById('previewLabel').textContent = 'Chưa có output';
+  document.getElementById('scorePlaceholder').style.display = 'flex';
+  document.getElementById('scoreContent').style.display = 'none';
+  switchGradeTab('result');
+}
+
+function runAndGrade(){
+  runCode();
+  setTimeout(gradeCode, 100);
 }
 
 // ═══════════════════════════════════════════════════════════════════
-//  ENGINE CHẤM ĐIỂM v1.2.0
+//  ENGINE CHẤM ĐIỂM
 // ═══════════════════════════════════════════════════════════════════
 const SELF_CLOSING = new Set(['img','br','hr','input','meta','link','area','base','col','embed','param','source','track','wbr']);
 
 function parseHTML(code){
-  // Trả về: { tags, attrs, content, lines }
-  const lines = code.split('\n');
   const lower = code.toLowerCase();
-  const tags = {}; // tag -> count
-  const attrs = {}; // "tag|attr" -> [values]
+  const tags = {};
+  const attrs = {};
   const tagRx = /<([a-zA-Z][a-zA-Z0-9]*)((?:\s+[^>]*)?)\/?>/gi;
   let m;
-  while((m=tagRx.exec(code))!==null){
+  while((m = tagRx.exec(code)) !== null){
     const tag = m[1].toLowerCase();
-    tags[tag] = (tags[tag]||0)+1;
+    tags[tag] = (tags[tag]||0) + 1;
     const attrStr = m[2]||'';
-    // parse attributes
     const attrRx = /(\w[\w-]*)(?:\s*=\s*(?:"([^"]*)"|'([^']*)'|(\S+)))?/g;
     let am;
-    while((am=attrRx.exec(attrStr))!==null){
+    while((am = attrRx.exec(attrStr)) !== null){
       const aname = am[1].toLowerCase();
       const aval = (am[2]||am[3]||am[4]||'').toLowerCase();
       const key = tag+'|'+aname;
-      if(!attrs[key]) attrs[key]=[];
+      if(!attrs[key]) attrs[key] = [];
       attrs[key].push(aval);
     }
   }
-  return {tags, attrs, content:lower, lines, code};
+  return {tags, attrs, content: lower, code};
 }
 
 function runTestCases(parsed, ex){
   const issues = [];
-  const {tags, attrs, content, lines, code} = parsed;
-
+  const {tags, attrs, content} = parsed;
   for(const tc of (ex.test_cases||[])){
     switch(tc.type){
       case 'tag_exist':
         for(const tag of (tc.tags||[])){
           if(!tags[tag]){
-            issues.push({type:'error',title:`Thiếu thẻ &lt;${tag}&gt;`,message:(tc.error||'Thiếu thẻ').replace('{tag}',tag),hint:(tc.hint||'').replace('{tag}',tag)});
+            issues.push({type:'error', title:`Thiếu thẻ &lt;${tag}&gt;`,
+              msg:(tc.error||'').replace('{tag}',tag),
+              hint:(tc.hint||'').replace('{tag}',tag)});
           }
         }
         break;
-      case 'tag_count_min':{
-        const cnt = tags[tc.tag]||0;
-        if(cnt < tc.min){
-          issues.push({type:'error',title:`Không đủ thẻ &lt;${tc.tag}&gt; (có ${cnt}, cần ≥${tc.min})`,message:tc.error,hint:tc.hint});
+      case 'tag_count':
+        if((tags[tc.tag]||0) < tc.min){
+          issues.push({type:'warn', title:`Không đủ thẻ &lt;${tc.tag}&gt;`,
+            msg: tc.error, hint: tc.hint});
         }
         break;
-      }
-      case 'tag_nesting':{
-        // Check if child appears after parent in code
-        const parentRx = new RegExp('<'+tc.parent+'[\\s>]','i');
-        const childRx  = new RegExp('<'+tc.child+'[\\s>]','i');
-        if(tags[tc.parent] && tags[tc.child]){
-          // Simple check: child must appear between parent open and close
-          const parentOpen = code.toLowerCase().indexOf('<'+tc.parent);
-          const childPos   = code.toLowerCase().indexOf('<'+tc.child);
-          if(childPos < parentOpen){
-            issues.push({type:'warning',title:tc.error,message:tc.error,hint:tc.hint});
-          }
+      case 'attr_exist':
+        if(!attrs[tc.tag+'|'+tc.attr]){
+          issues.push({type:'error', title:`Thiếu thuộc tính ${tc.attr} trên &lt;${tc.tag}&gt;`,
+            msg: tc.error, hint: tc.hint});
         }
         break;
-      }
-      case 'title_contains':{
-        const titleM = code.match(/<title[^>]*>([\s\S]*?)<\/title>/i);
-        const titleText = titleM ? titleM[1] : '';
-        if(!titleText.toLowerCase().includes(tc.value.toLowerCase())){
-          issues.push({type:'warning',title:tc.error,message:`Tiêu đề hiện tại: "${titleText||'(trống)'}"`,hint:tc.hint});
+      case 'attr_value':
+        const vals = attrs[tc.tag+'|'+tc.attr]||[];
+        if(!vals.includes(tc.value)){
+          issues.push({type:'error', title:`Sai giá trị ${tc.attr} trên &lt;${tc.tag}&gt;`,
+            msg: tc.error, hint: tc.hint});
         }
         break;
-      }
-      case 'content_contains':{
-        if(!content.includes(tc.value.toLowerCase())){
-          issues.push({type:'warning',title:tc.error,message:`Không tìm thấy nội dung "${tc.value}" trong code`,hint:tc.hint});
+      case 'bool_attr':
+        const bkey = tc.tag+'|'+tc.attr;
+        if(!attrs[bkey]){
+          issues.push({type:'warn', title:`Thiếu thuộc tính ${tc.attr} trên &lt;${tc.tag}&gt;`,
+            msg: tc.error, hint: tc.hint});
         }
         break;
-      }
-      case 'tag_content':{
-        const rx = new RegExp('<'+tc.tag+'[^>]*>([\\s\\S]*?)<\\/'+tc.tag+'>','i');
-        const m2 = code.match(rx);
-        const txt = m2 ? m2[1] : '';
-        if(!txt.toLowerCase().includes(tc.contains.toLowerCase())){
-          issues.push({type:'warning',title:tc.error||`Nội dung &lt;${tc.tag}&gt; chưa đúng`,message:`Tìm thấy: "${txt.trim().substring(0,50)||'(trống)'}"`,hint:tc.hint});
+      case 'title_contains':
+        const titleM = content.match(/<title[^>]*>(.*?)<\/title>/);
+        if(!titleM || !titleM[1].includes(tc.value.toLowerCase())){
+          issues.push({type:'error', title:`Tiêu đề trang không đúng`,
+            msg: tc.error, hint: tc.hint});
         }
         break;
-      }
-      case 'body_attr':{
-        const bodyM = code.match(/<body([^>]*)>/i);
-        const bodyAttrs = bodyM ? bodyM[1].toLowerCase() : '';
-        const attrRx2 = new RegExp(tc.attribute+'\\s*=\\s*["\']?'+tc.value+'["\']?','i');
-        if(!attrRx2.test(bodyAttrs)){
-          issues.push({type:'error',title:tc.error,message:`Thẻ &lt;body&gt; chưa có ${tc.attribute}="${tc.value}"`,hint:tc.hint});
-        }
-        break;
-      }
-      case 'attr_exist':{
-        const key = tc.tag+'|'+tc.attribute;
-        if(!attrs[key]||attrs[key].length===0){
-          issues.push({type:'error',title:tc.error,message:`Không tìm thấy thuộc tính ${tc.attribute} trong thẻ &lt;${tc.tag}&gt;`,hint:tc.hint});
-        }
-        break;
-      }
-      case 'attr_exist_any':{
-        // Check if attribute exists in any tag of this type (including boolean attrs)
-        const tagRx2 = new RegExp('<'+tc.tag+'([^>]*)>','gi');
-        let found = false; let m3;
-        while((m3=tagRx2.exec(code))!==null){
-          if(new RegExp('\\b'+tc.attribute+'\\b','i').test(m3[1])) found=true;
-        }
-        if(!found){
-          issues.push({type:'error',title:tc.error,message:`Không tìm thấy thuộc tính "${tc.attribute}" trong thẻ &lt;${tc.tag}&gt;`,hint:tc.hint});
-        }
-        break;
-      }
-      case 'attr_value_any':{
-        const tagRx3 = new RegExp('<'+tc.tag+'([^>]*)>','gi');
-        let found2 = false; let m4;
-        while((m4=tagRx3.exec(code))!==null){
-          const attrStr2 = m4[1].toLowerCase();
-          const valRx = new RegExp(tc.attribute+'\\s*=\\s*["\']?'+tc.value+'["\']?','i');
-          if(valRx.test(attrStr2)) found2=true;
-        }
-        if(!found2){
-          issues.push({type:'error',title:tc.error,message:`Không tìm thấy ${tc.attribute}="${tc.value}" trong thẻ &lt;${tc.tag}&gt;`,hint:tc.hint});
-        }
-        break;
-      }
-      case 'attr_value_count':{
-        const tagRx4 = new RegExp('<'+tc.tag+'([^>]*)>','gi');
-        let count2 = 0; let m5;
-        while((m5=tagRx4.exec(code))!==null){
-          const attrStr3 = m5[1].toLowerCase();
-          const valRx2 = new RegExp(tc.attribute+'\\s*=\\s*["\']?'+tc.value+'["\']?','i');
-          if(valRx2.test(attrStr3)) count2++;
-        }
-        if(count2 < (tc.min||1)){
-          issues.push({type:'error',title:tc.error,message:`Tìm thấy ${count2} thẻ có ${tc.attribute}="${tc.value}", cần ≥${tc.min}`,hint:tc.hint});
-        }
-        break;
-      }
-      case 'attr_contains':{
-        const tagRx5 = new RegExp('<'+tc.tag+'([^>]*)>','gi');
-        let found3 = false; let m6;
-        while((m6=tagRx5.exec(code))!==null){
-          if(m6[1].toLowerCase().includes(tc.value.toLowerCase())) found3=true;
-        }
-        if(!found3){
-          issues.push({type:'warning',title:tc.error,message:`Thuộc tính src của &lt;${tc.tag}&gt; chưa chứa "${tc.value}"`,hint:tc.hint});
-        }
-        break;
-      }
     }
   }
   return issues;
 }
 
-function checkStructure(code){
+function checkStructure(parsed){
   const issues = [];
-  const lower = code.toLowerCase();
-  const checks = [
-    [/<!doctype\s+html/i, '&lt;!DOCTYPE html&gt;', 'Thêm &lt;!DOCTYPE html&gt; ở dòng đầu tiên'],
-    [/<html[\s>]/i,       '&lt;html&gt;',           'Bọc toàn bộ nội dung trong &lt;html&gt;...&lt;/html&gt;'],
-    [/<head[\s>]/i,       '&lt;head&gt;',           'Thêm &lt;head&gt;...&lt;/head&gt; bên trong &lt;html&gt;'],
-    [/<title[\s>]/i,      '&lt;title&gt;',          'Thêm &lt;title&gt;Tiêu đề trang&lt;/title&gt; bên trong &lt;head&gt;'],
-    [/<body[\s>]/i,       '&lt;body&gt;',           'Thêm &lt;body&gt;...&lt;/body&gt; bên trong &lt;html&gt;'],
-  ];
-  for(const [rx,name,hint] of checks){
-    if(!rx.test(code)){
-      issues.push({type:'error',title:`Thiếu ${name}`,message:`${name} là thành phần bắt buộc của trang HTML chuẩn.`,hint});
-    }
-  }
+  const {tags, content} = parsed;
+  if(!content.includes('<!doctype html')) issues.push({type:'error',title:'Thiếu <!DOCTYPE html>',msg:'Dòng đầu tiên phải là <!DOCTYPE html>',hint:'Thêm <!DOCTYPE html> vào đầu file'});
+  if(!tags['html']) issues.push({type:'error',title:'Thiếu thẻ &lt;html&gt;',msg:'Cần có thẻ <html>...</html>',hint:'Bọc toàn bộ nội dung trong <html>'});
+  if(!tags['head']) issues.push({type:'error',title:'Thiếu thẻ &lt;head&gt;',msg:'Cần có thẻ <head>',hint:'Thêm <head><title>...</title></head>'});
+  if(!tags['title']) issues.push({type:'error',title:'Thiếu thẻ &lt;title&gt;',msg:'Cần có <title> trong <head>',hint:'Thêm <title>Tiêu đề</title>'});
+  if(!tags['body']) issues.push({type:'error',title:'Thiếu thẻ &lt;body&gt;',msg:'Cần có thẻ <body>',hint:'Thêm <body>...</body>'});
   return issues;
 }
 
 function checkSyntax(code){
   const issues = [];
   const lines = code.split('\n');
-  const tagStack = [];
-  let syntaxErrors = 0;
-
-  for(let i=0;i<lines.length;i++){
-    const trimmed = lines[i].trim();
-    if(!trimmed||trimmed.startsWith('<!--')) continue;
-    const tagRx = /<\/?([a-zA-Z][a-zA-Z0-9]*)[^>]*\/?>/g;
-    let m;
-    while((m=tagRx.exec(trimmed))!==null){
-      const full=m[0], tag=m[1].toLowerCase();
-      const isClose = full.startsWith('</');
-      const isSelf  = full.endsWith('/>')||SELF_CLOSING.has(tag);
-      if(!isClose&&!isSelf) tagStack.push({tag,line:i+1});
-      else if(isClose&&!SELF_CLOSING.has(tag)){
-        if(tagStack.length&&tagStack[tagStack.length-1].tag===tag) tagStack.pop();
-        else{
-          syntaxErrors++;
-          if(syntaxErrors<=5) issues.push({type:'error',title:`Thẻ đóng không khớp &lt;/${tag}&gt;`,message:`Dòng ${i+1}: &lt;/${tag}&gt; không có thẻ mở tương ứng.`,hint:`Kiểm tra lại thứ tự đóng thẻ ở dòng ${i+1}`});
-        }
-      }
+  let hasIndent = false;
+  lines.forEach((line, i) => {
+    if(line.startsWith('  ') || line.startsWith('\t')) hasIndent = true;
+    const attrRx = /\w+=[^"'\s>][^\s>]*/g;
+    if(attrRx.test(line)){
+      issues.push({type:'warn',title:`Dòng ${i+1}: Thuộc tính thiếu dấu nháy`,
+        msg:`Phát hiện thuộc tính không có dấu nháy`,hint:'Dùng dấu nháy kép: attr="value"'});
     }
-    const q = (trimmed.match(/"/g)||[]).length;
-    if(q%2!==0){
-      syntaxErrors++;
-      if(syntaxErrors<=5) issues.push({type:'error',title:'Dấu nháy chưa đóng',message:`Dòng ${i+1}: Số dấu nháy " lẻ — chưa đóng đúng.`,hint:`Kiểm tra dấu nháy ở dòng ${i+1}`});
-    }
-  }
-  for(const ti of tagStack){
-    if(!['html','head','body'].includes(ti.tag)){
-      syntaxErrors++;
-      if(syntaxErrors<=5) issues.push({type:'error',title:`Thẻ &lt;${ti.tag}&gt; chưa đóng`,message:`Dòng ${ti.line}: &lt;${ti.tag}&gt; mở nhưng không có &lt;/${ti.tag}&gt;.`,hint:`Thêm &lt;/${ti.tag}&gt; sau nội dung của thẻ`});
-    }
-  }
-  return {issues, syntaxErrors};
-}
-
-function checkFormat(code){
-  const issues = [];
-  const lines = code.split('\n');
-  let fmtOk = true;
-  for(let i=0;i<lines.length;i++){
-    if(lines[i].trim()&&lines[i].length>200){
-      fmtOk=false;
-      issues.push({type:'info',title:'Dòng quá dài',message:`Dòng ${i+1}: ${lines[i].length} ký tự. Nên xuống dòng để dễ đọc.`,hint:'Tách thành nhiều dòng ngắn hơn'});
-      break;
-    }
-  }
-  const hasIndent = lines.some(l=>l.startsWith('  ')||l.startsWith('\t'));
-  if(!hasIndent&&lines.length>5){
-    fmtOk=false;
-    issues.push({type:'info',title:'Không có thụt lề (indent)',message:'Code không có thụt lề. Các thẻ lồng nhau nên được thụt lề để dễ đọc.',hint:'Dùng 2 dấu cách hoặc Tab để thụt lề các thẻ con'});
-  }
-  return {issues, fmtOk};
-}
-
-function checkAttributes(code){
-  const issues = [];
-  const imgTags = code.match(/<img[^>]*>/gi)||[];
-  for(const img of imgTags){
-    if(!/\balt\s*=/i.test(img)) issues.push({type:'warning',title:'Thẻ &lt;img&gt; thiếu alt',message:'Thuộc tính alt="" giúp mô tả ảnh (tốt cho SEO và người khiếm thị).',hint:'Thêm alt="mô tả ảnh" vào thẻ &lt;img&gt;'});
-    if(!/\bsrc\s*=/i.test(img)) issues.push({type:'error',title:'Thẻ &lt;img&gt; thiếu src',message:'Thẻ &lt;img&gt; phải có src="đường_dẫn_ảnh" để hiển thị ảnh.',hint:'Thêm src="ten_anh.jpg" vào thẻ &lt;img&gt;'});
-  }
-  const aTags = code.match(/<a[^>]*>/gi)||[];
-  for(const a of aTags){
-    if(!/\bhref\s*=/i.test(a)) issues.push({type:'warning',title:'Thẻ &lt;a&gt; thiếu href',message:'Thẻ &lt;a&gt; nên có href="..." để chỉ định liên kết.',hint:'Thêm href="trang.html" vào thẻ &lt;a&gt;'});
+  });
+  if(!hasIndent && lines.length > 3){
+    issues.push({type:'warn',title:'Code thiếu thụt lề',
+      msg:'Code nên được thụt lề để dễ đọc',hint:'Dùng 2 hoặc 4 dấu cách để thụt lề'});
   }
   return issues;
 }
 
-function gradeHTML(code, ex){
-  const parsed = parseHTML(code);
-  const hasHTML = /<[a-zA-Z][a-zA-Z0-9]*[\s>/]/.test(code);
-
-  // 1. Cấu trúc (2.5đ)
-  const structIssues = checkStructure(code);
-  const structScore = Math.max(0, 2.5 - structIssues.length * 0.5);
-
-  // 2. Thẻ bắt buộc + test cases (3.0đ)
-  const tcIssues = runTestCases(parsed, ex);
-  const tcErrors = tcIssues.filter(i=>i.type==='error').length;
-  const reqTags = ex.required_tags||[];
-  const reqScore = reqTags.length ? Math.max(0, 3.0 - tcErrors * (3.0/Math.max(reqTags.length,1))) : 3.0;
-
-  // 3. Cú pháp (2.5đ)
-  const {issues:syntaxIssues, syntaxErrors} = checkSyntax(code);
-  const syntaxScore = hasHTML ? Math.max(0, 2.5 - syntaxErrors * 0.5) : 0;
-
-  // 4. Định dạng (1.0đ)
-  const {issues:fmtIssues, fmtOk} = checkFormat(code);
-  const fmtScore = hasHTML ? (fmtOk ? 1.0 : 0.5) : 0;
-
-  // 5. Thuộc tính (1.0đ)
-  const attrIssues = checkAttributes(code);
-  const attrScore = hasHTML ? Math.max(0, 1.0 - attrIssues.filter(i=>i.type==='error').length * 0.25) : 0;
-
-  const total = Math.round((structScore+reqScore+syntaxScore+fmtScore+attrScore)*10)/10;
-  const scores = {structure:structScore, required:reqScore, syntax:syntaxScore, format:fmtScore, attributes:attrScore};
-  const allIssues = [...structIssues, ...tcIssues, ...syntaxIssues, ...fmtIssues, ...attrIssues];
-
-  // Thêm success cho các test case pass
-  const passCount = (ex.required_tags||[]).filter(t=>parsed.tags[t]).length;
-  if(passCount>0){
-    allIssues.push({type:'success',title:`${passCount}/${reqTags.length} thẻ bắt buộc đúng`,message:`Tìm thấy đủ ${passCount} thẻ yêu cầu trong code.`});
-  }
-
-  return {total, scores, issues:allIssues};
+function calcScore(structIssues, tcIssues, syntaxIssues, ex){
+  let score = 10;
+  const errors = [...structIssues, ...tcIssues, ...syntaxIssues].filter(i=>i.type==='error');
+  const warns = [...structIssues, ...tcIssues, ...syntaxIssues].filter(i=>i.type==='warn');
+  score -= errors.length * 1.2;
+  score -= warns.length * 0.5;
+  score = Math.max(0, Math.min(10, score));
+  return Math.round(score * 10) / 10;
 }
 
-// ═══════════════════════════════════════════════════════════════════
-//  RENDER KẾT QUẢ
-// ═══════════════════════════════════════════════════════════════════
-function barColor(s,m){const p=s/m;return p>=.8?'#22c55e':p>=.5?'#f59e0b':'#ef4444'}
-
-function renderResult(total, scores, issues, exerciseTitle){
-  const sc = total>=8.5?'#22c55e':total>=7?'#a78bfa':total>=5?'#f59e0b':'#ef4444';
-  const sl = total>=8.5?'🏆 Xuất sắc!':total>=7?'👍 Khá tốt':total>=5?'⚠️ Trung bình':'❌ Cần cải thiện';
-  const errors   = issues.filter(i=>i.type==='error');
-  const warnings = issues.filter(i=>i.type==='warning');
-  const infos    = issues.filter(i=>i.type==='info');
-  const successes= issues.filter(i=>i.type==='success');
-  const nonSuccess = issues.filter(i=>i.type!=='success');
-  const ICONS = {error:'✕',warning:'⚠',info:'ℹ',success:'✓'};
-
-  const barRows = [
-    ['Cấu trúc HTML',scores.structure,2.5],
-    ['Thẻ bắt buộc', scores.required, 3.0],
-    ['Cú pháp thẻ',  scores.syntax,   2.5],
-    ['Định dạng',    scores.format,   1.0],
-    ['Thuộc tính',   scores.attributes,1.0],
-  ].map(([l,s,m])=>`<div class="bar-item"><div class="bar-label"><span>${l}</span><span style="color:${barColor(s,m)}">${s.toFixed(1)}/${m}</span></div><div class="bar-track"><div class="bar-fill" style="width:${Math.round(s/m*100)}%;background:${barColor(s,m)}"></div></div></div>`).join('');
-
-  const issueHTML = nonSuccess.map(i=>`<div class="issue-item issue-${i.type}"><div class="issue-icon">${ICONS[i.type]}</div><div><div class="issue-title-text">${i.title}</div><div class="issue-msg">${i.message}</div>${i.hint?`<div class="issue-line">💡 ${i.hint}</div>`:''}</div></div>`).join('');
-
-  document.getElementById('resultArea').innerHTML = `<div class="score-card">
-    <div class="score-header">
-      <div class="score-circle" style="border-color:${sc}">
-        <span class="score-num" style="color:${sc}">${total.toFixed(1)}</span>
-        <span class="score-denom">/10</span>
-      </div>
-      <div class="score-label" style="color:${sc}">${sl}</div>
-      <div class="score-exercise">${exerciseTitle}</div>
-    </div>
-    <div class="score-bars">${barRows}</div>
-    <div class="stats-grid">
-      <div class="stat-card"><div class="stat-num" style="color:#ef4444">${errors.length}</div><div class="stat-lbl">Lỗi</div></div>
-      <div class="stat-card"><div class="stat-num" style="color:#f59e0b">${warnings.length}</div><div class="stat-lbl">Cảnh báo</div></div>
-      <div class="stat-card"><div class="stat-num" style="color:#3b82f6">${infos.length}</div><div class="stat-lbl">Gợi ý</div></div>
-      <div class="stat-card"><div class="stat-num" style="color:#22c55e">${successes.length}</div><div class="stat-lbl">Đúng</div></div>
-    </div>
-    ${nonSuccess.length>0?`<div class="issues-title">Chi tiết lỗi & gợi ý sửa</div>${issueHTML}`:'<div class="no-errors">✅ Không có lỗi nào! Code hoàn hảo!</div>'}
-  </div>`;
-  document.getElementById('resultArea').style.display='block';
-}
-
-// ═══════════════════════════════════════════════════════════════════
-//  CHẤM ĐIỂM
-// ═══════════════════════════════════════════════════════════════════
 function gradeCode(){
   const code = document.getElementById('htmlCode').value.trim();
-  const exId = document.getElementById('exerciseSelect').value;
-  if(!code){alert('Vui lòng nhập code HTML!');return;}
-  switchTab('result');
-  document.getElementById('placeholder').style.display='none';
-  document.getElementById('resultArea').style.display='none';
-  document.getElementById('loading').style.display='block';
-  setTimeout(()=>{
-    const ex = exerciseMap[exId];
-    const {total,scores,issues} = gradeHTML(code, ex);
-    document.getElementById('loading').style.display='none';
-    renderResult(total, scores, issues, ex.title);
-    document.getElementById('panelGrade').scrollTop=0;
-  },300);
-}
+  const id = document.getElementById('exerciseSelect').value;
+  const ex = exMap[id];
+  if(!code){ alert('Vui lòng nhập code HTML!'); return; }
+  switchGradeTab('result');
+  document.getElementById('scorePlaceholder').style.display = 'none';
+  document.getElementById('scoreContent').style.display = 'none';
 
-document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='Enter') gradeCode();});
-document.getElementById('htmlCode').addEventListener('keydown',function(e){
-  if(e.key==='Tab'){e.preventDefault();const s=this.selectionStart;this.value=this.value.substring(0,s)+'  '+this.value.substring(this.selectionEnd);this.selectionStart=this.selectionEnd=s+2;}
-});
+  setTimeout(() => {
+    const parsed = parseHTML(code);
+    const structIssues = checkStructure(parsed);
+    const tcIssues = ex ? runTestCases(parsed, ex) : [];
+    const syntaxIssues = checkSyntax(code);
+    const allIssues = [...structIssues, ...tcIssues, ...syntaxIssues];
+    const score = calcScore(structIssues, tcIssues, syntaxIssues, ex);
+
+    // Score circle
+    const deg = (score / 10) * 360;
+    const color = score >= 8 ? 'var(--green)' : score >= 5 ? 'var(--yellow)' : 'var(--red)';
+    document.getElementById('scoreCircle').style.background =
+      `conic-gradient(${color} ${deg}deg, var(--surface3) ${deg}deg)`;
+    document.getElementById('scoreNum').textContent = score.toFixed(1);
+    document.getElementById('scoreNum').style.color = color;
+    const statusText = score >= 8 ? '✅ Xuất sắc' : score >= 6.5 ? '👍 Đạt yêu cầu' : score >= 5 ? '⚠️ Cần cải thiện' : '❌ Chưa đạt';
+    document.getElementById('scoreStatus').textContent = statusText;
+    document.getElementById('scoreStatus').style.color = color;
+
+    // Stats
+    const pass = allIssues.filter(i=>i.type==='pass').length;
+    const fail = allIssues.filter(i=>i.type==='error').length;
+    const warn = allIssues.filter(i=>i.type==='warn').length;
+    document.getElementById('statPass').textContent = pass;
+    document.getElementById('statFail').textContent = fail;
+    document.getElementById('statWarn').textContent = warn;
+
+    // Detail list
+    let detailHTML = '';
+    if(allIssues.length === 0){
+      detailHTML = `<div class="detail-item pass"><div class="detail-title" style="color:var(--green)">✅ Tất cả kiểm tra đều đạt!</div><div class="detail-msg">Code HTML của bạn đáp ứng tất cả yêu cầu.</div></div>`;
+    } else {
+      allIssues.forEach(issue => {
+        const cls = issue.type === 'error' ? 'fail' : issue.type === 'warn' ? 'warn' : 'pass';
+        const icon = issue.type === 'error' ? '❌' : issue.type === 'warn' ? '⚠️' : '✅';
+        detailHTML += `<div class="detail-item ${cls}">
+          <div class="detail-title">${icon} ${issue.title}</div>
+          ${issue.msg ? `<div class="detail-msg">${issue.msg}</div>` : ''}
+          ${issue.hint ? `<div class="detail-hint">💡 ${issue.hint}</div>` : ''}
+        </div>`;
+      });
+    }
+    document.getElementById('detailList').innerHTML = detailHTML;
+    document.getElementById('scoreContent').style.display = 'block';
+
+    // Output bar
+    document.getElementById('outputContent').innerHTML =
+      `<span style="color:${color}">Điểm: ${score.toFixed(1)}/10 — ${statusText} | Lỗi: ${fail} | Cảnh báo: ${warn}</span>`;
+  }, 300);
+}
 </script>
 </body>
 </html>
