@@ -172,31 +172,87 @@
       .logo-text p{font-size:9px;display:block}
       .badge-author{display:none}
       .badge{font-size:11px;padding:3px 10px;font-weight:700;white-space:nowrap}
+
+      /* Layout 2 cột — chiều cao cố định */
       .container{display:grid;grid-template-columns:1fr 1fr;height:calc(100vh - 46px)}
-      .left-panel{height:100%;border-right:1px solid var(--border);overflow:hidden;display:flex;flex-direction:column}
-      .right-panel{height:100%;overflow:hidden}
-      .panel-top{padding:5px 10px;gap:4px;flex-shrink:0}
-      .exercise-desc{max-height:52px;font-size:10px;overflow-y:auto;display:block !important}
-      .required-tags{display:flex !important;flex-wrap:wrap;gap:3px;max-height:28px;overflow:hidden}
-      .tag-chip{font-size:9px;padding:1px 6px}
-      textarea{font-size:11px;padding:6px 10px;line-height:1.5;flex:1;min-height:0}
-      .action-bar{padding:5px 10px;gap:5px;flex-shrink:0}
+
+      /* Left panel: chia rõ panel-top (cố định) + textarea (co giãn) + action-bar (cố định) */
+      .left-panel{
+        height:100%;
+        border-right:1px solid var(--border);
+        display:grid;
+        grid-template-rows:auto 1fr auto;
+        overflow:hidden
+      }
+      .panel-top{
+        padding:5px 10px;
+        gap:3px;
+        overflow:visible;
+        background:var(--surface);
+        border-bottom:1px solid var(--border)
+      }
+      .panel-top-row{gap:6px}
+      select{padding:4px 8px;font-size:11px}
+      .exercise-desc{
+        display:block !important;
+        visibility:visible !important;
+        opacity:1 !important;
+        max-height:48px;
+        min-height:28px;
+        font-size:10px;
+        line-height:1.5;
+        overflow-y:auto;
+        padding:5px 8px
+      }
+      .required-tags{
+        display:flex !important;
+        visibility:visible !important;
+        flex-wrap:wrap;
+        gap:3px;
+        padding:1px 0
+      }
+      .tag-chip{font-size:9px;padding:1px 5px}
+      textarea{font-size:11px;padding:6px 10px;line-height:1.5;width:100%;height:100%;min-height:0}
+      .action-bar{padding:5px 10px;gap:5px}
       .btn-run,.btn-grade{padding:6px 10px;font-size:11px}
       .btn-clear{padding:6px 8px;font-size:11px}
       .shortcut-hint{display:none}
+
+      /* Right panel */
+      .right-panel{height:100%;display:flex;flex-direction:column;overflow:hidden}
       .tab-btn{padding:6px 8px;font-size:11px}
       .footer{padding:4px 10px;font-size:9px}
-      /* Tab criteria — hiển thị tiêu chí */
-      .criteria-panel{overflow-y:auto}
-      .criteria-body{padding:8px;gap:8px}
-      .criteria-card-header{padding:6px 10px}
+
+      /* Tab Kết quả */
+      .result-panel{overflow-y:auto}
+      .score-card{padding:10px}
+      .stats-grid{grid-template-columns:repeat(4,1fr);gap:5px}
+      .stat-card{padding:6px}
+      .stat-num{font-size:16px}
+      .score-circle{width:80px;height:80px}
+      .score-num{font-size:22px}
+
+      /* Tab Tiêu chí — hiển thị đầy đủ */
+      .criteria-panel{
+        display:none;
+        flex-direction:column;
+        overflow-y:auto;
+        height:100%
+      }
+      .criteria-panel.visible{
+        display:flex !important
+      }
+      .criteria-body{padding:8px;gap:6px}
+      .criteria-header{font-size:11px;padding-bottom:5px;margin-bottom:2px}
+      .criteria-card{border-radius:7px}
+      .criteria-card-header{padding:5px 10px}
       .criteria-card-title{font-size:11px}
       .criteria-points{font-size:10px;padding:2px 7px}
-      .criteria-card-body{padding:6px 10px;gap:4px}
-      .criteria-item{font-size:10px}
-      .criteria-total{padding:8px 12px}
+      .criteria-card-body{padding:5px 10px;gap:3px}
+      .criteria-item{font-size:10px;gap:5px}
+      .criteria-total{padding:7px 10px}
       .criteria-total-label{font-size:11px}
-      .criteria-total-score{font-size:16px}
+      .criteria-total-score{font-size:15px}
     }
 
     /* ── TABLET PORTRAIT ── */
