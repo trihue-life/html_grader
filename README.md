@@ -320,8 +320,8 @@ Dự án này được cấp phép dưới giấy phép MIT. Xem file [LICENSE](
 
 ## Liên hệ
 
-- **Tác giả**: Manus AI
-- **Email**: support@manus.im
+- **Tác giả**: Trí Huệ
+- **Email**: 
 - **GitHub**: [html_grader](https://github.com/yourusername/html_grader)
 
 ## Lịch sử phiên bản
