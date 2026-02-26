@@ -181,7 +181,34 @@
       .exercise-bar{padding:4px 12px;min-height:28px}
       .ex-title{font-size:11px}
       .ex-desc{font-size:10px}
-      .main{grid-template-columns:1fr 260px}
+      /* Panel phải rộng hơn để tab hiển thị rõ */
+      .main{grid-template-columns:1fr 300px}
+      .grade-panel{display:flex;flex-direction:column;overflow:hidden}
+      /* Grade header: tab hiển thị đầy đủ */
+      .grade-header{padding:6px 10px;flex-shrink:0}
+      .grade-tabs{display:flex;gap:4px;width:100%}
+      .grade-tab{flex:1;padding:6px 4px;font-size:11px;font-weight:700;text-align:center;white-space:nowrap;border-radius:6px}
+      /* Panel nội dung có chiều cao đủ */
+      .score-panel,.desc-panel,.crit-panel{flex:1;overflow-y:auto;min-height:0}
+      .score-circle-wrap{padding:10px 12px 6px}
+      .score-circle{width:80px;height:80px}
+      .score-circle::before{width:60px;height:60px}
+      .score-num{font-size:20px}
+      .stats-row{padding:0 8px 8px;gap:4px}
+      .stat-box{padding:5px}
+      .stat-num{font-size:14px}
+      .detail-header{padding:5px 10px;font-size:10px}
+      .detail-list{padding:0 8px 8px;gap:4px}
+      .detail-item{padding:5px 8px;font-size:10px}
+      .desc-panel{padding:8px}
+      .desc-content{font-size:11px;line-height:1.6}
+      .crit-body{padding:8px;gap:6px}
+      .crit-card-head{padding:6px 10px}
+      .crit-card-title{font-size:10px}
+      .crit-points{font-size:9px;padding:1px 6px}
+      .crit-card-body{padding:5px 10px;gap:3px}
+      .crit-item{font-size:9px}
+      .grade-footer{padding:4px 8px;font-size:9px}
       .action-bar{padding:5px 10px;gap:5px}
       .btn{padding:6px 10px;font-size:11px}
       .output-content{min-height:36px;max-height:70px;font-size:10px}
@@ -347,7 +374,7 @@
 // ═══════════════════════════════════════════════════════════════════
 //  VERSION (tự động bump)
 // ═══════════════════════════════════════════════════════════════════
-const VERSION = '1.2.6';
+const VERSION = '1.2.7';
 document.getElementById('versionBadge').textContent = 'v' + VERSION;
 document.title = 'HTML Grader | Công cụ chấm điểm code HTML tự động · THPT Thủ Thiêm';
 
