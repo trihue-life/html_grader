@@ -172,19 +172,31 @@
       .logo-text p{font-size:9px;display:block}
       .badge-author{display:none}
       .badge{font-size:11px;padding:3px 10px;font-weight:700;white-space:nowrap}
-      .container{display:grid;grid-template-columns:1fr 1fr;height:calc(100vh - 54px)}
-      .left-panel{height:100%;border-right:1px solid var(--border)}
-      .right-panel{height:100%}
-      .panel-top{padding:6px 10px;gap:5px}
-      .exercise-desc{max-height:50px;font-size:10px}
-      .required-tags{display:none}
-      textarea{font-size:11px;padding:8px 10px;line-height:1.5}
-      .action-bar{padding:6px 10px;gap:5px}
-      .btn-run,.btn-grade{padding:7px 10px;font-size:11px}
-      .btn-clear{padding:7px 8px;font-size:11px}
+      .container{display:grid;grid-template-columns:1fr 1fr;height:calc(100vh - 46px)}
+      .left-panel{height:100%;border-right:1px solid var(--border);overflow:hidden;display:flex;flex-direction:column}
+      .right-panel{height:100%;overflow:hidden}
+      .panel-top{padding:5px 10px;gap:4px;flex-shrink:0}
+      .exercise-desc{max-height:52px;font-size:10px;overflow-y:auto;display:block !important}
+      .required-tags{display:flex !important;flex-wrap:wrap;gap:3px;max-height:28px;overflow:hidden}
+      .tag-chip{font-size:9px;padding:1px 6px}
+      textarea{font-size:11px;padding:6px 10px;line-height:1.5;flex:1;min-height:0}
+      .action-bar{padding:5px 10px;gap:5px;flex-shrink:0}
+      .btn-run,.btn-grade{padding:6px 10px;font-size:11px}
+      .btn-clear{padding:6px 8px;font-size:11px}
       .shortcut-hint{display:none}
-      .tab-btn{padding:7px 8px;font-size:11px}
-      .footer{padding:5px 10px;font-size:9px}
+      .tab-btn{padding:6px 8px;font-size:11px}
+      .footer{padding:4px 10px;font-size:9px}
+      /* Tab criteria — hiển thị tiêu chí */
+      .criteria-panel{overflow-y:auto}
+      .criteria-body{padding:8px;gap:8px}
+      .criteria-card-header{padding:6px 10px}
+      .criteria-card-title{font-size:11px}
+      .criteria-points{font-size:10px;padding:2px 7px}
+      .criteria-card-body{padding:6px 10px;gap:4px}
+      .criteria-item{font-size:10px}
+      .criteria-total{padding:8px 12px}
+      .criteria-total-label{font-size:11px}
+      .criteria-total-score{font-size:16px}
     }
 
     /* ── TABLET PORTRAIT ── */
