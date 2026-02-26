@@ -143,12 +143,16 @@
 
     /* ── MOBILE PORTRAIT (dọc) ── */
     @media(max-width:768px) and (orientation:portrait){
-      header{padding:10px 14px;gap:8px}
-      .logo-icon{font-size:26px}
-      .logo-text h1{font-size:18px}
-      .logo-text p{font-size:10px}
-      .badge,.badge-author{font-size:10px;padding:4px 10px}
-      .container{display:flex;flex-direction:column;height:calc(100vh - 62px)}
+      header{padding:8px 14px;gap:6px;flex-wrap:nowrap}
+      .logo{gap:8px;min-width:0;flex:1}
+      .logo-icon{font-size:22px;flex-shrink:0}
+      .logo-text{min-width:0}
+      .logo-text h1{font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+      .logo-text p{display:none}
+      .header-right{flex-shrink:0;gap:5px}
+      .badge-author{display:none}
+      .badge{font-size:11px;padding:4px 10px;font-weight:700;white-space:nowrap}
+      .container{display:flex;flex-direction:column;height:calc(100vh - 54px)}
       .left-panel{height:52vh;border-right:none;border-bottom:1px solid var(--border)}
       .right-panel{height:48vh}
       .panel-top{padding:8px 10px;gap:6px}
@@ -161,11 +165,13 @@
 
     /* ── MOBILE LANDSCAPE (ngang) ── */
     @media(max-width:900px) and (orientation:landscape){
-      header{padding:8px 16px;gap:6px}
-      .logo-icon{font-size:22px}
-      .logo-text h1{font-size:16px}
-      .logo-text p{font-size:10px}
-      .badge,.badge-author{font-size:10px;padding:3px 8px}
+      header{padding:6px 16px;gap:6px;flex-wrap:nowrap}
+      .logo{gap:8px;min-width:0;flex:1}
+      .logo-icon{font-size:20px;flex-shrink:0}
+      .logo-text h1{font-size:14px;white-space:nowrap}
+      .logo-text p{font-size:9px;display:block}
+      .badge-author{display:none}
+      .badge{font-size:11px;padding:3px 10px;font-weight:700;white-space:nowrap}
       .container{display:grid;grid-template-columns:1fr 1fr;height:calc(100vh - 54px)}
       .left-panel{height:100%;border-right:1px solid var(--border)}
       .right-panel{height:100%}
