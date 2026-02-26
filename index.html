@@ -56,7 +56,7 @@
       height: calc(100vh - 65px);
     }
 
-    /* ── Left Panel ── */
+    /* ── Left Panel (Editor) ── */
     .left-panel {
       display: flex; flex-direction: column;
       border-right: 1px solid var(--border);
@@ -84,9 +84,7 @@
       font-size: 11px; color: var(--muted); line-height: 1.6;
       max-height: 72px; overflow-y: auto;
     }
-    .required-tags {
-      display: flex; flex-wrap: wrap; gap: 4px; padding: 6px 0 2px;
-    }
+    .required-tags { display: flex; flex-wrap: wrap; gap: 4px; padding: 4px 0 2px; }
     .tag-chip {
       background: rgba(108,99,255,0.15); border: 1px solid rgba(108,99,255,0.3);
       color: var(--accent2); padding: 2px 8px; border-radius: 12px; font-size: 10px;
@@ -103,34 +101,68 @@
     }
     textarea::placeholder { color: #3d4451; }
 
+    /* ── Action Bar ── */
     .action-bar {
       background: var(--surface);
       border-top: 1px solid var(--border);
       padding: 10px 16px;
       display: flex; gap: 8px; align-items: center;
     }
-    .btn-grade {
+    .btn-run {
       flex: 1;
-      background: linear-gradient(135deg, var(--accent), #8b5cf6);
-      color: #fff; border: none; padding: 10px 20px;
-      border-radius: 8px; font-size: 14px; font-weight: 700;
+      background: linear-gradient(135deg, #059669, #10b981);
+      color: #fff; border: none; padding: 10px 16px;
+      border-radius: 8px; font-size: 13px; font-weight: 700;
       cursor: pointer; transition: all 0.2s;
     }
-    .btn-grade:hover { transform: translateY(-1px); box-shadow: 0 4px 20px rgba(108,99,255,0.4); }
+    .btn-run:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(16,185,129,0.4); }
+    .btn-run:active { transform: translateY(0); }
+    .btn-grade {
+      flex: 1.4;
+      background: linear-gradient(135deg, var(--accent), #8b5cf6);
+      color: #fff; border: none; padding: 10px 16px;
+      border-radius: 8px; font-size: 13px; font-weight: 700;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .btn-grade:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(108,99,255,0.4); }
     .btn-grade:active { transform: translateY(0); }
     .btn-clear {
       background: var(--surface2); color: var(--muted);
       border: 1px solid var(--border);
-      padding: 10px 14px; border-radius: 8px; font-size: 12px; cursor: pointer;
+      padding: 10px 12px; border-radius: 8px; font-size: 12px; cursor: pointer;
     }
     .btn-clear:hover { color: var(--text); }
-    .shortcut-hint { font-size: 10px; color: var(--muted); }
+    .shortcut-hint { font-size: 10px; color: var(--muted); white-space: nowrap; }
 
     /* ── Right Panel ── */
     .right-panel {
       display: flex; flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* ── Tab Bar ── */
+    .tab-bar {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      flex-shrink: 0;
+    }
+    .tab-btn {
+      flex: 1; padding: 10px 12px;
+      background: transparent; border: none; border-bottom: 2px solid transparent;
+      color: var(--muted); font-size: 12px; font-weight: 600;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .tab-btn:hover { color: var(--text); }
+    .tab-btn.active-grade { color: var(--accent2); border-bottom-color: var(--accent2); }
+    .tab-btn.active-run   { color: #10b981;        border-bottom-color: #10b981; }
+
+    /* ── Result Panel ── */
+    .result-panel {
+      flex: 1; display: flex; flex-direction: column;
       overflow-y: auto;
     }
+    .result-panel.hidden { display: none; }
 
     .result-placeholder {
       flex: 1; display: flex; flex-direction: column;
@@ -149,9 +181,43 @@
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
+    /* ── Preview Panel ── */
+    .preview-panel {
+      flex: 1; display: none; flex-direction: column;
+    }
+    .preview-panel.visible { display: flex; }
+
+    .preview-toolbar {
+      background: var(--surface2);
+      border-bottom: 1px solid var(--border);
+      padding: 6px 12px;
+      display: flex; align-items: center; gap: 8px;
+      flex-shrink: 0;
+    }
+    .preview-toolbar span { font-size: 11px; color: var(--muted); flex: 1; }
+    .btn-refresh {
+      background: var(--surface); border: 1px solid var(--border);
+      color: var(--muted); padding: 4px 10px; border-radius: 6px;
+      font-size: 11px; cursor: pointer;
+    }
+    .btn-refresh:hover { color: var(--text); }
+
+    .preview-empty {
+      flex: 1; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 12px;
+      color: var(--muted); background: var(--bg);
+    }
+    .preview-empty .ph-icon { font-size: 48px; opacity: 0.25; }
+    .preview-empty p { font-size: 13px; text-align: center; line-height: 1.6; }
+
+    .preview-iframe {
+      flex: 1; border: none; width: 100%; background: #fff;
+      display: none;
+    }
+    .preview-iframe.visible { display: block; }
+
     /* ── Score Card ── */
     .score-card { padding: 20px; }
-
     .score-header { text-align: center; margin-bottom: 20px; }
     .score-circle {
       width: 110px; height: 110px; border-radius: 50%;
@@ -164,7 +230,6 @@
     .score-label { font-size: 17px; font-weight: 700; margin-bottom: 4px; }
     .score-exercise { font-size: 11px; color: var(--muted); max-width: 280px; margin: 0 auto; }
 
-    /* Score Bars */
     .score-bars { margin-bottom: 18px; }
     .bar-item { margin-bottom: 10px; }
     .bar-label { display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 3px; }
@@ -173,7 +238,6 @@
     .bar-track { background: var(--surface2); border-radius: 4px; height: 7px; overflow: hidden; }
     .bar-fill { height: 100%; border-radius: 4px; transition: width 0.6s ease; }
 
-    /* Stats */
     .stats-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; margin-bottom: 18px; }
     .stat-card {
       background: var(--surface2); border: 1px solid var(--border);
@@ -182,7 +246,6 @@
     .stat-num { font-size: 20px; font-weight: 800; }
     .stat-lbl { font-size: 10px; color: var(--muted); margin-top: 2px; }
 
-    /* Issues */
     .issues-title {
       font-size: 11px; font-weight: 700; color: var(--muted);
       text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;
@@ -193,12 +256,12 @@
       border-left: 3px solid; display: flex; gap: 9px;
     }
     .issue-icon { font-size: 13px; flex-shrink: 0; margin-top: 1px; }
-    .issue-title { font-size: 12px; font-weight: 600; margin-bottom: 2px; }
+    .issue-title-text { font-size: 12px; font-weight: 600; margin-bottom: 2px; }
     .issue-msg { font-size: 11px; color: var(--muted); line-height: 1.5; }
     .issue-line { font-size: 10px; color: var(--accent2); margin-top: 2px; }
-    .issue-error { border-color: var(--red); }
+    .issue-error   { border-color: var(--red); }
     .issue-warning { border-color: var(--yellow); }
-    .issue-info { border-color: var(--blue); }
+    .issue-info    { border-color: var(--blue); }
     .issue-success { border-color: var(--green); }
 
     .no-errors {
@@ -206,20 +269,20 @@
       padding: 16px; font-size: 13px; font-weight: 600;
     }
 
-    /* Footer */
+    /* ── Footer ── */
     .footer {
       background: var(--surface); border-top: 1px solid var(--border);
       padding: 8px 16px; font-size: 10px; color: var(--muted); text-align: center;
-      margin-top: auto;
+      flex-shrink: 0;
     }
     .footer a { color: var(--accent2); text-decoration: none; }
     .footer a:hover { text-decoration: underline; }
 
-    /* Responsive */
+    /* ── Responsive ── */
     @media (max-width: 700px) {
       .container { grid-template-columns: 1fr; height: auto; }
       .left-panel { height: 55vh; }
-      .right-panel { min-height: 50vh; }
+      .right-panel { height: 60vh; }
     }
   </style>
 </head>
@@ -243,7 +306,7 @@
 <!-- ── Main Layout ── -->
 <div class="container">
 
-  <!-- Left: Editor -->
+  <!-- ═══ LEFT: Editor ═══ -->
   <div class="left-panel">
     <div class="panel-top">
       <div class="panel-top-row">
@@ -270,23 +333,48 @@ Ví dụ:
 &lt;/html&gt;"></textarea>
 
     <div class="action-bar">
+      <button class="btn-run"   onclick="runCode()">▶ Run</button>
       <button class="btn-grade" onclick="gradeCode()">⚡ Chấm điểm</button>
       <button class="btn-clear" onclick="clearCode()">🗑 Xóa</button>
       <span class="shortcut-hint">Ctrl+Enter</span>
     </div>
   </div>
 
-  <!-- Right: Results -->
+  <!-- ═══ RIGHT: Tabs ═══ -->
   <div class="right-panel" id="rightPanel">
-    <div class="result-placeholder" id="placeholder">
-      <div class="ph-icon">📊</div>
-      <p>Chọn bài tập, nhập code HTML<br>và nhấn <strong style="color:var(--accent2)">Chấm điểm</strong> để xem kết quả</p>
+
+    <!-- Tab bar -->
+    <div class="tab-bar">
+      <button class="tab-btn active-grade" id="tabGrade" onclick="switchTab('grade')">📊 Kết quả chấm điểm</button>
+      <button class="tab-btn"              id="tabRun"   onclick="switchTab('run')">▶ Preview Output</button>
     </div>
-    <div class="loading" id="loading">
-      <div class="spinner"></div>
-      <p style="color:var(--muted);font-size:12px">Đang phân tích code...</p>
+
+    <!-- ── Tab: Kết quả chấm điểm ── -->
+    <div class="result-panel" id="panelGrade">
+      <div class="result-placeholder" id="placeholder">
+        <div class="ph-icon">📊</div>
+        <p>Chọn bài tập, nhập code HTML<br>và nhấn <strong style="color:var(--accent2)">⚡ Chấm điểm</strong> để xem kết quả</p>
+      </div>
+      <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <p style="color:var(--muted);font-size:12px">Đang phân tích code...</p>
+      </div>
+      <div id="resultArea" style="display:none"></div>
     </div>
-    <div id="resultArea" style="display:none"></div>
+
+    <!-- ── Tab: Preview Output ── -->
+    <div class="preview-panel" id="panelRun">
+      <div class="preview-toolbar">
+        <span id="previewLabel">Chưa có output — nhấn ▶ Run để xem</span>
+        <button class="btn-refresh" onclick="runCode()">↺ Chạy lại</button>
+      </div>
+      <div class="preview-empty" id="previewEmpty">
+        <div class="ph-icon">▶</div>
+        <p>Nhập code HTML và nhấn <strong style="color:#10b981">▶ Run</strong><br>để xem kết quả hiển thị tại đây</p>
+      </div>
+      <iframe id="previewFrame" class="preview-iframe" sandbox="allow-scripts allow-same-origin allow-forms allow-modals"></iframe>
+    </div>
+
     <div class="footer">
       Tác giả: <strong>Trí Huệ</strong> &nbsp;·&nbsp;
       <a href="mailto:trihue.life@gmail.com">trihue.life@gmail.com</a> &nbsp;·&nbsp;
@@ -340,14 +428,78 @@ function onExerciseChange() {
   if (ex.initial_code) document.getElementById('htmlCode').value = ex.initial_code;
 }
 
-function clearCode() {
-  document.getElementById('htmlCode').value = '';
-  document.getElementById('resultArea').style.display = 'none';
-  document.getElementById('placeholder').style.display = 'flex';
+// ═══════════════════════════════════════════════════════
+//  TAB SWITCHING
+// ═══════════════════════════════════════════════════════
+let currentTab = 'grade';
+
+function switchTab(tab) {
+  currentTab = tab;
+  const panelGrade = document.getElementById('panelGrade');
+  const panelRun   = document.getElementById('panelRun');
+  const tabGrade   = document.getElementById('tabGrade');
+  const tabRun     = document.getElementById('tabRun');
+
+  if (tab === 'grade') {
+    panelGrade.classList.remove('hidden');
+    panelRun.classList.remove('visible');
+    tabGrade.className = 'tab-btn active-grade';
+    tabRun.className   = 'tab-btn';
+  } else {
+    panelGrade.classList.add('hidden');
+    panelRun.classList.add('visible');
+    tabGrade.className = 'tab-btn';
+    tabRun.className   = 'tab-btn active-run';
+  }
 }
 
 // ═══════════════════════════════════════════════════════
-//  LOGIC CHẤM ĐIỂM (JavaScript thuần)
+//  RUN — Hiển thị output HTML trong iframe
+// ═══════════════════════════════════════════════════════
+function runCode() {
+  const code = document.getElementById('htmlCode').value.trim();
+  if (!code) { alert('Vui lòng nhập code HTML!'); return; }
+
+  // Chuyển sang tab Preview
+  switchTab('run');
+
+  const frame  = document.getElementById('previewFrame');
+  const empty  = document.getElementById('previewEmpty');
+  const label  = document.getElementById('previewLabel');
+
+  // Ghi nội dung vào iframe
+  frame.classList.add('visible');
+  empty.style.display = 'none';
+
+  const doc = frame.contentDocument || frame.contentWindow.document;
+  doc.open();
+  doc.write(code);
+  doc.close();
+
+  // Cập nhật label
+  const ex = exerciseMap[document.getElementById('exerciseSelect').value];
+  label.textContent = '▶ Đang hiển thị: ' + (ex ? ex.title : 'Code HTML');
+}
+
+// ═══════════════════════════════════════════════════════
+//  CLEAR
+// ═══════════════════════════════════════════════════════
+function clearCode() {
+  document.getElementById('htmlCode').value = '';
+  // Reset result
+  document.getElementById('resultArea').style.display = 'none';
+  document.getElementById('placeholder').style.display = 'flex';
+  // Reset preview
+  const frame = document.getElementById('previewFrame');
+  frame.classList.remove('visible');
+  document.getElementById('previewEmpty').style.display = 'flex';
+  document.getElementById('previewLabel').textContent = 'Chưa có output — nhấn ▶ Run để xem';
+  // Back to grade tab
+  switchTab('grade');
+}
+
+// ═══════════════════════════════════════════════════════
+//  LOGIC CHẤM ĐIỂM
 // ═══════════════════════════════════════════════════════
 const SELF_CLOSING = new Set(['img','br','hr','input','meta','link','area','base','col','embed','param','source','track','wbr']);
 const SCORES_MAX = { structure: 2.5, required: 3.0, syntax: 2.5, format: 1.0, attributes: 1.0 };
@@ -358,13 +510,13 @@ function gradeHTML(htmlCode, testCase) {
   const issues = [];
   const scores = { structure: 0, required: 0, syntax: 0, format: 0, attributes: 0 };
 
-  // ── 1. Cấu trúc ──
+  // 1. Cấu trúc
   const structureChecks = [
-    [/<!doctype\s+html/i,       '<!DOCTYPE html>',   0.5],
-    [/<html[\s>][\s\S]*<\/html>/i, '<html>...</html>', 0.5],
-    [/<head[\s>][\s\S]*<\/head>/i, '<head>...</head>', 0.5],
-    [/<title[\s>][\s\S]*<\/title>/i, '<title>...</title>', 0.5],
-    [/<body[\s>][\s\S]*<\/body>/i, '<body>...</body>', 0.5],
+    [/<!doctype\s+html/i,          '<!DOCTYPE html>',   0.5],
+    [/<html[\s>][\s\S]*<\/html>/i, '<html>...</html>',  0.5],
+    [/<head[\s>][\s\S]*<\/head>/i, '<head>...</head>',  0.5],
+    [/<title[\s>][\s\S]*<\/title>/i,'<title>...</title>',0.5],
+    [/<body[\s>][\s\S]*<\/body>/i, '<body>...</body>',  0.5],
   ];
   for (const [rx, name, pts] of structureChecks) {
     if (rx.test(codeLower)) {
@@ -374,7 +526,7 @@ function gradeHTML(htmlCode, testCase) {
     }
   }
 
-  // ── 2. Thẻ bắt buộc ──
+  // 2. Thẻ bắt buộc
   const reqTags = testCase.required_tags || [];
   if (!reqTags.length) {
     scores.required = SCORES_MAX.required;
@@ -392,15 +544,14 @@ function gradeHTML(htmlCode, testCase) {
     }
   }
 
-  // ── 3. Cú pháp ──
+  // 3. Cú pháp
   let syntaxErrors = 0;
   const tagStack = [];
   const tagRx = /<\/?([a-zA-Z][a-zA-Z0-9]*)[^>]*\/?>/g;
   for (let i = 0; i < lines.length; i++) {
     const trimmed = lines[i].trim();
     if (!trimmed || trimmed.startsWith('<!--')) continue;
-    let m;
-    tagRx.lastIndex = 0;
+    let m; tagRx.lastIndex = 0;
     while ((m = tagRx.exec(trimmed)) !== null) {
       const full = m[0], tagName = m[1].toLowerCase();
       const isClosing = full.startsWith('</');
@@ -431,7 +582,7 @@ function gradeHTML(htmlCode, testCase) {
   const hasHTML = /<[a-zA-Z][a-zA-Z0-9]*[\s>/]/.test(htmlCode);
   scores.syntax = hasHTML ? Math.max(0, SCORES_MAX.syntax - syntaxErrors * 0.5) : 0;
 
-  // ── 4. Định dạng ──
+  // 4. Định dạng
   if (!hasHTML) {
     scores.format = 0;
   } else {
@@ -450,28 +601,19 @@ function gradeHTML(htmlCode, testCase) {
     scores.format = fmtOk ? SCORES_MAX.format : SCORES_MAX.format * 0.5;
   }
 
-  // ── 5. Thuộc tính ──
+  // 5. Thuộc tính
   if (!hasHTML) {
     scores.attributes = 0;
   } else {
     let attrScore = SCORES_MAX.attributes;
     const imgTags = htmlCode.match(/<img[^>]*>/gi) || [];
     for (const img of imgTags) {
-      if (!/\balt\s*=/i.test(img)) {
-        attrScore -= 0.25;
-        issues.push({ type:'warning', title:'<img> thiếu alt', message:'Thẻ <img> cần thuộc tính alt="" (tốt cho SEO).', line: null });
-      }
-      if (!/\bsrc\s*=/i.test(img)) {
-        attrScore -= 0.25;
-        issues.push({ type:'error', title:'<img> thiếu src', message:'Thẻ <img> phải có src="đường_dẫn_ảnh".', line: null });
-      }
+      if (!/\balt\s*=/i.test(img)) { attrScore -= 0.25; issues.push({ type:'warning', title:'<img> thiếu alt', message:'Thẻ <img> cần thuộc tính alt="" (tốt cho SEO).', line: null }); }
+      if (!/\bsrc\s*=/i.test(img)) { attrScore -= 0.25; issues.push({ type:'error',   title:'<img> thiếu src', message:'Thẻ <img> phải có src="đường_dẫn_ảnh".', line: null }); }
     }
     const aTags = htmlCode.match(/<a[^>]*>/gi) || [];
     for (const a of aTags) {
-      if (!/\bhref\s*=/i.test(a)) {
-        attrScore -= 0.2;
-        issues.push({ type:'warning', title:'<a> thiếu href', message:'Thẻ <a> nên có href="" để chỉ định liên kết.', line: null });
-      }
+      if (!/\bhref\s*=/i.test(a)) { attrScore -= 0.2; issues.push({ type:'warning', title:'<a> thiếu href', message:'Thẻ <a> nên có href="" để chỉ định liên kết.', line: null }); }
     }
     scores.attributes = Math.max(0, attrScore);
   }
@@ -492,10 +634,10 @@ function renderResult(total, scores, issues, exerciseTitle) {
   const scoreColor = total >= 8.5 ? '#22c55e' : total >= 7 ? '#a78bfa' : total >= 5 ? '#f59e0b' : '#ef4444';
   const scoreLabel = total >= 8.5 ? '🏆 Xuất sắc!' : total >= 7 ? '👍 Khá tốt' : total >= 5 ? '⚠️ Trung bình' : '❌ Cần cải thiện';
 
-  const errors   = issues.filter(i => i.type === 'error');
-  const warnings = issues.filter(i => i.type === 'warning');
-  const infos    = issues.filter(i => i.type === 'info');
-  const successes= issues.filter(i => i.type === 'success');
+  const errors    = issues.filter(i => i.type === 'error');
+  const warnings  = issues.filter(i => i.type === 'warning');
+  const infos     = issues.filter(i => i.type === 'info');
+  const successes = issues.filter(i => i.type === 'success');
   const nonSuccess = issues.filter(i => i.type !== 'success');
 
   const ICONS = { error:'✕', warning:'⚠', info:'ℹ', success:'✓' };
@@ -504,7 +646,7 @@ function renderResult(total, scores, issues, exerciseTitle) {
     <div class="issue-item issue-${issue.type}">
       <div class="issue-icon">${ICONS[issue.type]}</div>
       <div>
-        <div class="issue-title">${issue.title}</div>
+        <div class="issue-title-text">${issue.title}</div>
         <div class="issue-msg">${issue.message}</div>
         ${issue.line ? `<div class="issue-line">Dòng ${issue.line}</div>` : ''}
       </div>
@@ -562,6 +704,9 @@ function gradeCode() {
   const exerciseId = document.getElementById('exerciseSelect').value;
   if (!code) { alert('Vui lòng nhập code HTML!'); return; }
 
+  // Chuyển sang tab kết quả
+  switchTab('grade');
+
   document.getElementById('placeholder').style.display = 'none';
   document.getElementById('resultArea').style.display = 'none';
   document.getElementById('loading').style.display = 'block';
@@ -571,16 +716,16 @@ function gradeCode() {
     const { total, scores, issues } = gradeHTML(code, ex);
     document.getElementById('loading').style.display = 'none';
     renderResult(total, scores, issues, ex.title);
-    document.getElementById('rightPanel').scrollTop = 0;
+    document.getElementById('panelGrade').scrollTop = 0;
   }, 300);
 }
 
-// Ctrl+Enter shortcut
+// ── Phím tắt ──
 document.addEventListener('keydown', e => {
   if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') gradeCode();
 });
 
-// Tab key in textarea
+// ── Tab key trong textarea ──
 document.getElementById('htmlCode').addEventListener('keydown', function(e) {
   if (e.key === 'Tab') {
     e.preventDefault();
