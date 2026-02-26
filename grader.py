@@ -8,6 +8,10 @@ import json
 import argparse
 import re
 import sys
+
+__author__ = "Trí Huệ"
+__email__ = "trihue.life@gmail.com"
+__version__ = "1.1.0"
 from pathlib import Path
 from html.parser import HTMLParser
 from typing import List, Dict, Tuple, Optional
@@ -409,6 +413,7 @@ Ví dụ sử dụng:
     parser.add_argument('--test-cases', '-t', default='test_cases.json', 
                        help='Đường dẫn đến file test_cases.json (mặc định: test_cases.json)')
     parser.add_argument('--json', '-j', action='store_true', help='In kết quả dưới dạng JSON')
+    parser.add_argument('--version', '-v', action='version', version=f'%(prog)s {__version__}')
     
     args = parser.parse_args()
     

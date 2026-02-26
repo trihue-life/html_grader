@@ -13,6 +13,16 @@
 - ✅ **Báo cáo chi tiết** với danh sách lỗi, cảnh báo và gợi ý
 - ✅ **Xuất kết quả JSON** để tích hợp với các hệ thống khác
 
+## Tác giả
+
+- **Tên:** Trí Huệ
+- **Email:** trihue.life@gmail.com
+- **GitHub:** [TriHue-life](https://github.com/TriHue-life)
+
+## Phiên bản
+
+- **Version:** 1.1.0
+
 ## Cài đặt
 
 ### Yêu cầu
@@ -25,7 +35,7 @@
 1. Clone hoặc tải xuống dự án:
 
 ```bash
-git clone https://github.com/yourusername/html_grader.git
+git clone https://github.com/TriHue-life/html_grader.git
 cd html_grader
 ```
 
