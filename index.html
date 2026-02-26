@@ -31,22 +31,31 @@
     header {
       background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #1e1b4b 100%);
       border-bottom: 1px solid var(--border);
-      padding: 16px 28px;
+      padding: 18px 32px;
       display: flex; align-items: center; justify-content: space-between;
-      flex-wrap: wrap; gap: 10px;
+      flex-wrap: wrap; gap: 12px;
     }
-    .logo { display: flex; align-items: center; gap: 12px; }
-    .logo-icon { font-size: 30px; }
-    .logo-text h1 { font-size: 20px; font-weight: 700; color: #fff; }
-    .logo-text p { font-size: 11px; color: var(--accent2); }
+    .logo { display: flex; align-items: center; gap: 14px; }
+    .logo-icon { font-size: 36px; }
+    .logo-text h1 {
+      font-size: 26px; font-weight: 800; color: #ffffff;
+      letter-spacing: 0.5px;
+      text-shadow: 0 0 20px rgba(167,139,250,0.5);
+    }
+    .logo-text p {
+      font-size: 13px; color: #c4b5fd; font-weight: 500;
+      margin-top: 2px; letter-spacing: 0.2px;
+    }
     .header-right { display: flex; align-items: center; gap: 10px; }
     .badge {
       background: var(--accent); color: #fff;
-      padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 600;
+      padding: 5px 14px; border-radius: 20px; font-size: 12px; font-weight: 700;
+      box-shadow: 0 0 12px rgba(108,99,255,0.4);
     }
     .badge-author {
-      background: var(--surface2); border: 1px solid var(--border);
-      color: var(--muted); padding: 4px 12px; border-radius: 20px; font-size: 11px;
+      background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+      color: #e2e8f0; padding: 5px 14px; border-radius: 20px; font-size: 12px;
+      font-weight: 500;
     }
 
     /* ── Layout ── */
@@ -294,7 +303,7 @@
     <div class="logo-icon">🏷️</div>
     <div class="logo-text">
       <h1>HTML Grader</h1>
-      <p>Công cụ chấm điểm code HTML tự động · THPT Thu Thiêm</p>
+      <p>Công cụ chấm điểm code HTML tự động · THPT Thủ Thiêm</p>
     </div>
   </div>
   <div class="header-right">
