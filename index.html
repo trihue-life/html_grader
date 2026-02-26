@@ -34,7 +34,7 @@
     .container{display:grid;grid-template-columns:1fr 1fr;height:calc(100vh - 76px)}
 
     /* ── LEFT PANEL ── */
-    .left-panel{display:grid;grid-template-rows:auto auto auto 1fr auto;border-right:1px solid var(--border);overflow:hidden}
+    .left-panel{display:grid;grid-template-rows:auto 1fr auto;border-right:1px solid var(--border);overflow:hidden}
     .panel-top{background:var(--surface);border-bottom:1px solid var(--border);padding:10px 14px;display:flex;flex-direction:column;gap:6px}
     .panel-top-row{display:flex;align-items:center;gap:8px}
     .panel-label{font-size:12px;font-weight:600;color:var(--muted);white-space:nowrap}
@@ -47,21 +47,21 @@
     textarea{flex:1;background:#0d1117;color:#e6edf3;border:none;padding:14px 16px;font-family:'Cascadia Code','Fira Code',Consolas,monospace;font-size:13px;line-height:1.7;resize:none;outline:none;tab-size:2}
     textarea::placeholder{color:#3d4451}
 
-    /* ── LEFT TAB BAR (Dề bài / Tiêu chí) ── */
-    .left-tab-bar{background:var(--surface);border-bottom:1px solid var(--border);display:flex;flex-shrink:0}
-    .left-tab-btn{flex:1;padding:8px 10px;background:transparent;border:none;border-bottom:2px solid transparent;color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;white-space:nowrap}
-    .left-tab-btn:hover{color:var(--text)}
-    .left-tab-btn.active-desc{color:#f59e0b;border-bottom-color:#f59e0b}
-    .left-tab-btn.active-crit{color:var(--cyan);border-bottom-color:var(--cyan)}
-    .left-tab-content{display:none;flex-direction:column;overflow-y:auto;flex-shrink:0}
-    .left-tab-content.visible{display:flex}
-    /* Panel đề bài */
-    .panel-desc{padding:10px 12px;display:flex;flex-direction:column;gap:6px}
-    /* Panel tiêu chí trái */
-    .left-criteria-body{padding:10px 12px;display:flex;flex-direction:column;gap:8px}
-    .left-criteria-body .criteria-card{font-size:12px}
-    .left-criteria-body .criteria-card-title{font-size:12px}
-    .left-criteria-body .criteria-item{font-size:11px}
+    /* ── DESC PANEL (Tab Đề bài bên phải) ── */
+    .desc-panel{flex:1;overflow-y:auto;display:none;flex-direction:column}
+    .desc-panel.visible{display:flex}
+    .panel-desc-right{padding:16px;display:flex;flex-direction:column;gap:10px}
+    .panel-desc-right .exercise-desc{max-height:none;font-size:13px;line-height:1.8;background:transparent;border:none;padding:0;color:var(--text)}
+    .panel-desc-right .required-tags{flex-wrap:wrap;gap:6px;display:flex}
+    .panel-desc-right .tag-chip{font-size:11px;padding:3px 10px}
+
+    /* ── RESULT-PREVIEW PANEL (Tab Kết quả & Preview) ── */
+    .result-preview-panel{flex:1;display:none;flex-direction:column;overflow:hidden}
+    .result-preview-panel.visible{display:flex}
+    .result-section{flex:1;overflow-y:auto;border-bottom:2px solid var(--border);min-height:0}
+    .preview-section{flex:1;display:flex;flex-direction:column;min-height:0}
+    .section-header{background:var(--surface2);border-bottom:1px solid var(--border);padding:7px 14px;display:flex;align-items:center;justify-content:space-between;font-size:12px;font-weight:600;color:var(--muted);flex-shrink:0}
+    .section-header span{color:var(--text)}
 
     /* ── ACTION BAR ── */
     .action-bar{background:var(--surface);border-top:1px solid var(--border);padding:10px 16px;display:flex;gap:8px;align-items:center}
@@ -81,6 +81,8 @@
     .tab-btn.active-grade{color:var(--accent2);border-bottom-color:var(--accent2)}
     .tab-btn.active-run{color:#10b981;border-bottom-color:#10b981}
     .tab-btn.active-criteria{color:var(--cyan);border-bottom-color:var(--cyan)}
+    .tab-btn.active-desc{color:#f59e0b;border-bottom-color:#f59e0b}
+    .tab-btn.active-result{color:var(--accent2);border-bottom-color:var(--accent2)}
 
     /* ── GRADE PANEL ── */
     .result-panel{flex:1;display:flex;flex-direction:column;overflow-y:auto}
@@ -106,7 +108,7 @@
     .preview-iframe.visible{display:block}
 
     /* ── CRITERIA PANEL ── */
-    .criteria-panel{flex:1;display:none;flex-direction:column;overflow-y:auto}
+    .criteria-panel{flex:1;overflow-y:auto;display:none;flex-direction:column;overflow-x:hidden}
     .criteria-panel.visible{display:flex}
     .criteria-body{padding:16px;display:flex;flex-direction:column;gap:12px}
     .criteria-header{font-size:13px;font-weight:700;color:var(--accent2);border-bottom:1px solid var(--border);padding-bottom:8px;margin-bottom:4px}
@@ -169,20 +171,22 @@
       .badge-author{display:none}
       .badge{font-size:11px;padding:4px 10px;font-weight:700;white-space:nowrap}
       .container{display:flex;flex-direction:column;height:calc(100vh - 54px)}
-      .left-panel{height:52vh;border-right:none;border-bottom:1px solid var(--border);display:grid;grid-template-rows:auto auto auto 1fr auto}
+      .left-panel{height:52vh;border-right:none;border-bottom:1px solid var(--border);display:grid;grid-template-rows:auto 1fr auto}
       .right-panel{height:48vh}
       .panel-top{padding:6px 10px;gap:4px}
-      .left-tab-btn{font-size:11px;padding:7px 8px}
-      .left-tab-content{max-height:80px;overflow-y:auto}
-      .panel-desc{padding:7px 10px;gap:4px}
       .exercise-desc{max-height:55px;font-size:11px;padding:6px 8px}
       .required-tags{gap:3px}
       .tag-chip{font-size:9px;padding:1px 6px}
-      .left-criteria-body{padding:7px 10px;gap:5px;max-height:75px;overflow-y:auto}
       textarea{font-size:12px;padding:8px 10px}
       .action-bar{padding:7px 10px;gap:6px}
       .btn-run,.btn-grade,.btn-clear{padding:8px 10px;font-size:12px}
       .shortcut-hint{display:none}
+      .tab-btn{font-size:10px;padding:7px 6px}
+      .section-header{padding:5px 10px;font-size:10px}
+      .panel-desc-right{padding:8px 10px;gap:6px}
+      .panel-desc-right .exercise-desc{font-size:11px}
+      .result-section{flex:1;min-height:60px}
+      .preview-section{flex:1;min-height:60px}
     }
 
     /* ── MOBILE LANDSCAPE (ngang) ── */
@@ -198,29 +202,17 @@
       /* Layout 2 cột — chiều cao cố định */
       .container{display:grid;grid-template-columns:1fr 1fr;height:calc(100vh - 46px)}
 
-      /* Left panel: grid 5 hàng */
+      /* Left panel: grid 3 hàng (dropdown + editor + action) */
       .left-panel{
         height:100%;
         border-right:1px solid var(--border);
         display:grid;
-        grid-template-rows:auto auto auto 1fr auto;
+        grid-template-rows:auto 1fr auto;
         overflow:hidden
       }
       .panel-top{padding:4px 10px;gap:2px;background:var(--surface);border-bottom:1px solid var(--border)}
       .panel-top-row{gap:6px}
       select{padding:4px 8px;font-size:11px}
-      /* Tab bar trái */
-      .left-tab-bar{flex-shrink:0}
-      .left-tab-btn{font-size:11px;padding:6px 8px}
-      /* Nội dung tab trái */
-      .left-tab-content{max-height:70px;overflow-y:auto}
-      .panel-desc{padding:5px 8px;gap:3px}
-      .exercise-desc{max-height:42px;font-size:10px;line-height:1.4;padding:4px 7px}
-      .required-tags{gap:2px;padding:0}
-      .tag-chip{font-size:9px;padding:1px 5px}
-      .left-criteria-body{padding:5px 8px;gap:4px;max-height:65px;overflow-y:auto}
-      .left-criteria-body .criteria-card-title{font-size:10px}
-      .left-criteria-body .criteria-item{font-size:9px}
       textarea{font-size:11px;padding:6px 10px;line-height:1.5;width:100%;height:100%;min-height:0}
       .action-bar{padding:5px 10px;gap:5px}
       .btn-run,.btn-grade{padding:6px 10px;font-size:11px}
@@ -232,14 +224,22 @@
       .tab-btn{padding:6px 8px;font-size:11px}
       .footer{padding:4px 10px;font-size:9px}
 
-      /* Tab Kết quả */
-      .result-panel{overflow-y:auto}
+      /* Tab Kết quả & Preview */
+      .result-preview-panel{overflow:hidden}
+      .result-section{min-height:50px}
+      .preview-section{min-height:50px}
+      .section-header{padding:4px 8px;font-size:10px}
       .score-card{padding:10px}
       .stats-grid{grid-template-columns:repeat(4,1fr);gap:5px}
       .stat-card{padding:6px}
       .stat-num{font-size:16px}
       .score-circle{width:80px;height:80px}
       .score-num{font-size:22px}
+      /* Tab Đề bài */
+      .desc-panel{overflow-y:auto}
+      .panel-desc-right{padding:6px 10px;gap:5px}
+      .panel-desc-right .exercise-desc{font-size:10px;line-height:1.5}
+      .panel-desc-right .tag-chip{font-size:9px;padding:1px 5px}
 
       /* Tab Tiêu chí — hiển thị đầy đủ */
       .criteria-panel{
@@ -298,27 +298,7 @@
         <select id="exerciseSelect" onchange="onExerciseChange()"></select>
       </div>
     </div>
-    <!-- Tab bar: Đề bài / Tiêu chí -->
-    <div class="left-tab-bar">
-      <button class="left-tab-btn active-desc" id="leftTabDesc" onclick="switchLeftTab('desc')">📝 Đề bài</button>
-      <button class="left-tab-btn" id="leftTabCrit" onclick="switchLeftTab('crit')">📋 Tiêu chí</button>
-    </div>
-    <!-- Nội dung tab Đề bài -->
-    <div class="left-tab-content visible" id="leftPanelDesc">
-      <div class="panel-desc">
-        <div class="exercise-desc" id="exerciseDesc">Chọn bài tập để xem mô tả...</div>
-        <div class="required-tags" id="requiredTags"></div>
-      </div>
-    </div>
-    <!-- Nội dung tab Tiêu chí -->
-    <div class="left-tab-content" id="leftPanelCrit">
-      <div class="left-criteria-body" id="leftCriteriaBody">
-        <div style="text-align:center;color:var(--muted);padding:20px">
-          <div style="font-size:36px;opacity:.25">📋</div>
-          <p style="font-size:12px;margin-top:8px">Chọn bài tập để xem tiêu chí</p>
-        </div>
-      </div>
-    </div>
+    <!-- Editor code -->
     <textarea id="htmlCode"
       placeholder="Nhập code HTML của bạn vào đây...
 
@@ -341,48 +321,62 @@ Ví dụ:
     </div>
   </div>
 
-  <!-- ═══ RIGHT: Tabs ═══ -->
+  <!-- ═══ RIGHT: 3 Tabs ═══ -->
   <div class="right-panel">
     <div class="tab-bar">
-      <button class="tab-btn active-grade" id="tabGrade"    onclick="switchTab('grade')">📊 Kết quả</button>
-      <button class="tab-btn"              id="tabRun"      onclick="switchTab('run')">▶ Preview</button>
-      <button class="tab-btn"              id="tabCriteria" onclick="switchTab('criteria')">📋 Tiêu chí</button>
+      <button class="tab-btn active-desc" id="tabDesc"     onclick="switchTab('desc')">📝 Đề bài</button>
+      <button class="tab-btn"             id="tabCriteria" onclick="switchTab('criteria')">📋 Tiêu chí</button>
+      <button class="tab-btn"             id="tabResult"   onclick="switchTab('result')">⚡ Kết quả &amp; Preview</button>
     </div>
 
-    <!-- Tab: Kết quả -->
-    <div class="result-panel" id="panelGrade">
-      <div class="result-placeholder" id="placeholder">
-        <div class="ph-icon">📊</div>
-        <p>Chọn bài tập, nhập code HTML<br>và nhấn <strong style="color:var(--accent2)">⚡ Chấm điểm</strong> để xem kết quả</p>
+    <!-- Tab: Đề bài -->
+    <div class="desc-panel" id="panelDesc">
+      <div class="panel-desc-right">
+        <div class="exercise-desc" id="exerciseDesc">Chọn bài tập để xem mô tả...</div>
+        <div class="required-tags" id="requiredTags"></div>
       </div>
-      <div class="loading" id="loading">
-        <div class="spinner"></div>
-        <p style="color:var(--muted);font-size:12px">Đang phân tích code...</p>
-      </div>
-      <div id="resultArea" style="display:none"></div>
     </div>
 
-    <!-- Tab: Preview -->
-    <div class="preview-panel" id="panelRun">
-      <div class="preview-toolbar">
-        <span id="previewLabel">Chưa có output — nhấn ▶ Run để xem</span>
-        <button class="btn-refresh" onclick="runCode()">↺ Chạy lại</button>
-      </div>
-      <div class="preview-empty" id="previewEmpty">
-        <div class="ph-icon">▶</div>
-        <p>Nhập code HTML và nhấn <strong style="color:#10b981">▶ Run</strong><br>để xem kết quả hiển thị tại đây</p>
-      </div>
-      <iframe id="previewFrame" class="preview-iframe"
-        sandbox="allow-scripts allow-same-origin allow-forms allow-modals"></iframe>
-    </div>
-
-    <!-- Tab: Tiêu chí chấm điểm -->
+    <!-- Tab: Tiêu chí -->
     <div class="criteria-panel" id="panelCriteria">
       <div class="criteria-body" id="criteriaBody">
         <div style="text-align:center;color:var(--muted);padding:40px">
           <div style="font-size:48px;opacity:.25">📋</div>
           <p style="font-size:13px;margin-top:12px">Chọn bài tập để xem tiêu chí chấm điểm</p>
         </div>
+      </div>
+    </div>
+
+    <!-- Tab: Kết quả & Preview (gộp 2 tab cũ) -->
+    <div class="result-preview-panel" id="panelResult">
+      <!-- Phần Kết quả -->
+      <div class="result-section">
+        <div class="section-header">
+          <span>📊 Kết quả chấm điểm</span>
+          <button class="btn-refresh" onclick="gradeCode()">⚡ Chấm lại</button>
+        </div>
+        <div class="result-placeholder" id="placeholder">
+          <div class="ph-icon">📊</div>
+          <p>Nhập code HTML và nhấn <strong style="color:var(--accent2)">⚡ Chấm điểm</strong></p>
+        </div>
+        <div class="loading" id="loading">
+          <div class="spinner"></div>
+          <p style="color:var(--muted);font-size:12px">Đang phân tích code...</p>
+        </div>
+        <div id="resultArea" style="display:none"></div>
+      </div>
+      <!-- Phần Preview -->
+      <div class="preview-section">
+        <div class="section-header">
+          <span id="previewLabel">▶ Preview output</span>
+          <button class="btn-refresh" onclick="runCode()">↺ Chạy lại</button>
+        </div>
+        <div class="preview-empty" id="previewEmpty">
+          <div class="ph-icon">▶</div>
+          <p>Nhấn <strong style="color:#10b981">▶ Run</strong> để xem preview</p>
+        </div>
+        <iframe id="previewFrame" class="preview-iframe"
+          sandbox="allow-scripts allow-same-origin allow-forms allow-modals"></iframe>
       </div>
     </div>
 
@@ -398,7 +392,7 @@ Ví dụ:
 // ═══════════════════════════════════════════════════════════════════
 //  VERSION (tự động)
 // ═══════════════════════════════════════════════════════════════════
-const VERSION = '1.2.2';
+const VERSION = '1.2.3';
 document.getElementById('versionBadge').textContent = 'v' + VERSION;
 document.title = `HTML Grader | Công cụ chấm điểm code HTML tự động · THPT Thủ Thiêm`;
 
@@ -809,21 +803,8 @@ const exerciseMap = Object.fromEntries(EXERCISES.map(e=>[e.id,e]));
     sel.appendChild(og);
   }
   onExerciseChange();
+  switchTab('desc');
 })();
-
-function switchLeftTab(tab){
-  ['desc','crit'].forEach(t=>{
-    document.getElementById('leftPanel'+t.charAt(0).toUpperCase()+t.slice(1)).classList.remove('visible');
-    document.getElementById('leftTab'+t.charAt(0).toUpperCase()+t.slice(1)).className='left-tab-btn';
-  });
-  if(tab==='desc'){
-    document.getElementById('leftPanelDesc').classList.add('visible');
-    document.getElementById('leftTabDesc').className='left-tab-btn active-desc';
-  } else {
-    document.getElementById('leftPanelCrit').classList.add('visible');
-    document.getElementById('leftTabCrit').className='left-tab-btn active-crit';
-  }
-}
 
 function onExerciseChange(){
   const ex = exerciseMap[document.getElementById('exerciseSelect').value];
@@ -860,33 +841,36 @@ function renderCriteria(ex){
     html += `<div class="criteria-total"><span class="criteria-total-label">Tổng điểm tối đa</span><span class="criteria-total-score">${total.toFixed(1)}/10</span></div>`;
     return html;
   }
-  // Render vào panel phải (tab Tiêu chí cũ)
-  const rightBody = document.getElementById('criteriaBody');
-  if(rightBody) rightBody.innerHTML = buildCriteriaHTML(ex);
-  // Render vào panel trái (tab Tiêu chí mới)
-  const leftBody = document.getElementById('leftCriteriaBody');
-  if(leftBody) leftBody.innerHTML = buildCriteriaHTML(ex);
+  // Render vào tab Tiêu chí (panel phải)
+  const body = document.getElementById('criteriaBody');
+  if(body) body.innerHTML = buildCriteriaHTML(ex);
 }
 
 // ═══════════════════════════════════════════════════════════════════
 //  TAB SWITCHING
 // ═══════════════════════════════════════════════════════════════════
-let currentTab = 'grade';
+let currentTab = 'desc';
 function switchTab(tab){
   currentTab = tab;
-  ['grade','run','criteria'].forEach(t=>{
-    document.getElementById('panel'+t.charAt(0).toUpperCase()+t.slice(1)).classList.remove('hidden','visible');
-    document.getElementById('tab'+t.charAt(0).toUpperCase()+t.slice(1)).className='tab-btn';
+  // Ẩn tất cả panels
+  const panels = {
+    desc:     {panel:'panelDesc',     btn:'tabDesc',     cls:'active-desc'},
+    criteria: {panel:'panelCriteria', btn:'tabCriteria', cls:'active-criteria'},
+    result:   {panel:'panelResult',   btn:'tabResult',   cls:'active-result'},
+  };
+  Object.values(panels).forEach(({panel,btn})=>{
+    const p = document.getElementById(panel);
+    const b = document.getElementById(btn);
+    if(p){ p.classList.remove('visible'); p.style.display='none'; }
+    if(b) b.className='tab-btn';
   });
-  if(tab==='grade'){
-    document.getElementById('panelGrade').classList.remove('hidden');
-    document.getElementById('tabGrade').className='tab-btn active-grade';
-  } else if(tab==='run'){
-    document.getElementById('panelRun').classList.add('visible');
-    document.getElementById('tabRun').className='tab-btn active-run';
-  } else {
-    document.getElementById('panelCriteria').classList.add('visible');
-    document.getElementById('tabCriteria').className='tab-btn active-criteria';
+  // Hiển panel được chọn
+  const sel = panels[tab];
+  if(sel){
+    const p = document.getElementById(sel.panel);
+    const b = document.getElementById(sel.btn);
+    if(p){ p.style.display=''; p.classList.add('visible'); }
+    if(b) b.className='tab-btn '+sel.cls;
   }
 }
 
@@ -896,7 +880,7 @@ function switchTab(tab){
 function runCode(){
   const code = document.getElementById('htmlCode').value.trim();
   if(!code){alert('Vui lòng nhập code HTML!');return;}
-  switchTab('run');
+  switchTab('result');
   const frame = document.getElementById('previewFrame');
   frame.classList.add('visible');
   document.getElementById('previewEmpty').style.display='none';
@@ -913,8 +897,8 @@ function clearCode(){
   const frame=document.getElementById('previewFrame');
   frame.classList.remove('visible');
   document.getElementById('previewEmpty').style.display='flex';
-  document.getElementById('previewLabel').textContent='Chưa có output — nhấn ▶ Run để xem';
-  switchTab('grade');
+  document.getElementById('previewLabel').textContent='▶ Preview output';
+  switchTab('desc');
 }
 
 // ═══════════════════════════════════════════════════════════════════
@@ -1257,7 +1241,7 @@ function gradeCode(){
   const code = document.getElementById('htmlCode').value.trim();
   const exId = document.getElementById('exerciseSelect').value;
   if(!code){alert('Vui lòng nhập code HTML!');return;}
-  switchTab('grade');
+  switchTab('result');
   document.getElementById('placeholder').style.display='none';
   document.getElementById('resultArea').style.display='none';
   document.getElementById('loading').style.display='block';
