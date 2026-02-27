@@ -185,14 +185,11 @@
       .exercise-bar{padding:4px 12px;min-height:28px}
       .ex-title{font-size:11px}
       .ex-desc{font-size:10px}
-      /* Panel phải rộng hơn để tab hiển thị rõ */
       .main{grid-template-columns:1fr 300px}
       .grade-panel{display:flex;flex-direction:column;overflow:hidden}
-      /* Grade header: tab hiển thị đầy đủ */
       .grade-header{padding:6px 10px;flex-shrink:0}
       .grade-tabs{display:flex;gap:4px;width:100%}
       .grade-tab{flex:1;padding:6px 4px;font-size:11px;font-weight:700;text-align:center;white-space:nowrap;border-radius:6px}
-      /* Panel nội dung có chiều cao đủ */
       .score-panel,.desc-panel,.crit-panel{flex:1;overflow-y:auto;min-height:0}
       .score-circle-wrap{padding:10px 12px 6px}
       .score-circle{width:80px;height:80px}
@@ -238,7 +235,7 @@
     <select class="nav-select" id="exerciseSelect" onchange="onExerciseChange()"></select>
   </div>
   <div class="header-right">
-    <span class="badge-version" id="versionBadge">v1.2.3</span>
+    <span class="badge-version" id="versionBadge">v1.3.0</span>
   </div>
 </header>
 
@@ -258,18 +255,17 @@
       <span class="editor-pos" id="editorPos">LN 1, COL 1</span>
     </div>
     <textarea id="htmlCode"
-      placeholder="# Nhập code HTML tại đây...
-# Ví dụ:
-&lt;!DOCTYPE html&gt;
-&lt;html&gt;
-  &lt;head&gt;
-    &lt;title&gt;Trang của tôi&lt;/title&gt;
-  &lt;/head&gt;
-  &lt;body&gt;
-    &lt;h1&gt;Xin chào!&lt;/h1&gt;
-    &lt;p&gt;Đây là trang web của tôi.&lt;/p&gt;
-  &lt;/body&gt;
-&lt;/html&gt;"
+      placeholder="<!-- Nhập code HTML tại đây... -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Trang của tôi</title>
+  </head>
+  <body>
+    <h1>Xin chào!</h1>
+    <p>Đây là trang web của tôi.</p>
+  </body>
+</html>"
       spellcheck="false"></textarea>
     <div class="action-bar">
       <button class="btn btn-run" onclick="runCode()">▶ Chạy code</button>
@@ -329,10 +325,10 @@
           <div class="stat-box">
             <div class="stat-dot yellow"></div>
             <div class="stat-num" id="statWarn" style="color:var(--yellow)">0</div>
-            <div class="stat-lbl">Bỏ qua</div>
+            <div class="stat-lbl">Cảnh báo</div>
           </div>
         </div>
-        <div class="detail-header">CHI TIẾT TỪNG DÒNG</div>
+        <div class="detail-header">CHI TIẾT TỪNG TIÊU CHÍ</div>
         <div class="detail-list" id="detailList"></div>
       </div>
     </div>
@@ -377,20 +373,22 @@
 
 <script>
 // ═══════════════════════════════════════════════════════════════════
-//  VERSION (tự động bump)
+//  VERSION
 // ═══════════════════════════════════════════════════════════════════
-const VERSION = '1.2.14';
+const VERSION = '1.3.1';
 document.getElementById('versionBadge').textContent = 'v' + VERSION;
-document.title = 'HTML Grader | Công cụ chấm điểm code HTML tự động · THPT Thủ Thiêm';
 
 // ═══════════════════════════════════════════════════════════════════
-//  DỮ LIỆU BÀI TẬP
+//  CẤU TRÚC BÀI TẬP
+//  Mỗi criterion có: name, points, checks[]
+//  Mỗi check có: type, points, label, hint, [tag, tags, attr, value, min]
+//
+//  NGUYÊN TẮC CHẤM ĐIỂM NGHIÊM NGẶT:
+//  - Điểm cú pháp CHỈ được tính khi code có ít nhất 1 thẻ HTML hợp lệ
+//  - Không có thẻ nào = 0 điểm tuyệt đối
+//  - Mỗi check chỉ cho điểm khi THỰC SỰ tìm thấy phần tử yêu cầu
 // ═══════════════════════════════════════════════════════════════════
-const EXERCISES = [{"id":"f1_apply1","group":"F1 — Thẻ cơ bản","title":"F1 - Vận dụng 1: Trang giới thiệu bản thân","description":"Tạo trang giới thiệu bản thân với <code>&lt;h1&gt;</code> tên, <code>&lt;h2&gt;</code> tiêu đề phụ, <code>&lt;p&gt;</code> đoạn văn giới thiệu, <code>&lt;ul&gt;</code> danh sách sở thích.","required_tags":["h1","h2","p","ul","li"],"criteria":[{"name":"1. Cấu trúc HTML cơ bản","points":2.5,"checks":[{"type":"has_doctype","points":0.5,"label":"Có <!DOCTYPE html>","hint":"Thêm <!DOCTYPE html> vào dòng đầu tiên"},{"type":"has_tag","tag":"html","points":0.5,"label":"Có thẻ <html>","hint":"Bọc toàn bộ nội dung trong <html>...</html>"},{"type":"has_tag","tag":"head","points":0.5,"label":"Có thẻ <head>","hint":"Thêm <head>...</head> bên trong <html>"},{"type":"has_tag","tag":"title","points":0.5,"label":"Có thẻ <title>","hint":"Thêm <title>Tiêu đề</title> vào trong <head>"},{"type":"has_tag","tag":"body","points":0.5,"label":"Có thẻ <body>","hint":"Thêm <body>...</body> bên trong <html>"}]},{"name":"2. Thẻ nội dung bắt buộc","points":5.5,"checks":[{"type":"has_tag","tag":"h1","points":1.0,"label":"Có thẻ <h1> tên","hint":"Thêm <h1>Tên của bạn</h1>"},{"type":"has_tag","tag":"h2","points":1.0,"label":"Có thẻ <h2> tiêu đề phụ","hint":"Thêm <h2>Giới thiệu</h2>"},{"type":"has_tag","tag":"p","points":1.0,"label":"Có thẻ <p> đoạn văn","hint":"Thêm <p>Nội dung giới thiệu</p>"},{"type":"has_tag","tag":"ul","points":1.0,"label":"Có thẻ <ul> danh sách","hint":"Thêm <ul>...</ul>"},{"type":"tag_count","tag":"li","min":3,"points":1.5,"label":"Có ít nhất 3 <li> sở thích","hint":"Thêm ít nhất 3 <li>Sở thích</li> vào <ul>"}]},{"name":"4. Cú pháp & Định dạng","points":2.0,"checks":[{"type":"no_syntax_error","points":1.4,"label":"Không có lỗi thẻ đóng/mở","hint":"Mỗi thẻ mở phải có thẻ đóng tương ứng"},{"type":"no_quote_error","points":0.6,"label":"Thuộc tính có dấu nháy kép","hint":"Dùng dấu nháy kép: attr=\"value\""}]}]},{"id":"f1_apply2","group":"F1 — Thẻ cơ bản","title":"F1 - Vận dụng 2: Bài thơ / Bài hát yêu thích","description":"Tạo trang hiển thị bài thơ/bài hát với <code>&lt;h1&gt;</code> tên bài, <code>&lt;h2&gt;</code> tác giả, <code>&lt;p&gt;</code> các đoạn thơ.","required_tags":["h1","h2","p"],"criteria":[{"name":"1. Cấu trúc HTML cơ bản","points":2.5,"checks":[{"type":"has_doctype","points":0.5,"label":"Có <!DOCTYPE html>","hint":"Thêm <!DOCTYPE html> vào dòng đầu tiên"},{"type":"has_tag","tag":"html","points":0.5,"label":"Có thẻ <html>","hint":"Bọc toàn bộ nội dung trong <html>...</html>"},{"type":"has_tag","tag":"head","points":0.5,"label":"Có thẻ <head>","hint":"Thêm <head>...</head> bên trong <html>"},{"type":"has_tag","tag":"title","points":0.5,"label":"Có thẻ <title>","hint":"Thêm <title>Tiêu đề</title> vào trong <head>"},{"type":"has_tag","tag":"body","points":0.5,"label":"Có thẻ <body>","hint":"Thêm <body>...</body> bên trong <html>"}]},{"name":"2. Thẻ nội dung bắt buộc","points":5.5,"checks":[{"type":"has_tag","tag":"h1","points":1.5,"label":"Có thẻ <h1> tên bài thơ/bài hát","hint":"Thêm <h1>Tên bài</h1>"},{"type":"has_tag","tag":"h2","points":1.5,"label":"Có thẻ <h2> tên tác giả","hint":"Thêm <h2>Tác giả: ...</h2>"},{"type":"tag_count","tag":"p","min":2,"points":2.5,"label":"Có ít nhất 2 thẻ <p> đoạn thơ","hint":"Thêm ít nhất 2 <p>Đoạn thơ</p>"}]},{"name":"4. Cú pháp & Định dạng","points":2.0,"checks":[{"type":"no_syntax_error","points":1.4,"label":"Không có lỗi thẻ đóng/mở","hint":"Mỗi thẻ mở phải có thẻ đóng tương ứng"},{"type":"no_quote_error","points":0.6,"label":"Thuộc tính có dấu nháy kép","hint":"Dùng dấu nháy kép: attr=\"value\""}]}]},{"id":"f1_apply3","group":"F1 — Thẻ cơ bản","title":"F1 - Vận dụng 3: Thực đơn nhà hàng","description":"Tạo thực đơn nhà hàng với <code>&lt;h1&gt;</code> tên nhà hàng, <code>&lt;h2&gt;</code> danh mục, <code>&lt;ol&gt;</code> danh sách món ăn có thứ tự.","required_tags":["h1","h2","ol","li"],"criteria":[{"name":"1. Cấu trúc HTML cơ bản","points":2.5,"checks":[{"type":"has_doctype","points":0.5,"label":"Có <!DOCTYPE html>","hint":"Thêm <!DOCTYPE html> vào dòng đầu tiên"},{"type":"has_tag","tag":"html","points":0.5,"label":"Có thẻ <html>","hint":"Bọc toàn bộ nội dung trong <html>...</html>"},{"type":"has_tag","tag":"head","points":0.5,"label":"Có thẻ <head>","hint":"Thêm <head>...</head> bên trong <html>"},{"type":"has_tag","tag":"title","points":0.5,"label":"Có thẻ <title>","hint":"Thêm <title>Tiêu đề</title> vào trong <head>"},{"type":"has_tag","tag":"body","points":0.5,"label":"Có thẻ <body>","hint":"Thêm <body>...</body> bên trong <html>"}]},{"name":"2. Thẻ nội dung bắt buộc","points":5.5,"checks":[{"type":"has_tag","tag":"h1","points":1.0,"label":"Có thẻ <h1> tên nhà hàng","hint":"Thêm <h1>Tên nhà hàng</h1>"},{"type":"has_tag","tag":"h2","points":1.0,"label":"Có thẻ <h2> danh mục","hint":"Thêm <h2>Danh mục món ăn</h2>"},{"type":"has_tag","tag":"ol","points":1.5,"label":"Có thẻ <ol> danh sách có thứ tự","hint":"Thêm <ol>...</ol> cho danh sách món"},{"type":"tag_count","tag":"li","min":3,"points":2.0,"label":"Có ít nhất 3 <li> món ăn","hint":"Thêm ít nhất 3 <li>Tên món</li> vào <ol>"}]},{"name":"4. Cú pháp & Định dạng","points":2.0,"checks":[{"type":"no_syntax_error","points":1.4,"label":"Không có lỗi thẻ đóng/mở","hint":"Mỗi thẻ mở phải có thẻ đóng tương ứng"},{"type":"no_quote_error","points":0.6,"label":"Thuộc tính có dấu nháy kép","hint":"Dùng dấu nháy kép: attr=\"value\""}]}]},{"id":"f2_apply1","group":"F2 — Liên kết & Hình ảnh","title":"F2 - Vận dụng 1: Trang ảnh du lịch","description":"Tạo trang ảnh du lịch với <code>&lt;h1&gt;</code> tiêu đề, ít nhất 3 <code>&lt;img&gt;</code> có <code>src</code> và <code>alt</code>, <code>&lt;p&gt;</code> mô tả.","required_tags":["h1","img","p"],"criteria":[{"name":"1. Cấu trúc HTML cơ bản","points":2.5,"checks":[{"type":"has_doctype","points":0.5,"label":"Có <!DOCTYPE html>","hint":"Thêm <!DOCTYPE html> vào dòng đầu tiên"},{"type":"has_tag","tag":"html","points":0.5,"label":"Có thẻ <html>","hint":"Bọc toàn bộ nội dung trong <html>...</html>"},{"type":"has_tag","tag":"head","points":0.5,"label":"Có thẻ <head>","hint":"Thêm <head>...</head> bên trong <html>"},{"type":"has_tag","tag":"title","points":0.5,"label":"Có thẻ <title>","hint":"Thêm <title>Tiêu đề</title> vào trong <head>"},{"type":"has_tag","tag":"body","points":0.5,"label":"Có thẻ <body>","hint":"Thêm <body>...</body> bên trong <html>"}]},{"name":"2. Thẻ ảnh bắt buộc","points":5.0,"checks":[{"type":"has_tag","tag":"h1","points":0.5,"label":"Có thẻ <h1> tiêu đề","hint":"Thêm <h1>Album du lịch</h1>"},{"type":"tag_count","tag":"img","min":3,"points":2.0,"label":"Có ít nhất 3 thẻ <img>","hint":"Thêm ít nhất 3 <img src=\"...\" alt=\"...\">"},{"type":"has_attr","tag":"img","attr":"src","points":1.5,"label":"Tất cả <img> có src","hint":"Thêm src=\"đường_dẫn_ảnh\" vào <img>"},{"type":"has_attr","tag":"img","attr":"alt","points":1.0,"label":"Tất cả <img> có alt","hint":"Thêm alt=\"mô tả ảnh\" vào <img>"}]},{"name":"3. Mô tả ảnh","points":1.0,"checks":[{"type":"tag_count","tag":"p","min":2,"points":1.0,"label":"Có ít nhất 2 <p> mô tả","hint":"Thêm <p>Mô tả ảnh</p> dưới mỗi ảnh"}]},{"name":"4. Cú pháp & Định dạng","points":1.5,"checks":[{"type":"no_syntax_error","points":1.05,"label":"Không có lỗi thẻ đóng/mở","hint":"Mỗi thẻ mở phải có thẻ đóng tương ứng"},{"type":"no_quote_error","points":0.45,"label":"Thuộc tính có dấu nháy kép","hint":"Dùng dấu nháy kép: attr=\"value\""}]}]},{"id":"f2_apply2","group":"F2 — Liên kết & Hình ảnh","title":"F2 - Vận dụng 2: Trang liên kết mạng xã hội","description":"Tạo trang liên kết với <code>&lt;h1&gt;</code> tiêu đề, ít nhất 3 <code>&lt;a&gt;</code> có <code>href</code> và <code>target=\"_blank\"</code>.","required_tags":["h1","a","img"],"criteria":[{"name":"1. Cấu trúc HTML cơ bản","points":2.5,"checks":[{"type":"has_doctype","points":0.5,"label":"Có <!DOCTYPE html>","hint":"Thêm <!DOCTYPE html> vào dòng đầu tiên"},{"type":"has_tag","tag":"html","points":0.5,"label":"Có thẻ <html>","hint":"Bọc toàn bộ nội dung trong <html>...</html>"},{"type":"has_tag","tag":"head","points":0.5,"label":"Có thẻ <head>","hint":"Thêm <head>...</head> bên trong <html>"},{"type":"has_tag","tag":"title","points":0.5,"label":"Có thẻ <title>","hint":"Thêm <title>Tiêu đề</title> vào trong <head>"},{"type":"has_tag","tag":"body","points":0.5,"label":"Có thẻ <body>","hint":"Thêm <body>...</body> bên trong <html>"}]},{"name":"2. Thẻ liên kết bắt buộc","points":5.5,"checks":[{"type":"has_tag","tag":"h1","points":0.5,"label":"Có thẻ <h1> tiêu đề","hint":"Thêm <h1>Mạng xã hội của tôi</h1>"},{"type":"tag_count","tag":"a","min":3,"points":2.0,"label":"Có ít nhất 3 thẻ <a>","hint":"Thêm ít nhất 3 <a href=\"...\">...</a>"},{"type":"has_attr","tag":"a","attr":"href","points":1.5,"label":"Tất cả <a> có href","hint":"Thêm href=\"https://...\" vào <a>"},{"type":"attr_value","tag":"a","attr":"target","value":"_blank","points":1.5,"label":"<a> có target=\"_blank\"","hint":"Thêm target=\"_blank\" vào <a> để mở tab mới"}]},{"name":"4. Cú pháp & Định dạng","points":2.0,"checks":[{"type":"no_syntax_error","points":1.4,"label":"Không có lỗi thẻ đóng/mở","hint":"Mỗi thẻ mở phải có thẻ đóng tương ứng"},{"type":"no_quote_error","points":0.6,"label":"Thuộc tính có dấu nháy kép","hint":"Dùng dấu nháy kép: attr=\"value\""}]}]},{"id":"f2_apply3","group":"F2 — Liên kết & Hình ảnh","title":"F2 - Vận dụng 3: Trang web có ảnh liên kết","description":"Tạo trang với ảnh bọc trong liên kết: <code>&lt;a href=\"...\"&gt;&lt;img src=\"...\" alt=\"...\"&gt;&lt;/a&gt;</code>.","required_tags":["a","img"],"criteria":[{"name":"1. Cấu trúc HTML cơ bản","points":2.5,"checks":[{"type":"has_doctype","points":0.5,"label":"Có <!DOCTYPE html>","hint":"Thêm <!DOCTYPE html> vào dòng đầu tiên"},{"type":"has_tag","tag":"html","points":0.5,"label":"Có thẻ <html>","hint":"Bọc toàn bộ nội dung trong <html>...</html>"},{"type":"has_tag","tag":"head","points":0.5,"label":"Có thẻ <head>","hint":"Thêm <head>...</head> bên trong <html>"},{"type":"has_tag","tag":"title","points":0.5,"label":"Có thẻ <title>","hint":"Thêm <title>Tiêu đề</title> vào trong <head>"},{"type":"has_tag","tag":"body","points":0.5,"label":"Có thẻ <body>","hint":"Thêm <body>...</body> bên trong <html>"}]},{"name":"2. Ảnh liên kết bắt buộc","points":5.5,"checks":[{"type":"has_tag","tag":"a","points":1.5,"label":"Có thẻ <a> liên kết","hint":"Thêm <a href=\"...\">...</a>"},{"type":"has_tag","tag":"img","points":1.5,"label":"Có thẻ <img> bên trong <a>","hint":"Đặt <img> bên trong <a>: <a><img></a>"},{"type":"has_attr","tag":"a","attr":"href","points":1.5,"label":"<a> có href","hint":"Thêm href=\"https://...\" vào <a>"},{"type":"has_attr","tag":"img","attr":"alt","points":1.0,"label":"<img> có alt","hint":"Thêm alt=\"mô tả\" vào <img>"}]},{"name":"4. Cú pháp & Định dạng","points":2.0,"checks":[{"type":"no_syntax_error","points":1.4,"label":"Không có lỗi thẻ đóng/mở","hint":"Mỗi thẻ mở phải có thẻ đóng tương ứng"},{"type":"no_quote_error","points":0.6,"label":"Thuộc tính có dấu nháy kép","hint":"Dùng dấu nháy kép: attr=\"value\""}]}]},{"id":"f3_apply1","group":"F3 — Bảng & Bố cục","title":"F3 - Vận dụng 1: Bảng thời khóa biểu","description":"Tạo bảng thời khóa biểu với <code>&lt;table border&gt;</code>, <code>&lt;thead&gt;</code> dùng <code>&lt;th&gt;</code>, ít nhất 5 hàng trong <code>&lt;tbody&gt;</code>.","required_tags":["table","thead","tbody","tr","th","td"],"criteria":[{"name":"1. Cấu trúc HTML cơ bản","points":2.0,"checks":[{"type":"has_doctype","points":0.4,"label":"Có <!DOCTYPE html>","hint":"Thêm <!DOCTYPE html> vào dòng đầu tiên"},{"type":"has_tag","tag":"html","points":0.4,"label":"Có thẻ <html>","hint":"Bọc toàn bộ nội dung trong <html>...</html>"},{"type":"has_tag","tag":"head","points":0.4,"label":"Có thẻ <head>","hint":"Thêm <head>...</head> bên trong <html>"},{"type":"has_tag","tag":"title","points":0.4,"label":"Có thẻ <title>","hint":"Thêm <title>Tiêu đề</title> vào trong <head>"},{"type":"has_tag","tag":"body","points":0.4,"label":"Có thẻ <body>","hint":"Thêm <body>...</body> bên trong <html>"}]},{"name":"2. Cấu trúc bảng","points":5.5,"checks":[{"type":"has_tag","tag":"table","points":1.0,"label":"Có thẻ <table>","hint":"Thêm <table>...</table>"},{"type":"has_tag","tag":"thead","points":1.0,"label":"Có thẻ <thead> tiêu đề bảng","hint":"Thêm <thead>...</thead> trong <table>"},{"type":"has_tag","tag":"tbody","points":1.0,"label":"Có thẻ <tbody> thân bảng","hint":"Thêm <tbody>...</tbody> trong <table>"},{"type":"has_tag","tag":"th","points":1.0,"label":"Có thẻ <th> tiêu đề cột","hint":"Dùng <th> trong <thead> thay vì <td>"},{"type":"tag_count","tag":"tr","min":6,"points":1.5,"label":"Có ít nhất 6 hàng <tr>","hint":"Thêm ít nhất 5 hàng <tr> vào <tbody>"}]},{"name":"3. Thuộc tính bảng","points":1.0,"checks":[{"type":"has_attr","tag":"table","attr":"border","points":1.0,"label":"<table> có border","hint":"Thêm border=\"1\" vào <table>"}]},{"name":"4. Cú pháp & Định dạng","points":1.5,"checks":[{"type":"no_syntax_error","points":1.05,"label":"Không có lỗi thẻ đóng/mở","hint":"Mỗi thẻ mở phải có thẻ đóng tương ứng"},{"type":"no_quote_error","points":0.45,"label":"Thuộc tính có dấu nháy kép","hint":"Dùng dấu nháy kép: attr=\"value\""}]}]},{"id":"f3_apply2","group":"F3 — Bảng & Bố cục","title":"F3 - Vận dụng 2: Bố cục trang web (Header-Menu-Nội dung-Footer)","description":"Tạo bố cục trang web với thẻ ngữ nghĩa: <code>&lt;header&gt;</code>, <code>&lt;nav&gt;</code>, <code>&lt;main&gt;</code>, <code>&lt;footer&gt;</code>.","required_tags":["header","nav","main","footer"],"criteria":[{"name":"1. Cấu trúc HTML cơ bản","points":2.0,"checks":[{"type":"has_doctype","points":0.4,"label":"Có <!DOCTYPE html>","hint":"Thêm <!DOCTYPE html> vào dòng đầu tiên"},{"type":"has_tag","tag":"html","points":0.4,"label":"Có thẻ <html>","hint":"Bọc toàn bộ nội dung trong <html>...</html>"},{"type":"has_tag","tag":"head","points":0.4,"label":"Có thẻ <head>","hint":"Thêm <head>...</head> bên trong <html>"},{"type":"has_tag","tag":"title","points":0.4,"label":"Có thẻ <title>","hint":"Thêm <title>Tiêu đề</title> vào trong <head>"},{"type":"has_tag","tag":"body","points":0.4,"label":"Có thẻ <body>","hint":"Thêm <body>...</body> bên trong <html>"}]},{"name":"2. Thẻ ngữ nghĩa bắt buộc","points":6.0,"checks":[{"type":"has_tag","tag":"header","points":1.5,"label":"Có thẻ <header>","hint":"Thêm <header>Tiêu đề trang</header>"},{"type":"has_tag","tag":"nav","points":1.5,"label":"Có thẻ <nav> menu điều hướng","hint":"Thêm <nav>...</nav> chứa menu"},{"type":"has_tag","tag":"main","points":1.5,"label":"Có thẻ <main> nội dung chính","hint":"Thêm <main>Nội dung chính</main>"},{"type":"has_tag","tag":"footer","points":1.5,"label":"Có thẻ <footer>","hint":"Thêm <footer>Thông tin cuối trang</footer>"}]},{"name":"4. Cú pháp & Định dạng","points":2.0,"checks":[{"type":"no_syntax_error","points":1.4,"label":"Không có lỗi thẻ đóng/mở","hint":"Mỗi thẻ mở phải có thẻ đóng tương ứng"},{"type":"no_quote_error","points":0.6,"label":"Thuộc tính có dấu nháy kép","hint":"Dùng dấu nháy kép: attr=\"value\""}]}]},{"id":"f3_apply3","group":"F3 — Bảng & Bố cục","title":"F3 - Vận dụng 3: Nhúng video YouTube (iframe)","description":"Nhúng video YouTube bằng <code>&lt;iframe&gt;</code> có <code>src</code> URL YouTube, <code>width</code>, <code>height</code>, <code>allowfullscreen</code>.","required_tags":["iframe"],"criteria":[{"name":"1. Cấu trúc HTML cơ bản","points":2.5,"checks":[{"type":"has_doctype","points":0.5,"label":"Có <!DOCTYPE html>","hint":"Thêm <!DOCTYPE html> vào dòng đầu tiên"},{"type":"has_tag","tag":"html","points":0.5,"label":"Có thẻ <html>","hint":"Bọc toàn bộ nội dung trong <html>...</html>"},{"type":"has_tag","tag":"head","points":0.5,"label":"Có thẻ <head>","hint":"Thêm <head>...</head> bên trong <html>"},{"type":"has_tag","tag":"title","points":0.5,"label":"Có thẻ <title>","hint":"Thêm <title>Tiêu đề</title> vào trong <head>"},{"type":"has_tag","tag":"body","points":0.5,"label":"Có thẻ <body>","hint":"Thêm <body>...</body> bên trong <html>"}]},{"name":"2. Thẻ iframe bắt buộc","points":5.5,"checks":[{"type":"has_tag","tag":"iframe","points":2.0,"label":"Có thẻ <iframe>","hint":"Thêm <iframe src=\"...\"></iframe>"},{"type":"has_attr","tag":"iframe","attr":"src","points":1.5,"label":"<iframe> có src","hint":"Thêm src=\"https://www.youtube.com/embed/...\" vào <iframe>"},{"type":"has_attr","tag":"iframe","attr":"width","points":0.5,"label":"<iframe> có width","hint":"Thêm width=\"560\" vào <iframe>"},{"type":"has_attr","tag":"iframe","attr":"height","points":0.5,"label":"<iframe> có height","hint":"Thêm height=\"315\" vào <iframe>"},{"type":"has_bool_attr","tag":"iframe","attr":"allowfullscreen","points":1.0,"label":"<iframe> có allowfullscreen","hint":"Thêm allowfullscreen vào <iframe>"}]},{"name":"4. Cú pháp & Định dạng","points":2.0,"checks":[{"type":"no_syntax_error","points":1.4,"label":"Không có lỗi thẻ đóng/mở","hint":"Mỗi thẻ mở phải có thẻ đóng tương ứng"},{"type":"no_quote_error","points":0.6,"label":"Thuộc tính có dấu nháy kép","hint":"Dùng dấu nháy kép: attr=\"value\""}]}]},{"id":"f4_apply1","group":"F4 — Đa phương tiện","title":"F4 - Vận dụng 1: Video tự động phát, tắt tiếng","description":"Nhúng video với <code>&lt;video autoplay muted controls&gt;</code> và <code>&lt;source&gt;</code> chỉ định file video.","required_tags":["video","source"],"criteria":[{"name":"1. Cấu trúc HTML cơ bản","points":2.0,"checks":[{"type":"has_doctype","points":0.4,"label":"Có <!DOCTYPE html>","hint":"Thêm <!DOCTYPE html> vào dòng đầu tiên"},{"type":"has_tag","tag":"html","points":0.4,"label":"Có thẻ <html>","hint":"Bọc toàn bộ nội dung trong <html>...</html>"},{"type":"has_tag","tag":"head","points":0.4,"label":"Có thẻ <head>","hint":"Thêm <head>...</head> bên trong <html>"},{"type":"has_tag","tag":"title","points":0.4,"label":"Có thẻ <title>","hint":"Thêm <title>Tiêu đề</title> vào trong <head>"},{"type":"has_tag","tag":"body","points":0.4,"label":"Có thẻ <body>","hint":"Thêm <body>...</body> bên trong <html>"}]},{"name":"2. Thẻ video bắt buộc","points":6.5,"checks":[{"type":"has_tag","tag":"video","points":1.5,"label":"Có thẻ <video>","hint":"Thêm <video>...</video>"},{"type":"has_tag","tag":"source","points":1.0,"label":"Có <source> bên trong <video>","hint":"Thêm <source src=\"video.mp4\" type=\"video/mp4\"> vào <video>"},{"type":"has_bool_attr","tag":"video","attr":"autoplay","points":1.5,"label":"<video> có autoplay","hint":"Thêm autoplay vào <video>"},{"type":"has_bool_attr","tag":"video","attr":"muted","points":1.5,"label":"<video> có muted","hint":"Thêm muted vào <video>"},{"type":"has_bool_attr","tag":"video","attr":"controls","points":1.0,"label":"<video> có controls","hint":"Thêm controls vào <video>"}]},{"name":"4. Cú pháp & Định dạng","points":1.5,"checks":[{"type":"no_syntax_error","points":1.05,"label":"Không có lỗi thẻ đóng/mở","hint":"Mỗi thẻ mở phải có thẻ đóng tương ứng"},{"type":"no_quote_error","points":0.45,"label":"Thuộc tính có dấu nháy kép","hint":"Dùng dấu nháy kép: attr=\"value\""}]}]},{"id":"f4_apply2","group":"F4 — Đa phương tiện","title":"F4 - Vận dụng 2: Trang nhạc + lời bài hát","description":"Tạo trang nhạc với <code>&lt;audio controls&gt;</code>, <code>&lt;source&gt;</code>, <code>&lt;h2&gt;</code> tên bài và lời trong <code>&lt;p&gt;</code>.","required_tags":["audio","source","h2"],"criteria":[{"name":"1. Cấu trúc HTML cơ bản","points":2.0,"checks":[{"type":"has_doctype","points":0.4,"label":"Có <!DOCTYPE html>","hint":"Thêm <!DOCTYPE html> vào dòng đầu tiên"},{"type":"has_tag","tag":"html","points":0.4,"label":"Có thẻ <html>","hint":"Bọc toàn bộ nội dung trong <html>...</html>"},{"type":"has_tag","tag":"head","points":0.4,"label":"Có thẻ <head>","hint":"Thêm <head>...</head> bên trong <html>"},{"type":"has_tag","tag":"title","points":0.4,"label":"Có thẻ <title>","hint":"Thêm <title>Tiêu đề</title> vào trong <head>"},{"type":"has_tag","tag":"body","points":0.4,"label":"Có thẻ <body>","hint":"Thêm <body>...</body> bên trong <html>"}]},{"name":"2. Thẻ audio bắt buộc","points":5.5,"checks":[{"type":"has_tag","tag":"audio","points":2.0,"label":"Có thẻ <audio>","hint":"Thêm <audio>...</audio>"},{"type":"has_tag","tag":"source","points":1.0,"label":"Có <source> bên trong <audio>","hint":"Thêm <source src=\"nhac.mp3\" type=\"audio/mpeg\"> vào <audio>"},{"type":"has_bool_attr","tag":"audio","attr":"controls","points":1.5,"label":"<audio> có controls","hint":"Thêm controls vào <audio>"},{"type":"has_tag","tag":"h2","points":1.0,"label":"Có <h2> tên bài hát","hint":"Thêm <h2>Tên bài hát</h2>"}]},{"name":"3. Lời bài hát","points":1.0,"checks":[{"type":"tag_count","tag":"p","min":2,"points":1.0,"label":"Có ít nhất 2 <p> lời bài hát","hint":"Thêm <p>Lời bài hát...</p>"}]},{"name":"4. Cú pháp & Định dạng","points":1.5,"checks":[{"type":"no_syntax_error","points":1.05,"label":"Không có lỗi thẻ đóng/mở","hint":"Mỗi thẻ mở phải có thẻ đóng tương ứng"},{"type":"no_quote_error","points":0.45,"label":"Thuộc tính có dấu nháy kép","hint":"Dùng dấu nháy kép: attr=\"value\""}]}]},{"id":"f4_apply3","group":"F4 — Đa phương tiện","title":"F4 - Vận dụng 3: Portfolio hoàn chỉnh (ảnh + video + audio)","description":"Tạo Portfolio với <code>&lt;img alt&gt;</code> ảnh đại diện, <code>&lt;video&gt;</code> giới thiệu, <code>&lt;audio&gt;</code> nhạc nền, <code>&lt;h1&gt;</code> tiêu đề.","required_tags":["img","video","audio","h1"],"criteria":[{"name":"1. Cấu trúc HTML cơ bản","points":2.0,"checks":[{"type":"has_doctype","points":0.4,"label":"Có <!DOCTYPE html>","hint":"Thêm <!DOCTYPE html> vào dòng đầu tiên"},{"type":"has_tag","tag":"html","points":0.4,"label":"Có thẻ <html>","hint":"Bọc toàn bộ nội dung trong <html>...</html>"},{"type":"has_tag","tag":"head","points":0.4,"label":"Có thẻ <head>","hint":"Thêm <head>...</head> bên trong <html>"},{"type":"has_tag","tag":"title","points":0.4,"label":"Có thẻ <title>","hint":"Thêm <title>Tiêu đề</title> vào trong <head>"},{"type":"has_tag","tag":"body","points":0.4,"label":"Có thẻ <body>","hint":"Thêm <body>...</body> bên trong <html>"}]},{"name":"2. Thẻ media đầy đủ","points":6.5,"checks":[{"type":"has_tag","tag":"h1","points":0.5,"label":"Có <h1> tiêu đề","hint":"Thêm <h1>Portfolio của tôi</h1>"},{"type":"has_tag","tag":"img","points":1.5,"label":"Có <img> ảnh đại diện","hint":"Thêm <img src=\"anh.jpg\" alt=\"Ảnh đại diện\">"},{"type":"has_attr","tag":"img","attr":"alt","points":1.0,"label":"<img> có alt","hint":"Thêm alt=\"mô tả ảnh\" vào <img>"},{"type":"has_tag","tag":"video","points":2.0,"label":"Có thẻ <video>","hint":"Thêm <video controls>...</video>"},{"type":"has_tag","tag":"audio","points":1.5,"label":"Có thẻ <audio>","hint":"Thêm <audio controls>...</audio>"}]},{"name":"4. Cú pháp & Định dạng","points":1.5,"checks":[{"type":"no_syntax_error","points":1.05,"label":"Không có lỗi thẻ đóng/mở","hint":"Mỗi thẻ mở phải có thẻ đóng tương ứng"},{"type":"no_quote_error","points":0.45,"label":"Thuộc tính có dấu nháy kép","hint":"Dùng dấu nháy kép: attr=\"value\""}]}]},{"id":"f5_apply1","group":"F5 — Biểu mẫu","title":"F5 - Vận dụng 1: Biểu mẫu tìm kiếm","description":"Tạo form tìm kiếm với <code>&lt;form&gt;</code>, <code>&lt;input type=\"text\"&gt;</code> có <code>placeholder</code>, <code>&lt;button type=\"submit\"&gt;</code>.","required_tags":["form","input","button"],"criteria":[{"name":"1. Cấu trúc HTML cơ bản","points":2.0,"checks":[{"type":"has_doctype","points":0.4,"label":"Có <!DOCTYPE html>","hint":"Thêm <!DOCTYPE html> vào dòng đầu tiên"},{"type":"has_tag","tag":"html","points":0.4,"label":"Có thẻ <html>","hint":"Bọc toàn bộ nội dung trong <html>...</html>"},{"type":"has_tag","tag":"head","points":0.4,"label":"Có thẻ <head>","hint":"Thêm <head>...</head> bên trong <html>"},{"type":"has_tag","tag":"title","points":0.4,"label":"Có thẻ <title>","hint":"Thêm <title>Tiêu đề</title> vào trong <head>"},{"type":"has_tag","tag":"body","points":0.4,"label":"Có thẻ <body>","hint":"Thêm <body>...</body> bên trong <html>"}]},{"name":"2. Thẻ form bắt buộc","points":5.5,"checks":[{"type":"has_tag","tag":"form","points":2.0,"label":"Có thẻ <form>","hint":"Thêm <form>...</form>"},{"type":"has_tag","tag":"input","points":1.5,"label":"Có thẻ <input>","hint":"Thêm <input type=\"text\" placeholder=\"Tìm kiếm...\">"},{"type":"attr_value","tag":"input","attr":"type","value":"text","points":1.0,"label":"<input> có type=\"text\"","hint":"Thêm type=\"text\" vào <input>"},{"type":"has_tag","tag":"button","points":1.0,"label":"Có thẻ <button>","hint":"Thêm <button type=\"submit\">Tìm kiếm</button>"}]},{"name":"3. Thuộc tính form","points":1.0,"checks":[{"type":"has_attr","tag":"input","attr":"placeholder","points":1.0,"label":"<input> có placeholder","hint":"Thêm placeholder=\"Nhập từ khóa...\" vào <input>"}]},{"name":"4. Cú pháp & Định dạng","points":1.5,"checks":[{"type":"no_syntax_error","points":1.05,"label":"Không có lỗi thẻ đóng/mở","hint":"Mỗi thẻ mở phải có thẻ đóng tương ứng"},{"type":"no_quote_error","points":0.45,"label":"Thuộc tính có dấu nháy kép","hint":"Dùng dấu nháy kép: attr=\"value\""}]}]},{"id":"f5_apply2","group":"F5 — Biểu mẫu","title":"F5 - Vận dụng 2: Đăng ký nhận tin (email bắt buộc)","description":"Tạo form đăng ký với <code>&lt;input type=\"email\" required&gt;</code>, <code>&lt;label&gt;</code>, nút submit.","required_tags":["form","input","label","button"],"criteria":[{"name":"1. Cấu trúc HTML cơ bản","points":2.0,"checks":[{"type":"has_doctype","points":0.4,"label":"Có <!DOCTYPE html>","hint":"Thêm <!DOCTYPE html> vào dòng đầu tiên"},{"type":"has_tag","tag":"html","points":0.4,"label":"Có thẻ <html>","hint":"Bọc toàn bộ nội dung trong <html>...</html>"},{"type":"has_tag","tag":"head","points":0.4,"label":"Có thẻ <head>","hint":"Thêm <head>...</head> bên trong <html>"},{"type":"has_tag","tag":"title","points":0.4,"label":"Có thẻ <title>","hint":"Thêm <title>Tiêu đề</title> vào trong <head>"},{"type":"has_tag","tag":"body","points":0.4,"label":"Có thẻ <body>","hint":"Thêm <body>...</body> bên trong <html>"}]},{"name":"2. Thẻ form bắt buộc","points":5.5,"checks":[{"type":"has_tag","tag":"form","points":1.5,"label":"Có thẻ <form>","hint":"Thêm <form>...</form>"},{"type":"has_tag","tag":"label","points":1.0,"label":"Có thẻ <label>","hint":"Thêm <label for=\"email\">Email:</label>"},{"type":"has_tag","tag":"input","points":1.0,"label":"Có thẻ <input>","hint":"Thêm <input type=\"email\" required>"},{"type":"attr_value","tag":"input","attr":"type","value":"email","points":1.0,"label":"<input> có type=\"email\"","hint":"Thêm type=\"email\" vào <input>"},{"type":"has_bool_attr","tag":"input","attr":"required","points":1.0,"label":"<input> có required","hint":"Thêm required vào <input type=\"email\">"}]},{"name":"3. Nút submit","points":1.0,"checks":[{"type":"has_tag","tag":"button","points":1.0,"label":"Có nút <button> submit","hint":"Thêm <button type=\"submit\">Đăng ký</button>"}]},{"name":"4. Cú pháp & Định dạng","points":1.5,"checks":[{"type":"no_syntax_error","points":1.05,"label":"Không có lỗi thẻ đóng/mở","hint":"Mỗi thẻ mở phải có thẻ đóng tương ứng"},{"type":"no_quote_error","points":0.45,"label":"Thuộc tính có dấu nháy kép","hint":"Dùng dấu nháy kép: attr=\"value\""}]}]},{"id":"f5_apply3","group":"F5 — Biểu mẫu","title":"F5 - Vận dụng 3: Khảo sát ý kiến","description":"Tạo form khảo sát với <code>&lt;input type=\"radio\"&gt;</code>, <code>&lt;input type=\"checkbox\"&gt;</code>, <code>&lt;textarea&gt;</code> nhận xét.","required_tags":["form","input","textarea"],"criteria":[{"name":"1. Cấu trúc HTML cơ bản","points":2.0,"checks":[{"type":"has_doctype","points":0.4,"label":"Có <!DOCTYPE html>","hint":"Thêm <!DOCTYPE html> vào dòng đầu tiên"},{"type":"has_tag","tag":"html","points":0.4,"label":"Có thẻ <html>","hint":"Bọc toàn bộ nội dung trong <html>...</html>"},{"type":"has_tag","tag":"head","points":0.4,"label":"Có thẻ <head>","hint":"Thêm <head>...</head> bên trong <html>"},{"type":"has_tag","tag":"title","points":0.4,"label":"Có thẻ <title>","hint":"Thêm <title>Tiêu đề</title> vào trong <head>"},{"type":"has_tag","tag":"body","points":0.4,"label":"Có thẻ <body>","hint":"Thêm <body>...</body> bên trong <html>"}]},{"name":"2. Thẻ form bắt buộc","points":6.0,"checks":[{"type":"has_tag","tag":"form","points":1.5,"label":"Có thẻ <form>","hint":"Thêm <form>...</form>"},{"type":"attr_value","tag":"input","attr":"type","value":"radio","points":1.5,"label":"Có <input type=\"radio\">","hint":"Thêm <input type=\"radio\" name=\"...\" value=\"...\">"},{"type":"attr_value","tag":"input","attr":"type","value":"checkbox","points":1.5,"label":"Có <input type=\"checkbox\">","hint":"Thêm <input type=\"checkbox\" name=\"...\" value=\"...\">"},{"type":"has_tag","tag":"textarea","points":1.5,"label":"Có <textarea> nhận xét","hint":"Thêm <textarea rows=\"4\">...</textarea>"}]},{"name":"3. Nút submit","points":0.5,"checks":[{"type":"has_tag","tag":"button","points":0.5,"label":"Có nút submit","hint":"Thêm <button type=\"submit\">Gửi</button>"}]},{"name":"4. Cú pháp & Định dạng","points":1.5,"checks":[{"type":"no_syntax_error","points":1.05,"label":"Không có lỗi thẻ đóng/mở","hint":"Mỗi thẻ mở phải có thẻ đóng tương ứng"},{"type":"no_quote_error","points":0.45,"label":"Thuộc tính có dấu nháy kép","hint":"Dùng dấu nháy kép: attr=\"value\""}]}]},{"id":"f5_apply4","group":"F5 — Biểu mẫu","title":"F5 - Thực hành: Trang đăng nhập hệ thống","description":"Tạo trang đăng nhập với <code>&lt;input type=\"text\"&gt;</code> tên đăng nhập, <code>&lt;input type=\"password\"&gt;</code> mật khẩu, <code>&lt;label&gt;</code>, nút đăng nhập.","required_tags":["form","input","label","button"],"criteria":[{"name":"1. Cấu trúc HTML cơ bản","points":2.0,"checks":[{"type":"has_doctype","points":0.4,"label":"Có <!DOCTYPE html>","hint":"Thêm <!DOCTYPE html> vào dòng đầu tiên"},{"type":"has_tag","tag":"html","points":0.4,"label":"Có thẻ <html>","hint":"Bọc toàn bộ nội dung trong <html>...</html>"},{"type":"has_tag","tag":"head","points":0.4,"label":"Có thẻ <head>","hint":"Thêm <head>...</head> bên trong <html>"},{"type":"has_tag","tag":"title","points":0.4,"label":"Có thẻ <title>","hint":"Thêm <title>Tiêu đề</title> vào trong <head>"},{"type":"has_tag","tag":"body","points":0.4,"label":"Có thẻ <body>","hint":"Thêm <body>...</body> bên trong <html>"}]},{"name":"2. Thẻ form đăng nhập","points":6.0,"checks":[{"type":"has_tag","tag":"form","points":1.5,"label":"Có thẻ <form>","hint":"Thêm <form>...</form>"},{"type":"has_tag","tag":"label","points":1.0,"label":"Có thẻ <label>","hint":"Thêm <label> cho mỗi input"},{"type":"attr_value","tag":"input","attr":"type","value":"text","points":1.5,"label":"Có <input type=\"text\"> tên đăng nhập","hint":"Thêm <input type=\"text\" name=\"username\">"},{"type":"attr_value","tag":"input","attr":"type","value":"password","points":1.5,"label":"Có <input type=\"password\"> mật khẩu","hint":"Thêm <input type=\"password\" name=\"password\">"},{"type":"has_tag","tag":"button","points":0.5,"label":"Có nút đăng nhập","hint":"Thêm <button type=\"submit\">Đăng nhập</button>"}]},{"name":"3. Thuộc tính bảo mật","points":0.5,"checks":[{"type":"has_bool_attr","tag":"input","attr":"required","points":0.5,"label":"Input có required","hint":"Thêm required vào các <input>"}]},{"name":"4. Cú pháp & Định dạng","points":1.5,"checks":[{"type":"no_syntax_error","points":1.05,"label":"Không có lỗi thẻ đóng/mở","hint":"Mỗi thẻ mở phải có thẻ đóng tương ứng"},{"type":"no_quote_error","points":0.45,"label":"Thuộc tính có dấu nháy kép","hint":"Dùng dấu nháy kép: attr=\"value\""}]}]},{"id":"f5_apply5","group":"F5 — Biểu mẫu","title":"F5 - Vận dụng: Đăng ký câu lạc bộ","description":"Tạo form đăng ký câu lạc bộ với <code>&lt;select&gt;</code> (ít nhất 3 <code>&lt;option&gt;</code>), <code>&lt;input type=\"email\"&gt;</code>, nút submit.","required_tags":["form","select","option","input","button"],"criteria":[{"name":"1. Cấu trúc HTML cơ bản","points":2.0,"checks":[{"type":"has_doctype","points":0.4,"label":"Có <!DOCTYPE html>","hint":"Thêm <!DOCTYPE html> vào dòng đầu tiên"},{"type":"has_tag","tag":"html","points":0.4,"label":"Có thẻ <html>","hint":"Bọc toàn bộ nội dung trong <html>...</html>"},{"type":"has_tag","tag":"head","points":0.4,"label":"Có thẻ <head>","hint":"Thêm <head>...</head> bên trong <html>"},{"type":"has_tag","tag":"title","points":0.4,"label":"Có thẻ <title>","hint":"Thêm <title>Tiêu đề</title> vào trong <head>"},{"type":"has_tag","tag":"body","points":0.4,"label":"Có thẻ <body>","hint":"Thêm <body>...</body> bên trong <html>"}]},{"name":"2. Thẻ form bắt buộc","points":6.0,"checks":[{"type":"has_tag","tag":"form","points":1.5,"label":"Có thẻ <form>","hint":"Thêm <form>...</form>"},{"type":"has_tag","tag":"select","points":1.5,"label":"Có <select> chọn câu lạc bộ","hint":"Thêm <select name=\"club\">...</select>"},{"type":"tag_count","tag":"option","min":3,"points":1.5,"label":"Có ít nhất 3 <option>","hint":"Thêm ít nhất 3 <option value=\"...\">Tên CLB</option>"},{"type":"attr_value","tag":"input","attr":"type","value":"email","points":1.5,"label":"Có <input type=\"email\">","hint":"Thêm <input type=\"email\" required>"}]},{"name":"3. Nút submit","points":0.5,"checks":[{"type":"has_tag","tag":"button","points":0.5,"label":"Có nút <button> submit","hint":"Thêm <button type=\"submit\">Đăng ký</button>"}]},{"name":"4. Cú pháp & Định dạng","points":1.5,"checks":[{"type":"no_syntax_error","points":1.05,"label":"Không có lỗi thẻ đóng/mở","hint":"Mỗi thẻ mở phải có thẻ đóng tương ứng"},{"type":"no_quote_error","points":0.45,"label":"Thuộc tính có dấu nháy kép","hint":"Dùng dấu nháy kép: attr=\"value\""}]}]},{"id":"tong1","group":"Tổng hợp","title":"Tổng hợp - Vận dụng 1: Hồ sơ cá nhân (F1+F2+F4)","description":"Tạo trang Hồ sơ cá nhân: <code>&lt;h1&gt;</code> tên, <code>&lt;img alt&gt;</code> ảnh đại diện, <code>&lt;ul&gt;</code> sở thích, <code>&lt;a&gt;</code> liên kết, <code>&lt;audio&gt;</code> hoặc <code>&lt;video&gt;</code>.","required_tags":["h1","img","ul","li","a"],"criteria":[{"name":"1. Cấu trúc HTML cơ bản","points":2.0,"checks":[{"type":"has_doctype","points":0.4,"label":"Có <!DOCTYPE html>","hint":"Thêm <!DOCTYPE html> vào dòng đầu tiên"},{"type":"has_tag","tag":"html","points":0.4,"label":"Có thẻ <html>","hint":"Bọc toàn bộ nội dung trong <html>...</html>"},{"type":"has_tag","tag":"head","points":0.4,"label":"Có thẻ <head>","hint":"Thêm <head>...</head> bên trong <html>"},{"type":"has_tag","tag":"title","points":0.4,"label":"Có thẻ <title>","hint":"Thêm <title>Tiêu đề</title> vào trong <head>"},{"type":"has_tag","tag":"body","points":0.4,"label":"Có thẻ <body>","hint":"Thêm <body>...</body> bên trong <html>"}]},{"name":"2. Thẻ nội dung (F1+F2)","points":4.5,"checks":[{"type":"has_tag","tag":"h1","points":1.0,"label":"Có <h1> tên cá nhân","hint":"Thêm <h1>Họ và tên</h1>"},{"type":"has_tag","tag":"img","points":1.0,"label":"Có <img> ảnh đại diện","hint":"Thêm <img src=\"anh.jpg\" alt=\"Ảnh đại diện\">"},{"type":"has_attr","tag":"img","attr":"alt","points":0.5,"label":"<img> có alt","hint":"Thêm alt=\"mô tả\" vào <img>"},{"type":"has_tag","tag":"ul","points":0.5,"label":"Có <ul> danh sách sở thích","hint":"Thêm <ul>...</ul>"},{"type":"tag_count","tag":"li","min":3,"points":0.5,"label":"Có ít nhất 3 <li>","hint":"Thêm ít nhất 3 <li>Sở thích</li>"},{"type":"has_tag","tag":"a","points":1.0,"label":"Có <a> liên kết","hint":"Thêm <a href=\"...\">Liên kết</a>"}]},{"name":"3. Media (F4)","points":2.0,"checks":[{"type":"has_tag_any","tags":["audio","video"],"points":2.0,"label":"Có <audio> hoặc <video>","hint":"Thêm <audio controls>...</audio> hoặc <video controls>...</video>"}]},{"name":"4. Cú pháp & Định dạng","points":1.5,"checks":[{"type":"no_syntax_error","points":1.05,"label":"Không có lỗi thẻ đóng/mở","hint":"Mỗi thẻ mở phải có thẻ đóng tương ứng"},{"type":"no_quote_error","points":0.45,"label":"Thuộc tính có dấu nháy kép","hint":"Dùng dấu nháy kép: attr=\"value\""}]}]},{"id":"tong2","group":"Tổng hợp","title":"Tổng hợp - Vận dụng 2: Thời khóa biểu phức tạp (F3)","description":"Tạo bảng thời khóa biểu: <code>&lt;table border&gt;</code>, <code>&lt;thead&gt;</code>, ít nhất 5 hàng <code>&lt;tbody&gt;</code>, dùng <code>colspan</code> hoặc <code>rowspan</code>.","required_tags":["table","thead","tbody","tr","th","td"],"criteria":[{"name":"1. Cấu trúc HTML cơ bản","points":2.0,"checks":[{"type":"has_doctype","points":0.4,"label":"Có <!DOCTYPE html>","hint":"Thêm <!DOCTYPE html> vào dòng đầu tiên"},{"type":"has_tag","tag":"html","points":0.4,"label":"Có thẻ <html>","hint":"Bọc toàn bộ nội dung trong <html>...</html>"},{"type":"has_tag","tag":"head","points":0.4,"label":"Có thẻ <head>","hint":"Thêm <head>...</head> bên trong <html>"},{"type":"has_tag","tag":"title","points":0.4,"label":"Có thẻ <title>","hint":"Thêm <title>Tiêu đề</title> vào trong <head>"},{"type":"has_tag","tag":"body","points":0.4,"label":"Có thẻ <body>","hint":"Thêm <body>...</body> bên trong <html>"}]},{"name":"2. Cấu trúc bảng đầy đủ","points":5.0,"checks":[{"type":"has_tag","tag":"table","points":1.0,"label":"Có <table>","hint":"Thêm <table border=\"1\">...</table>"},{"type":"has_tag","tag":"thead","points":1.0,"label":"Có <thead>","hint":"Thêm <thead>...</thead>"},{"type":"has_tag","tag":"tbody","points":1.0,"label":"Có <tbody>","hint":"Thêm <tbody>...</tbody>"},{"type":"has_tag","tag":"th","points":1.0,"label":"Có <th> trong thead","hint":"Dùng <th> trong <thead>"},{"type":"tag_count","tag":"tr","min":6,"points":1.0,"label":"Có ít nhất 6 hàng <tr>","hint":"Thêm ít nhất 5 hàng dữ liệu vào <tbody>"}]},{"name":"3. Thuộc tính nâng cao","points":1.5,"checks":[{"type":"has_attr","tag":"table","attr":"border","points":0.5,"label":"<table> có border","hint":"Thêm border=\"1\" vào <table>"},{"type":"has_attr_any","tags":["td","th"],"attr":"colspan","points":0.5,"label":"Có colspan","hint":"Thêm colspan vào ô cần gộp cột"},{"type":"has_attr_any","tags":["td","th"],"attr":"rowspan","points":0.5,"label":"Có rowspan","hint":"Thêm rowspan vào ô cần gộp hàng"}]},{"name":"4. Cú pháp & Định dạng","points":1.5,"checks":[{"type":"no_syntax_error","points":1.05,"label":"Không có lỗi thẻ đóng/mở","hint":"Mỗi thẻ mở phải có thẻ đóng tương ứng"},{"type":"no_quote_error","points":0.45,"label":"Thuộc tính có dấu nháy kép","hint":"Dùng dấu nháy kép: attr=\"value\""}]}]},{"id":"tong3","group":"Tổng hợp","title":"Tổng hợp - Vận dụng 3: Đăng ký câu lạc bộ đầy đủ (F5)","description":"Tạo form đăng ký đầy đủ: họ tên, email (<code>required</code>), <code>&lt;select&gt;</code> câu lạc bộ, <code>&lt;input type=\"radio\"&gt;</code> giới tính, <code>&lt;textarea&gt;</code> lý do.","required_tags":["form","input","select","textarea","button"],"criteria":[{"name":"1. Cấu trúc HTML cơ bản","points":2.0,"checks":[{"type":"has_doctype","points":0.4,"label":"Có <!DOCTYPE html>","hint":"Thêm <!DOCTYPE html> vào dòng đầu tiên"},{"type":"has_tag","tag":"html","points":0.4,"label":"Có thẻ <html>","hint":"Bọc toàn bộ nội dung trong <html>...</html>"},{"type":"has_tag","tag":"head","points":0.4,"label":"Có thẻ <head>","hint":"Thêm <head>...</head> bên trong <html>"},{"type":"has_tag","tag":"title","points":0.4,"label":"Có thẻ <title>","hint":"Thêm <title>Tiêu đề</title> vào trong <head>"},{"type":"has_tag","tag":"body","points":0.4,"label":"Có thẻ <body>","hint":"Thêm <body>...</body> bên trong <html>"}]},{"name":"2. Thẻ form đầy đủ","points":6.5,"checks":[{"type":"has_tag","tag":"form","points":1.0,"label":"Có <form>","hint":"Thêm <form>...</form>"},{"type":"attr_value","tag":"input","attr":"type","value":"email","points":1.5,"label":"Có <input type=\"email\">","hint":"Thêm <input type=\"email\" required>"},{"type":"has_bool_attr","tag":"input","attr":"required","points":1.0,"label":"Email có required","hint":"Thêm required vào <input type=\"email\">"},{"type":"has_tag","tag":"select","points":1.0,"label":"Có <select> câu lạc bộ","hint":"Thêm <select>...</select>"},{"type":"attr_value","tag":"input","attr":"type","value":"radio","points":1.0,"label":"Có <input type=\"radio\"> giới tính","hint":"Thêm <input type=\"radio\" name=\"gender\">"},{"type":"has_tag","tag":"textarea","points":1.0,"label":"Có <textarea> lý do","hint":"Thêm <textarea>...</textarea>"}]},{"name":"3. Nút submit","points":0.0,"checks":[{"type":"has_tag","tag":"button","points":0.0,"label":"Có nút <button> submit","hint":"Thêm <button type=\"submit\">Đăng ký</button>"}]},{"name":"4. Cú pháp & Định dạng","points":1.5,"checks":[{"type":"no_syntax_error","points":1.05,"label":"Không có lỗi thẻ đóng/mở","hint":"Mỗi thẻ mở phải có thẻ đóng tương ứng"},{"type":"no_quote_error","points":0.45,"label":"Thuộc tính có dấu nháy kép","hint":"Dùng dấu nháy kép: attr=\"value\""}]}]}];
 
-// ═══════════════════════════════════════════════════════════════════
-//  KHỞI TẠO
-// ═══════════════════════════════════════════════════════════════════
 const TOPICS = {
   'F1 — HTML Cơ bản': ['f1_apply1','f1_apply2','f1_apply3','f1_analyze1'],
   'F2 — Danh sách & Liên kết': ['f2_apply1','f2_apply2','f2_apply3'],
@@ -399,9 +397,520 @@ const TOPICS = {
   'F5 — Biểu mẫu (Form)': ['f5_apply1','f5_apply2','f5_apply3','f5_apply4','f5_apply5'],
   'Tổng hợp': ['tong1','tong2','tong3'],
 };
+
+// ── Tiêu chí cấu trúc HTML cơ bản (dùng lại cho nhiều bài) ──
+// Tổng: 2.5 điểm
+function basicStructureCriteria(pts) {
+  pts = pts || 2.5;
+  const each = +(pts/5).toFixed(2);
+  return {
+    name: '1. Cấu trúc HTML cơ bản',
+    points: pts,
+    checks: [
+      {type:'has_doctype', points:each, label:'Có &lt;!DOCTYPE html&gt;', hint:'Thêm <!DOCTYPE html> vào dòng đầu tiên'},
+      {type:'has_tag', tag:'html', points:each, label:'Có thẻ &lt;html&gt;', hint:'Bọc toàn bộ nội dung trong <html>...</html>'},
+      {type:'has_tag', tag:'head', points:each, label:'Có thẻ &lt;head&gt;', hint:'Thêm <head>...</head> bên trong <html>'},
+      {type:'has_tag', tag:'title', points:each, label:'Có thẻ &lt;title&gt;', hint:'Thêm <title>Tiêu đề</title> vào trong <head>'},
+      {type:'has_tag', tag:'body', points:each, label:'Có thẻ &lt;body&gt;', hint:'Thêm <body>...</body> bên trong <html>'},
+    ]
+  };
+}
+
+// ── Tiêu chí cú pháp (dùng lại, CHỈ tính khi có HTML hợp lệ) ──
+function syntaxCriteria(pts) {
+  pts = pts || 2.0;
+  return {
+    name: 'Cú pháp & Định dạng',
+    points: pts,
+    checks: [
+      {type:'no_syntax_error', points:+(pts*0.7).toFixed(2), label:'Không có lỗi thẻ đóng/mở', hint:'Mỗi thẻ mở phải có thẻ đóng tương ứng'},
+      {type:'no_quote_error',  points:+(pts*0.3).toFixed(2), label:'Thuộc tính dùng dấu nháy kép', hint:'Dùng dấu nháy kép: attr="value"'},
+    ]
+  };
+}
+
+const EXERCISES = [
+  // ════════════════════════════════════════════════════════
+  //  F1 — HTML CƠ BẢN
+  // ════════════════════════════════════════════════════════
+  {
+    id: 'f1_apply1',
+    group: 'F1 — HTML Cơ bản',
+    title: 'F1 - Vận dụng 1: Trang thông tin cá nhân',
+    description: 'Viết mã HTML hoàn chỉnh tạo trang web có <strong>tiêu đề</strong> là "Thông tin cá nhân", chứa <code>&lt;h1&gt;</code> ghi tên và <code>&lt;p&gt;</code> giới thiệu sở thích.',
+    required_tags: ['html','head','title','body','h1','p'],
+    criteria: [
+      basicStructureCriteria(3.0),
+      {
+        name: '2. Nội dung bắt buộc',
+        points: 5.0,
+        checks: [
+          {type:'has_tag', tag:'h1', points:2.0, label:'Có thẻ &lt;h1&gt; tên', hint:'Thêm <h1>Tên của bạn</h1>'},
+          {type:'tag_count', tag:'p', min:1, points:2.0, label:'Có ít nhất 1 thẻ &lt;p&gt; giới thiệu', hint:'Thêm <p>Nội dung giới thiệu sở thích</p>'},
+          {type:'has_attr_title_nonempty', points:1.0, label:'Thẻ &lt;title&gt; có nội dung', hint:'Thêm nội dung vào <title>Thông tin cá nhân</title>'},
+        ]
+      },
+      syntaxCriteria(2.0),
+    ]
+  },
+  {
+    id: 'f1_apply2',
+    group: 'F1 — HTML Cơ bản',
+    title: 'F1 - Vận dụng 2: Trang có ô nhập số điện thoại',
+    description: 'Sử dụng thẻ <code>&lt;input&gt;</code> để tạo trang web hoàn chỉnh có khung nhập liệu "Số điện thoại:" kèm đề mục <code>&lt;h1&gt;</code> "Liên hệ với chúng tôi".',
+    required_tags: ['html','head','title','body','h1','input'],
+    criteria: [
+      basicStructureCriteria(3.0),
+      {
+        name: '2. Nội dung bắt buộc',
+        points: 5.0,
+        checks: [
+          {type:'has_tag', tag:'h1', points:2.0, label:'Có thẻ &lt;h1&gt; tiêu đề', hint:'Thêm <h1>Liên hệ với chúng tôi</h1>'},
+          {type:'has_tag', tag:'input', points:2.0, label:'Có thẻ &lt;input&gt; nhập liệu', hint:'Thêm <input type="tel" placeholder="Số điện thoại">'},
+          {type:'has_label_or_p', points:1.0, label:'Có nhãn &lt;label&gt; hoặc &lt;p&gt; mô tả', hint:'Thêm <label>Số điện thoại:</label> hoặc <p>Nhập số:</p>'},
+        ]
+      },
+      syntaxCriteria(2.0),
+    ]
+  },
+  {
+    id: 'f1_apply3',
+    group: 'F1 — HTML Cơ bản',
+    title: 'F1 - Vận dụng 3: Lí lịch trích ngang (có &lt;hr&gt;)',
+    description: 'Tạo trang web dùng thẻ <code>&lt;hr&gt;</code> để ngăn cách giữa hai phần "Thông tin cá nhân" và "Thành tích học tập". Mỗi phần có <code>&lt;h1&gt;</code> và <code>&lt;p&gt;</code>.',
+    required_tags: ['html','head','title','body','h1','p','hr'],
+    criteria: [
+      basicStructureCriteria(2.5),
+      {
+        name: '2. Nội dung bắt buộc',
+        points: 5.5,
+        checks: [
+          {type:'tag_count', tag:'h1', min:2, points:2.0, label:'Có ít nhất 2 thẻ &lt;h1&gt; (2 phần)', hint:'Thêm <h1>Thông tin cá nhân</h1> và <h1>Thành tích học tập</h1>'},
+          {type:'tag_count', tag:'p', min:2, points:2.0, label:'Có ít nhất 2 thẻ &lt;p&gt; nội dung', hint:'Mỗi phần cần ít nhất 1 đoạn văn <p>'},
+          {type:'has_tag', tag:'hr', points:1.5, label:'Có thẻ &lt;hr&gt; ngăn cách', hint:'Thêm <hr> giữa hai phần để ngăn cách'},
+        ]
+      },
+      syntaxCriteria(2.0),
+    ]
+  },
+  {
+    id: 'f1_analyze1',
+    group: 'F1 — HTML Cơ bản',
+    title: 'F1 - Phân tích: Sửa lỗi cú pháp thuộc tính',
+    description: 'Đoạn mã có lỗi <strong>cú pháp thuộc tính</strong> khiến màu nền không hiển thị đúng. Học sinh cần sửa lại cho đúng cú pháp HTML: <code>bgcolor="green"</code> (không dùng dấu hai chấm hay chấm phẩy).',
+    required_tags: ['html','head','title','body','h1'],
+    criteria: [
+      basicStructureCriteria(3.0),
+      {
+        name: '2. Nội dung bắt buộc',
+        points: 4.0,
+        checks: [
+          {type:'has_tag', tag:'h1', points:2.0, label:'Có thẻ &lt;h1&gt;', hint:'Thêm <h1>Tiêu đề</h1>'},
+          {type:'no_attr_colon_syntax', points:2.0, label:'Không có lỗi cú pháp thuộc tính (attr:value)', hint:'Sửa bgcolor:"green"; thành bgcolor="green"'},
+        ]
+      },
+      syntaxCriteria(3.0),
+    ]
+  },
+
+  // ════════════════════════════════════════════════════════
+  //  F2 — DANH SÁCH & LIÊN KẾT
+  // ════════════════════════════════════════════════════════
+  {
+    id: 'f2_apply1',
+    group: 'F2 — Danh sách & Liên kết',
+    title: 'F2 - Vận dụng 1: Danh sách môn học yêu thích (in đậm)',
+    description: 'Viết mã HTML tạo danh sách <strong>không thứ tự &lt;ul&gt;</strong> gồm ít nhất 3 môn học yêu thích, tên môn được in đậm bằng thẻ <code>&lt;strong&gt;</code> hoặc <code>&lt;b&gt;</code>.',
+    required_tags: ['html','head','title','body','ul','li','strong'],
+    criteria: [
+      basicStructureCriteria(2.5),
+      {
+        name: '2. Danh sách bắt buộc',
+        points: 5.5,
+        checks: [
+          {type:'has_tag', tag:'ul', points:1.5, label:'Có thẻ &lt;ul&gt; danh sách không thứ tự', hint:'Thêm <ul>...</ul>'},
+          {type:'tag_count', tag:'li', min:3, points:2.0, label:'Có ít nhất 3 thẻ &lt;li&gt; môn học', hint:'Thêm ít nhất 3 <li>Tên môn</li>'},
+          {type:'has_tag_any', tags:['strong','b'], points:2.0, label:'Có thẻ &lt;strong&gt; hoặc &lt;b&gt; in đậm', hint:'Bọc tên môn trong <strong>Tên môn</strong>'},
+        ]
+      },
+      syntaxCriteria(2.0),
+    ]
+  },
+  {
+    id: 'f2_apply2',
+    group: 'F2 — Danh sách & Liên kết',
+    title: 'F2 - Vận dụng 2: Trang thành viên lớp + liên kết',
+    description: 'Tạo trang với tiêu đề <code>&lt;h1&gt;</code> "Kỉ yếu lớp 12A", danh sách thành viên dùng thẻ <code>&lt;a href&gt;</code> liên kết đến từng trang cá nhân.',
+    required_tags: ['html','head','title','body','h1','a'],
+    criteria: [
+      basicStructureCriteria(2.5),
+      {
+        name: '2. Nội dung bắt buộc',
+        points: 5.5,
+        checks: [
+          {type:'has_tag', tag:'h1', points:1.5, label:'Có thẻ &lt;h1&gt; tiêu đề', hint:'Thêm <h1>Kỉ yếu lớp 12A</h1>'},
+          {type:'tag_count', tag:'a', min:2, points:2.0, label:'Có ít nhất 2 thẻ &lt;a&gt; liên kết', hint:'Thêm <a href="trang.html">Tên thành viên</a>'},
+          {type:'has_attr', tag:'a', attr:'href', points:2.0, label:'Thẻ &lt;a&gt; có thuộc tính href', hint:'Thêm href="đường_dẫn" vào thẻ <a>'},
+        ]
+      },
+      syntaxCriteria(2.0),
+    ]
+  },
+  {
+    id: 'f2_apply3',
+    group: 'F2 — Danh sách & Liên kết',
+    title: 'F2 - Vận dụng 3: Portfolio — Sở thích & Hoạt động',
+    description: 'Cập nhật trang portfolio với danh sách <code>&lt;ul&gt;</code> sở thích và danh sách <code>&lt;ol&gt;</code> các hoạt động đã tham gia. Phân cách bằng <code>&lt;hr&gt;</code>.',
+    required_tags: ['html','head','title','body','h1','ul','ol','li','hr'],
+    criteria: [
+      basicStructureCriteria(2.5),
+      {
+        name: '2. Nội dung bắt buộc',
+        points: 5.5,
+        checks: [
+          {type:'has_tag', tag:'ul', points:1.5, label:'Có &lt;ul&gt; danh sách sở thích', hint:'Thêm <ul>...</ul> cho danh sách sở thích'},
+          {type:'has_tag', tag:'ol', points:1.5, label:'Có &lt;ol&gt; danh sách hoạt động', hint:'Thêm <ol>...</ol> cho danh sách hoạt động'},
+          {type:'tag_count', tag:'li', min:4, points:1.5, label:'Có ít nhất 4 thẻ &lt;li&gt;', hint:'Thêm ít nhất 2 li trong ul và 2 li trong ol'},
+          {type:'has_tag', tag:'hr', points:1.0, label:'Có &lt;hr&gt; phân cách', hint:'Thêm <hr> giữa hai danh sách'},
+        ]
+      },
+      syntaxCriteria(2.0),
+    ]
+  },
+
+  // ════════════════════════════════════════════════════════
+  //  F3 — BẢNG & BỐ CỤC
+  // ════════════════════════════════════════════════════════
+  {
+    id: 'f3_apply1',
+    group: 'F3 — Bảng & Bố cục',
+    title: 'F3 - Vận dụng 1: Bảng danh sách điểm thi',
+    description: 'Tạo bảng gồm các cột: STT, Họ tên, Điểm Toán, Điểm Văn. Hàng tiêu đề dùng <code>&lt;th&gt;</code>, ít nhất 2 hàng dữ liệu <code>&lt;td&gt;</code>.',
+    required_tags: ['html','head','title','body','table','tr','th','td'],
+    criteria: [
+      basicStructureCriteria(2.5),
+      {
+        name: '2. Cấu trúc bảng',
+        points: 5.5,
+        checks: [
+          {type:'has_tag', tag:'table', points:1.5, label:'Có thẻ &lt;table&gt;', hint:'Thêm <table>...</table>'},
+          {type:'has_tag', tag:'th', points:1.5, label:'Có thẻ &lt;th&gt; tiêu đề cột', hint:'Dùng <th>STT</th>, <th>Họ tên</th>... cho hàng tiêu đề'},
+          {type:'tag_count', tag:'tr', min:3, points:1.5, label:'Có ít nhất 3 hàng &lt;tr&gt; (1 tiêu đề + 2 dữ liệu)', hint:'Thêm ít nhất 2 hàng dữ liệu vào bảng'},
+          {type:'has_tag', tag:'td', points:1.0, label:'Có thẻ &lt;td&gt; dữ liệu', hint:'Dùng <td>...</td> cho ô dữ liệu'},
+        ]
+      },
+      syntaxCriteria(2.0),
+    ]
+  },
+  {
+    id: 'f3_apply2',
+    group: 'F3 — Bảng & Bố cục',
+    title: 'F3 - Vận dụng 2: Bố cục trang web (Header-Menu-Nội dung-Footer)',
+    description: 'Sử dụng <code>&lt;table&gt;</code> để tạo bố cục trang: Header (trên, gộp cột), Menu trái, Nội dung phải, Footer (dưới, gộp cột). Dùng <code>colspan</code> hoặc <code>rowspan</code>.',
+    required_tags: ['html','head','title','body','table','tr','td'],
+    criteria: [
+      basicStructureCriteria(2.5),
+      {
+        name: '2. Cấu trúc bố cục bảng',
+        points: 5.5,
+        checks: [
+          {type:'has_tag', tag:'table', points:1.5, label:'Có &lt;table&gt; bố cục', hint:'Thêm <table>...</table>'},
+          {type:'tag_count', tag:'tr', min:3, points:1.5, label:'Có ít nhất 3 hàng &lt;tr&gt; (header, content, footer)', hint:'Cần ít nhất 3 hàng: header, nội dung, footer'},
+          {type:'has_attr_any', tags:['td','th'], attr:'colspan', points:1.5, label:'Có thuộc tính colspan', hint:'Thêm colspan="2" vào ô header hoặc footer'},
+          {type:'has_tag', tag:'td', points:1.0, label:'Có &lt;td&gt; nội dung', hint:'Dùng <td> cho các ô nội dung'},
+        ]
+      },
+      syntaxCriteria(2.0),
+    ]
+  },
+  {
+    id: 'f3_apply3',
+    group: 'F3 — Bảng & Bố cục',
+    title: 'F3 - Vận dụng 3: Nhúng video YouTube (iframe)',
+    description: 'Nhúng một video YouTube vào trang web bằng thẻ <code>&lt;iframe&gt;</code> với kích thước 560×315. Thêm đề mục <code>&lt;h3&gt;</code> "Video giới thiệu".',
+    required_tags: ['html','head','title','body','h3','iframe'],
+    criteria: [
+      basicStructureCriteria(2.5),
+      {
+        name: '2. Nhúng iframe',
+        points: 5.5,
+        checks: [
+          {type:'has_tag', tag:'iframe', points:2.0, label:'Có thẻ &lt;iframe&gt;', hint:'Thêm <iframe src="https://www.youtube.com/embed/..."></iframe>'},
+          {type:'has_attr', tag:'iframe', attr:'src', points:2.0, label:'&lt;iframe&gt; có thuộc tính src', hint:'Thêm src="https://www.youtube.com/embed/VIDEO_ID"'},
+          {type:'has_tag', tag:'h3', points:1.5, label:'Có thẻ &lt;h3&gt; tiêu đề', hint:'Thêm <h3>Video giới thiệu</h3>'},
+        ]
+      },
+      syntaxCriteria(2.0),
+    ]
+  },
+
+  // ════════════════════════════════════════════════════════
+  //  F4 — MEDIA
+  // ════════════════════════════════════════════════════════
+  {
+    id: 'f4_apply1',
+    group: 'F4 — Media (Ảnh/Video/Audio)',
+    title: 'F4 - Vận dụng 1: Video tự động phát, tắt tiếng',
+    description: 'Viết mã HTML hiển thị video chiều rộng 500px, có thuộc tính <code>autoplay</code>, <code>muted</code> và <code>loop</code>. Thêm đề mục <code>&lt;h3&gt;</code> mô tả video.',
+    required_tags: ['html','head','title','body','h3','video'],
+    criteria: [
+      basicStructureCriteria(2.5),
+      {
+        name: '2. Thẻ video bắt buộc',
+        points: 5.5,
+        checks: [
+          {type:'has_tag', tag:'video', points:1.5, label:'Có thẻ &lt;video&gt;', hint:'Thêm <video>...</video>'},
+          {type:'has_bool_attr', tag:'video', attr:'autoplay', points:1.5, label:'&lt;video&gt; có thuộc tính autoplay', hint:'Thêm autoplay vào thẻ <video>'},
+          {type:'has_bool_attr', tag:'video', attr:'muted', points:1.0, label:'&lt;video&gt; có thuộc tính muted', hint:'Thêm muted vào thẻ <video>'},
+          {type:'has_tag', tag:'h3', points:1.5, label:'Có thẻ &lt;h3&gt; mô tả', hint:'Thêm <h3>Mô tả video</h3>'},
+        ]
+      },
+      syntaxCriteria(2.0),
+    ]
+  },
+  {
+    id: 'f4_apply2',
+    group: 'F4 — Media (Ảnh/Video/Audio)',
+    title: 'F4 - Vận dụng 2: Trang nhạc + lời bài hát',
+    description: 'Tạo trang web hiển thị tên bài hát bằng <code>&lt;h2&gt;</code>, lời bài hát bằng <code>&lt;p&gt;</code>, và nhúng tệp âm thanh bằng <code>&lt;audio controls&gt;</code>.',
+    required_tags: ['html','head','title','body','h2','p','audio'],
+    criteria: [
+      basicStructureCriteria(2.5),
+      {
+        name: '2. Nội dung bắt buộc',
+        points: 5.5,
+        checks: [
+          {type:'has_tag', tag:'h2', points:1.5, label:'Có thẻ &lt;h2&gt; tên bài hát', hint:'Thêm <h2>Tên bài hát</h2>'},
+          {type:'has_tag', tag:'p', points:1.0, label:'Có thẻ &lt;p&gt; lời bài hát', hint:'Thêm <p>Lời bài hát...</p>'},
+          {type:'has_tag', tag:'audio', points:2.0, label:'Có thẻ &lt;audio&gt;', hint:'Thêm <audio controls>...</audio>'},
+          {type:'has_bool_attr', tag:'audio', attr:'controls', points:1.0, label:'&lt;audio&gt; có thuộc tính controls', hint:'Thêm controls vào thẻ <audio controls>'},
+        ]
+      },
+      syntaxCriteria(2.0),
+    ]
+  },
+  {
+    id: 'f4_apply3',
+    group: 'F4 — Media (Ảnh/Video/Audio)',
+    title: 'F4 - Vận dụng 3: Portfolio hoàn chỉnh (ảnh + video + audio)',
+    description: 'Hoàn thiện trang portfolio với: ảnh đại diện <code>&lt;img&gt;</code>, video hoạt động lớp <code>&lt;video&gt;</code>, bài hát yêu thích <code>&lt;audio&gt;</code>.',
+    required_tags: ['html','head','title','body','h1','img','video','audio'],
+    criteria: [
+      basicStructureCriteria(2.5),
+      {
+        name: '2. Media bắt buộc',
+        points: 5.5,
+        checks: [
+          {type:'has_tag', tag:'img', points:1.5, label:'Có thẻ &lt;img&gt; ảnh', hint:'Thêm <img src="anh.jpg" alt="Mô tả">'},
+          {type:'has_attr', tag:'img', attr:'src', points:0.5, label:'&lt;img&gt; có thuộc tính src', hint:'Thêm src="đường_dẫn_ảnh" vào <img>'},
+          {type:'has_tag', tag:'video', points:1.5, label:'Có thẻ &lt;video&gt;', hint:'Thêm <video controls>...</video>'},
+          {type:'has_tag', tag:'audio', points:1.5, label:'Có thẻ &lt;audio&gt;', hint:'Thêm <audio controls>...</audio>'},
+          {type:'has_tag', tag:'h1', points:0.5, label:'Có thẻ &lt;h1&gt; tiêu đề', hint:'Thêm <h1>Portfolio của tôi</h1>'},
+        ]
+      },
+      syntaxCriteria(2.0),
+    ]
+  },
+
+  // ════════════════════════════════════════════════════════
+  //  F5 — BIỂU MẪU (FORM)
+  // ════════════════════════════════════════════════════════
+  {
+    id: 'f5_apply1',
+    group: 'F5 — Biểu mẫu (Form)',
+    title: 'F5 - Vận dụng 1: Biểu mẫu tìm kiếm',
+    description: 'Tạo biểu mẫu tìm kiếm đơn giản gồm: ô nhập từ khóa <code>type="text"</code> (có placeholder), nút bấm "Tìm kiếm" <code>type="submit"</code>. Dùng <code>method="get"</code>.',
+    required_tags: ['html','head','title','body','form','input','button'],
+    criteria: [
+      basicStructureCriteria(2.5),
+      {
+        name: '2. Biểu mẫu tìm kiếm',
+        points: 5.5,
+        checks: [
+          {type:'has_tag', tag:'form', points:1.5, label:'Có thẻ &lt;form&gt;', hint:'Thêm <form method="get">...</form>'},
+          {type:'attr_value', tag:'input', attr:'type', value:'text', points:2.0, label:'Có &lt;input type="text"&gt;', hint:'Thêm <input type="text" placeholder="Từ khóa...">'},
+          {type:'has_tag_any', tags:['button','input[type=submit]'], points:2.0, label:'Có nút submit', hint:'Thêm <button type="submit">Tìm kiếm</button>'},
+        ]
+      },
+      syntaxCriteria(2.0),
+    ]
+  },
+  {
+    id: 'f5_apply2',
+    group: 'F5 — Biểu mẫu (Form)',
+    title: 'F5 - Vận dụng 2: Đăng ký nhận tin (email bắt buộc)',
+    description: 'Tạo biểu mẫu "Đăng ký nhận tin mới" gồm: nhãn <code>&lt;label&gt;</code>, ô nhập <code>type="email"</code> có thuộc tính <code>required</code>, nút Đăng ký.',
+    required_tags: ['html','head','title','body','form','label','input','button'],
+    criteria: [
+      basicStructureCriteria(2.5),
+      {
+        name: '2. Biểu mẫu email',
+        points: 5.5,
+        checks: [
+          {type:'has_tag', tag:'form', points:1.0, label:'Có thẻ &lt;form&gt;', hint:'Thêm <form>...</form>'},
+          {type:'has_tag', tag:'label', points:1.0, label:'Có thẻ &lt;label&gt;', hint:'Thêm <label>Email:</label>'},
+          {type:'attr_value', tag:'input', attr:'type', value:'email', points:2.0, label:'Có &lt;input type="email"&gt;', hint:'Thêm <input type="email" required>'},
+          {type:'has_bool_attr', tag:'input', attr:'required', points:1.5, label:'Input email có thuộc tính required', hint:'Thêm required vào <input type="email" required>'},
+        ]
+      },
+      syntaxCriteria(2.0),
+    ]
+  },
+  {
+    id: 'f5_apply3',
+    group: 'F5 — Biểu mẫu (Form)',
+    title: 'F5 - Vận dụng 3: Khảo sát ý kiến',
+    description: 'Thiết kế biểu mẫu khảo sát gồm: Tên (text), Tuổi (number), Đánh giá mức độ hài lòng dùng <code>radio</code> (Tốt/Khá/Trung bình), nút Gửi.',
+    required_tags: ['html','head','title','body','form','input','button'],
+    criteria: [
+      basicStructureCriteria(2.5),
+      {
+        name: '2. Biểu mẫu khảo sát',
+        points: 5.5,
+        checks: [
+          {type:'has_tag', tag:'form', points:1.0, label:'Có thẻ &lt;form&gt;', hint:'Thêm <form>...</form>'},
+          {type:'attr_value', tag:'input', attr:'type', value:'text', points:1.0, label:'Có &lt;input type="text"&gt; nhập tên', hint:'Thêm <input type="text" name="ten">'},
+          {type:'attr_value', tag:'input', attr:'type', value:'number', points:1.5, label:'Có &lt;input type="number"&gt; nhập tuổi', hint:'Thêm <input type="number" name="tuoi">'},
+          {type:'attr_value', tag:'input', attr:'type', value:'radio', points:2.0, label:'Có &lt;input type="radio"&gt; đánh giá', hint:'Thêm <input type="radio" name="danhgia" value="tot"> Tốt'},
+        ]
+      },
+      syntaxCriteria(2.0),
+    ]
+  },
+  {
+    id: 'f5_apply4',
+    group: 'F5 — Biểu mẫu (Form)',
+    title: 'F5 - Thực hành: Trang đăng nhập hệ thống',
+    description: 'Tạo trang đăng nhập với biểu mẫu: tên người dùng (text, required), mật khẩu (<code>password</code>, required), nút Đăng nhập. Dùng <code>method="post"</code>.',
+    required_tags: ['html','head','title','body','form','label','input','button'],
+    criteria: [
+      basicStructureCriteria(2.5),
+      {
+        name: '2. Form đăng nhập',
+        points: 5.5,
+        checks: [
+          {type:'has_tag', tag:'form', points:1.0, label:'Có thẻ &lt;form&gt;', hint:'Thêm <form method="post">...</form>'},
+          {type:'attr_value', tag:'form', attr:'method', value:'post', points:0.5, label:'Form có method="post"', hint:'Thêm method="post" vào thẻ <form>'},
+          {type:'attr_value', tag:'input', attr:'type', value:'text', points:1.5, label:'Có &lt;input type="text"&gt; tên đăng nhập', hint:'Thêm <input type="text" name="username" required>'},
+          {type:'attr_value', tag:'input', attr:'type', value:'password', points:2.0, label:'Có &lt;input type="password"&gt; mật khẩu', hint:'Thêm <input type="password" name="password" required>'},
+          {type:'has_tag', tag:'button', points:0.5, label:'Có nút &lt;button&gt; đăng nhập', hint:'Thêm <button type="submit">Đăng nhập</button>'},
+        ]
+      },
+      syntaxCriteria(2.0),
+    ]
+  },
+  {
+    id: 'f5_apply5',
+    group: 'F5 — Biểu mẫu (Form)',
+    title: 'F5 - Vận dụng: Đăng ký câu lạc bộ',
+    description: 'Tạo biểu mẫu đăng ký CLB gồm: Họ tên (text, required), Lớp (<code>&lt;select&gt;</code> dropdown), Giới thiệu bản thân (<code>&lt;textarea&gt;</code>), nút Đăng ký và Làm lại.',
+    required_tags: ['html','head','title','body','form','input','select','textarea','button'],
+    criteria: [
+      basicStructureCriteria(2.5),
+      {
+        name: '2. Form đăng ký CLB',
+        points: 5.5,
+        checks: [
+          {type:'has_tag', tag:'form', points:1.0, label:'Có thẻ &lt;form&gt;', hint:'Thêm <form>...</form>'},
+          {type:'attr_value', tag:'input', attr:'type', value:'text', points:1.0, label:'Có &lt;input type="text"&gt; họ tên', hint:'Thêm <input type="text" name="hoten" required>'},
+          {type:'has_tag', tag:'select', points:1.5, label:'Có &lt;select&gt; dropdown lớp', hint:'Thêm <select name="lop"><option>10A</option>...</select>'},
+          {type:'has_tag', tag:'textarea', points:1.5, label:'Có &lt;textarea&gt; giới thiệu', hint:'Thêm <textarea name="gioithieu"></textarea>'},
+          {type:'has_tag', tag:'button', points:0.5, label:'Có nút &lt;button&gt;', hint:'Thêm <button type="submit">Đăng ký</button>'},
+        ]
+      },
+      syntaxCriteria(2.0),
+    ]
+  },
+
+  // ════════════════════════════════════════════════════════
+  //  TỔNG HỢP
+  // ════════════════════════════════════════════════════════
+  {
+    id: 'tong1',
+    group: 'Tổng hợp',
+    title: 'Tổng hợp - Vận dụng 1: Hồ sơ cá nhân (F1+F2+F4)',
+    description: 'Tạo trang giới thiệu bản thân gồm: tiêu đề lớn <code>&lt;h1&gt;</code>, ảnh đại diện <code>&lt;img&gt;</code> 150px, danh sách <code>&lt;ul&gt;</code> 3 sở thích, đường kẻ ngang <code>&lt;hr&gt;</code>, đoạn video giới thiệu <code>&lt;video controls&gt;</code>.',
+    required_tags: ['html','head','title','body','h1','img','ul','li','hr','video'],
+    criteria: [
+      basicStructureCriteria(2.0),
+      {
+        name: '2. Nội dung tổng hợp',
+        points: 6.5,
+        checks: [
+          {type:'has_tag', tag:'h1', points:1.0, label:'Có &lt;h1&gt; tiêu đề', hint:'Thêm <h1>Hồ sơ cá nhân</h1>'},
+          {type:'has_tag', tag:'img', points:1.5, label:'Có &lt;img&gt; ảnh đại diện', hint:'Thêm <img src="anh.jpg" alt="Ảnh đại diện" width="150">'},
+          {type:'has_attr', tag:'img', attr:'src', points:0.5, label:'&lt;img&gt; có src', hint:'Thêm src="đường_dẫn" vào <img>'},
+          {type:'has_tag', tag:'ul', points:1.0, label:'Có &lt;ul&gt; danh sách sở thích', hint:'Thêm <ul>...</ul>'},
+          {type:'tag_count', tag:'li', min:3, points:1.0, label:'Có ít nhất 3 &lt;li&gt; sở thích', hint:'Thêm ít nhất 3 <li>Sở thích</li>'},
+          {type:'has_tag', tag:'hr', points:0.5, label:'Có &lt;hr&gt; phân cách', hint:'Thêm <hr> giữa các phần'},
+          {type:'has_tag', tag:'video', points:1.0, label:'Có &lt;video&gt;', hint:'Thêm <video controls>...</video>'},
+        ]
+      },
+      syntaxCriteria(1.5),
+    ]
+  },
+  {
+    id: 'tong2',
+    group: 'Tổng hợp',
+    title: 'Tổng hợp - Vận dụng 2: Thời khóa biểu phức tạp (F3)',
+    description: 'Tạo bảng thời khóa biểu gồm Thứ 2–4, 4 hàng tiết. Hàng tiêu đề màu xanh nhạt, ô "Chào cờ" dùng <code>rowspan</code>, ô "Nghỉ giải lao" dùng <code>colspan</code>.',
+    required_tags: ['html','head','title','body','h1','table','tr','th','td'],
+    criteria: [
+      basicStructureCriteria(2.0),
+      {
+        name: '2. Cấu trúc bảng TKB',
+        points: 5.0,
+        checks: [
+          {type:'has_tag', tag:'table', points:1.0, label:'Có &lt;table&gt;', hint:'Thêm <table border="1">...</table>'},
+          {type:'has_tag', tag:'th', points:1.0, label:'Có &lt;th&gt; tiêu đề cột', hint:'Dùng <th> cho hàng tiêu đề'},
+          {type:'tag_count', tag:'tr', min:5, points:1.0, label:'Có ít nhất 5 hàng &lt;tr&gt;', hint:'Cần 1 hàng tiêu đề + ít nhất 4 hàng tiết'},
+          {type:'has_tag', tag:'td', points:1.0, label:'Có &lt;td&gt; dữ liệu', hint:'Dùng <td> cho các ô dữ liệu'},
+          {type:'has_attr_any', tags:['td','th'], attr:'colspan', points:0.5, label:'Có colspan', hint:'Thêm colspan vào ô "Nghỉ giải lao"'},
+          {type:'has_attr_any', tags:['td','th'], attr:'rowspan', points:0.5, label:'Có rowspan', hint:'Thêm rowspan vào ô "Chào cờ"'},
+        ]
+      },
+      {
+        name: '3. Thuộc tính bảng',
+        points: 1.5,
+        checks: [
+          {type:'has_attr', tag:'table', attr:'border', points:1.5, label:'&lt;table&gt; có thuộc tính border', hint:'Thêm border="1" vào <table>'},
+        ]
+      },
+      syntaxCriteria(1.5),
+    ]
+  },
+  {
+    id: 'tong3',
+    group: 'Tổng hợp',
+    title: 'Tổng hợp - Vận dụng 3: Đăng ký câu lạc bộ đầy đủ (F5)',
+    description: 'Biểu mẫu đăng ký CLB hoàn chỉnh: họ tên (text), lớp (select), giới thiệu (textarea), nút Đăng ký + Làm lại. Kết hợp <code>&lt;label&gt;</code>, <code>for/id</code> đúng chuẩn, <code>method="post"</code>.',
+    required_tags: ['html','head','title','body','form','label','input','select','textarea','button'],
+    criteria: [
+      basicStructureCriteria(2.0),
+      {
+        name: '2. Form đăng ký đầy đủ',
+        points: 6.5,
+        checks: [
+          {type:'has_tag', tag:'form', points:1.0, label:'Có &lt;form&gt;', hint:'Thêm <form method="post">...</form>'},
+          {type:'has_tag', tag:'label', points:1.0, label:'Có &lt;label&gt;', hint:'Thêm <label for="hoten">Họ tên:</label>'},
+          {type:'attr_value', tag:'input', attr:'type', value:'text', points:1.0, label:'Có &lt;input type="text"&gt; họ tên', hint:'Thêm <input type="text" id="hoten" required>'},
+          {type:'has_bool_attr', tag:'input', attr:'required', points:1.0, label:'Input có thuộc tính required', hint:'Thêm required vào input họ tên'},
+          {type:'has_tag', tag:'select', points:1.0, label:'Có &lt;select&gt; chọn lớp', hint:'Thêm <select name="lop"><option>10A</option>...</select>'},
+          {type:'has_tag', tag:'textarea', points:1.0, label:'Có &lt;textarea&gt; giới thiệu', hint:'Thêm <textarea name="gioithieu"></textarea>'},
+          {type:'has_tag', tag:'button', points:0.5, label:'Có &lt;button&gt; submit', hint:'Thêm <button type="submit">Đăng ký</button>'},
+        ]
+      },
+      syntaxCriteria(1.5),
+    ]
+  },
+];
+
 const exMap = {};
 EXERCISES.forEach(ex => exMap[ex.id] = ex);
 
+// ═══════════════════════════════════════════════════════════════════
+//  KHỞI TẠO
+// ═══════════════════════════════════════════════════════════════════
 (function init(){
   const topicSel = document.getElementById('topicSelect');
   Object.keys(TOPICS).forEach(t => {
@@ -410,11 +919,10 @@ EXERCISES.forEach(ex => exMap[ex.id] = ex);
     topicSel.appendChild(opt);
   });
   onTopicChange();
-  // Keyboard shortcut
-  document.getElementById('htmlCode').addEventListener('keydown', e => {
+  const ta = document.getElementById('htmlCode');
+  ta.addEventListener('keydown', e => {
     if(e.key === 'Tab'){
       e.preventDefault();
-      const ta = e.target;
       const s = ta.selectionStart, end = ta.selectionEnd;
       ta.value = ta.value.substring(0,s) + '  ' + ta.value.substring(end);
       ta.selectionStart = ta.selectionEnd = s + 2;
@@ -423,10 +931,10 @@ EXERCISES.forEach(ex => exMap[ex.id] = ex);
       e.preventDefault();
       runAndGrade();
     }
-    updatePos(e.target);
+    updatePos(ta);
   });
-  document.getElementById('htmlCode').addEventListener('click', e => updatePos(e.target));
-  document.getElementById('htmlCode').addEventListener('input', e => updatePos(e.target));
+  ta.addEventListener('click', e => updatePos(e.target));
+  ta.addEventListener('input', e => updatePos(e.target));
 })();
 
 function updatePos(ta){
@@ -455,14 +963,11 @@ function onExerciseChange(){
   const id = document.getElementById('exerciseSelect').value;
   const ex = exMap[id];
   if(!ex) return;
-  // Exercise bar
   document.getElementById('exTitle').textContent = ex.title;
   document.getElementById('exDesc').innerHTML = ex.description || '';
-  // Desc panel
   document.getElementById('descContent').innerHTML = ex.description || '';
   const tagsWrap = document.getElementById('tagsWrap');
   tagsWrap.innerHTML = (ex.required_tags||[]).map(t=>`<span class="tag-chip">&lt;${t}&gt;</span>`).join('');
-  // Criteria panel
   renderCriteria(ex);
 }
 
@@ -502,14 +1007,14 @@ function renderCriteria(ex){
   let total = 0;
   ex.criteria.forEach(c => {
     total += c.points || 0;
-    const items = Array.isArray(c.items) ? c.items : [];
+    const checks = Array.isArray(c.checks) ? c.checks : [];
     html += `<div class="crit-card">
       <div class="crit-card-head">
         <span class="crit-card-title">${c.name}</span>
         <span class="crit-points">${c.points} đ</span>
       </div>
       <div class="crit-card-body">
-        ${items.map(item=>`<div class="crit-item"><span class="crit-item-icon">❆</span><span>${item}</span></div>`).join('')}
+        ${checks.map(ck=>`<div class="crit-item"><span class="crit-item-icon">❆</span><span>${ck.label} <span style="color:var(--accent);font-weight:700">(${ck.points}đ)</span></span></div>`).join('')}
       </div>
     </div>`;
   });
@@ -523,20 +1028,15 @@ function renderCriteria(ex){
 function runCode(){
   const code = document.getElementById('htmlCode').value.trim();
   if(!code){ alert('Vui lòng nhập code HTML!'); return; }
-  // Render vào iframe
   const frame = document.getElementById('previewFrame');
   if(frame){
     const doc = frame.contentDocument || frame.contentWindow.document;
     doc.open(); doc.write(code); doc.close();
-    const label = document.getElementById('previewLabel');
-    if(label) label.textContent = 'Output HTML';
-    const empty = document.getElementById('previewEmpty');
-    if(empty) empty.style.display = 'none';
+    document.getElementById('previewLabel').textContent = 'Output HTML';
+    document.getElementById('previewEmpty').style.display = 'none';
     frame.style.display = 'block';
   }
-  // Chuyển sang tab Preview
   switchGradeTab('preview');
-  // Output bar
   document.getElementById('outputContent').innerHTML = `<span style="color:var(--green)">✓ Đã render HTML thành công — xem kết quả bên phải</span>`;
 }
 
@@ -565,7 +1065,6 @@ function runAndGrade(){
 // ═══════════════════════════════════════════════════════════════════
 const SELF_CLOSING = new Set(['img','br','hr','input','meta','link','area','base','col','embed','param','source','track','wbr']);
 
-// ── Tiện ích: tìm số dòng chứa thẻ đầu tiên khớp pattern ──
 function findLineOf(code, pattern) {
   const lines = code.split('\n');
   for (let i = 0; i < lines.length; i++) {
@@ -574,7 +1073,6 @@ function findLineOf(code, pattern) {
   return null;
 }
 
-// ── Tạo snippet HTML để hiển thị dòng code bị lỗi ──
 function codeSnippet(lineNum, lineText) {
   if (!lineText) return '';
   const escaped = lineText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
@@ -582,228 +1080,20 @@ function codeSnippet(lineNum, lineText) {
 }
 
 function parseHTML(code) {
-  const domParser = new DOMParser();
-  const doc = domParser.parseFromString(code, 'text/html');
-  return doc;
+  return new DOMParser().parseFromString(code, 'text/html');
 }
 
-// Chạy một check đơn lẻ, trả về {passed, issue}
-function runSingleCheck(check, doc, code, syntaxIssues) {
-  const {type, tag, tags, attr, value, min, points, label, hint} = check;
-  let passed = false;
-  let issue = null;
-
-  switch(type) {
-    case 'has_doctype': {
-      passed = code.toLowerCase().trimStart().startsWith('<!doctype html');
-      if(!passed) issue = {type:'error', title:`Thiếu &lt;!DOCTYPE html&gt;`, msg:'Dòng đầu tiên phải là <code>&lt;!DOCTYPE html&gt;</code>.', hint, snippet: codeSnippet(1, code.split('\n')[0].trim())};
-      break;
-    }
-    case 'has_tag': {
-      // Với các thẻ cơ bản mà DOMParser tự thêm (html, head, body),
-      // phải kiểm tra trực tiếp trên text code gốc
-      const autoTags = ['html','head','body'];
-      if(autoTags.includes(tag.toLowerCase())) {
-        const re = new RegExp(`<${tag}[\\s>]`, 'i');
-        passed = re.test(code);
-      } else {
-        const els = doc.querySelectorAll(tag);
-        passed = els.length > 0;
-      }
-      if(!passed) issue = {type:'error', title:`Thiếu thẻ &lt;${tag}&gt;`, msg:`Không tìm thấy thẻ <code>&lt;${tag}&gt;</code> trong code.`, hint};
-      break;
-    }
-    case 'has_tag_any': {
-      passed = tags.some(t => doc.querySelectorAll(t).length > 0);
-      if(!passed) issue = {type:'error', title:`Thiếu thẻ ${tags.map(t=>`&lt;${t}&gt;`).join(' hoặc ')}`, msg:`Cần có ít nhất một trong các thẻ: ${tags.map(t=>`<code>&lt;${t}&gt;</code>`).join(', ')}.`, hint};
-      break;
-    }
-    case 'tag_count': {
-      const els = doc.querySelectorAll(tag);
-      passed = els.length >= min;
-      if(!passed) issue = {type:'error', title:`Không đủ thẻ &lt;${tag}&gt;`, msg:`Cần ít nhất <b>${min}</b> thẻ <code>&lt;${tag}&gt;</code>, tìm thấy <b>${els.length}</b>.`, hint};
-      break;
-    }
-    case 'has_attr': {
-      const els = Array.from(doc.querySelectorAll(tag));
-      if(els.length === 0) {
-        passed = false;
-        issue = {type:'error', title:`Thiếu thẻ &lt;${tag}&gt;`, msg:`Không tìm thấy thẻ <code>&lt;${tag}&gt;</code> trong code.`, hint};
-      } else {
-        const missing = els.filter(el => !el.hasAttribute(attr));
-        passed = missing.length === 0;
-        if(!passed) {
-          const loc = findLineOf(code, new RegExp(`<${tag}[^>]*>`, 'i'));
-          issue = {type:'error', title:`Thiếu thuộc tính <code>${attr}</code> trên &lt;${tag}&gt;`, msg:`Thẻ <code>&lt;${tag}&gt;</code> cần có thuộc tính <code>${attr}</code>.`, hint, snippet: loc ? codeSnippet(loc.line, loc.text) : ''};
-        }
-      }
-      break;
-    }
-    case 'has_attr_any': {
-      const allEls = tags.flatMap(t => Array.from(doc.querySelectorAll(t)));
-      passed = allEls.some(el => el.hasAttribute(attr));
-      if(!passed) issue = {type:'error', title:`Thiếu thuộc tính <code>${attr}</code>`, msg:`Cần có thuộc tính <code>${attr}</code> trên một trong các thẻ: ${tags.map(t=>`<code>&lt;${t}&gt;</code>`).join(', ')}.`, hint};
-      break;
-    }
-    case 'has_bool_attr': {
-      const els = Array.from(doc.querySelectorAll(tag));
-      if(els.length === 0) {
-        passed = false;
-        issue = {type:'error', title:`Thiếu thẻ &lt;${tag}&gt;`, msg:`Không tìm thấy thẻ <code>&lt;${tag}&gt;</code> trong code.`, hint};
-      } else {
-        passed = els.some(el => el.hasAttribute(attr));
-        if(!passed) {
-          const loc = findLineOf(code, new RegExp(`<${tag}[^>]*>`, 'i'));
-          issue = {type:'error', title:`Thiếu thuộc tính <code>${attr}</code> trên &lt;${tag}&gt;`, msg:`Thẻ <code>&lt;${tag}&gt;</code> cần có thuộc tính boolean <code>${attr}</code>.`, hint, snippet: loc ? codeSnippet(loc.line, loc.text) : ''};
-        }
-      }
-      break;
-    }
-    case 'attr_value': {
-      const els = Array.from(doc.querySelectorAll(tag));
-      if(els.length === 0) {
-        // Kiểm tra xem có bất kỳ input nào với type=value không
-        const anyMatch = Array.from(doc.querySelectorAll(tag)).some(el => el.getAttribute(attr) === value);
-        passed = anyMatch;
-        if(!passed) issue = {type:'error', title:`Thiếu <code>&lt;${tag} ${attr}="${value}"&gt;</code>`, msg:`Không tìm thấy thẻ <code>&lt;${tag}&gt;</code> có <code>${attr}="${value}"</code>.`, hint};
-      } else {
-        passed = els.some(el => el.getAttribute(attr) === value);
-        if(!passed) {
-          const loc = findLineOf(code, new RegExp(`<${tag}[^>]*>`, 'i'));
-          issue = {type:'error', title:`Thiếu <code>&lt;${tag} ${attr}="${value}"&gt;</code>`, msg:`Cần có <code>&lt;${tag}&gt;</code> với <code>${attr}="${value}"</code>.`, hint, snippet: loc ? codeSnippet(loc.line, loc.text) : ''};
-        }
-      }
-      break;
-    }
-    case 'no_syntax_error': {
-      const syntaxErrs = syntaxIssues.filter(i => i.type === 'error');
-      passed = syntaxErrs.length === 0;
-      if(!passed) issue = {type:'error', title:`Có ${syntaxErrs.length} lỗi cú pháp`, msg:`Phát hiện lỗi thẻ đóng/mở không khớp.`, hint};
-      break;
-    }
-    case 'no_quote_error': {
-      const quoteWarns = syntaxIssues.filter(i => i.type === 'warn');
-      passed = quoteWarns.length === 0;
-      if(!passed) issue = {type:'warn', title:`Có ${quoteWarns.length} cảnh báo dấu nháy`, msg:`Thuộc tính phải được bọc trong dấu nháy kép.`, hint};
-      break;
-    }
-    default:
-      passed = true;
-  }
-  return {passed, issue};
+// ── Kiểm tra code có chứa thẻ HTML hợp lệ không ──
+// Trả về true nếu code có ít nhất 1 thẻ HTML thực sự
+function hasAnyHtmlTag(code) {
+  return /<[a-zA-Z][a-zA-Z0-9]*[\s\/>]/.test(code) || /<[a-zA-Z][a-zA-Z0-9]*>/.test(code);
 }
 
-// Chạy tất cả criteria checks, trả về {score, issues, criteriaResults}
-function runCriteriaChecks(ex, doc, code) {
-  const syntaxIssues = checkSyntax(code);
-  let totalScore = 0;
-  const allIssues = [];
-  const criteriaResults = [];
-
-  for(const criterion of (ex.criteria || [])) {
-    let criterionScore = 0;
-    const checkResults = [];
-    for(const check of (criterion.checks || [])) {
-      const {passed, issue} = runSingleCheck(check, doc, code, syntaxIssues);
-      if(passed) {
-        criterionScore += check.points;
-        totalScore += check.points;
-        checkResults.push({passed:true, label:check.label, points:check.points});
-        allIssues.push({type:'pass', title:`✓ ${check.label}`, points:check.points});
-      } else {
-        checkResults.push({passed:false, label:check.label, points:check.points, issue});
-        if(issue) allIssues.push(issue);
-      }
-    }
-    criteriaResults.push({name:criterion.name, points:criterion.points, earned:criterionScore, checks:checkResults});
-  }
-
-  // Nếu không có criteria, dùng engine cũ
-  if(!ex.criteria || ex.criteria.length === 0) {
-    const structIssues = checkStructure(doc, code);
-    const tcIssues = runTestCases_legacy(doc, ex, code);
-    allIssues.push(...structIssues, ...tcIssues, ...syntaxIssues);
-    const score = calcScore_legacy(structIssues, tcIssues, syntaxIssues, ex);
-    return {score, issues: allIssues, criteriaResults:[]};
-  }
-
-  return {
-    score: Math.max(0, Math.min(10, Math.round(totalScore * 10) / 10)),
-    issues: allIssues,
-    criteriaResults
-  };
-}
-
-// Legacy runTestCases (giữ lại cho bài không có criteria)
-function runTestCases(doc, ex, code) { return runTestCases_legacy(doc, ex, code); }
-function runTestCases_legacy(doc, ex, code) {
-  const issues = [];
-  for (const tc of (ex.test_cases || [])) {
-    if (tc.type === 'tag_exist' && tc.tags) {
-      for (const tagName of tc.tags) {
-        const els = Array.from(doc.querySelectorAll(tagName));
-        if (els.length === 0) {
-          issues.push({ type:'error', title:`Thiếu thẻ &lt;${tagName}&gt;`, msg:`Thiếu thẻ <${tagName}>`, hint:`Thêm thẻ <${tagName}>` });
-        }
-      }
-      continue;
-    }
-    let elements = [];
-    if (tc.tag) elements = Array.from(doc.querySelectorAll(tc.tag));
-    switch (tc.type) {
-      case 'tag_exist':
-        if (elements.length === 0) issues.push({ type:'error', title:`Thiếu thẻ &lt;${tc.tag}&gt;`, msg: tc.error||'', hint: tc.hint||'' });
-        break;
-      case 'tag_count':
-        if (elements.length < tc.min) issues.push({ type:'error', title:`Không đủ thẻ &lt;${tc.tag}&gt;`, msg:`Cần ít nhất ${tc.min}, tìm thấy ${elements.length}`, hint: tc.hint||'' });
-        break;
-      case 'attr_exist': {
-        if (elements.length === 0) { issues.push({ type:'error', title:`Thiếu thẻ &lt;${tc.tag}&gt;`, msg:'', hint: tc.hint||'' }); break; }
-        const missing = elements.filter(el => !el.hasAttribute(tc.attr));
-        if (missing.length > 0) { const loc = findLineOf(code, new RegExp(`<${tc.tag}[^>]*>`, 'i')); issues.push({ type:'error', title:`Thiếu thuộc tính ${tc.attr} trên &lt;${tc.tag}&gt;`, msg: tc.error||'', hint: tc.hint||'', snippet: loc ? codeSnippet(loc.line, loc.text) : '' }); }
-        break;
-      }
-      case 'attr_value': {
-        if (elements.length === 0) { issues.push({ type:'error', title:`Thiếu thẻ &lt;${tc.tag}&gt;`, msg:'', hint: tc.hint||'' }); break; }
-        const wrong = elements.filter(el => el.getAttribute(tc.attr) !== tc.value);
-        if (wrong.length > 0) { const actual = wrong[0].getAttribute(tc.attr); const loc = findLineOf(code, new RegExp(`<${tc.tag}[^>]*${tc.attr}`, 'i')); issues.push({ type:'error', title:`Sai giá trị ${tc.attr} trên &lt;${tc.tag}&gt;`, msg:`Hiện tại: ${actual||'(trống)'} → Cần: ${tc.value}`, hint: tc.hint||'', snippet: loc ? codeSnippet(loc.line, loc.text) : '' }); }
-        break;
-      }
-    }
-  }
-  return issues;
-}
-
-function checkStructure(doc, code) {
-  const issues = [];
-  const lines = code.split('\n');
-
-  if (!code.toLowerCase().trimStart().startsWith('<!doctype html')) {
-    issues.push({ type:'error', title:'Thiếu <code>&lt;!DOCTYPE html&gt;</code>',
-      msg:'Dòng đầu tiên của file phải là <code>&lt;!DOCTYPE html&gt;</code>.',
-      hint:'Thêm <code>&lt;!DOCTYPE html&gt;</code> vào đầu file.',
-      snippet: codeSnippet(1, lines[0]) });
-  }
-  // Kiểm tra trên TEXT gốc (DOMParser tự thêm html/head/body nếu thiếu)
-  const checks = [
-    { re:/<html[\s>]/i,  label:'&lt;html&gt;',  hint:'Bọc toàn bộ nội dung trong &lt;html&gt;...&lt;/html&gt;.' },
-    { re:/<head[\s>]/i,  label:'&lt;head&gt;',  hint:'Thêm &lt;head&gt;...&lt;/head&gt; bên trong &lt;html&gt;.' },
-    { re:/<title[\s>]/i, label:'&lt;title&gt;', hint:'Thêm &lt;title&gt;Tiêu đề&lt;/title&gt; vào trong &lt;head&gt;.' },
-    { re:/<body[\s>]/i,  label:'&lt;body&gt;',  hint:'Thêm &lt;body&gt;...&lt;/body&gt; bên trong &lt;html&gt;.' },
-  ];
-  checks.forEach(({re, label, hint}) => {
-    if (!re.test(code)) {
-      issues.push({ type:'error', title:`Thiếu thẻ ${label}`,
-        msg:`Cấu trúc HTML cần có thẻ ${label}.`, hint });
-    }
-  });
-  return issues;
-}
-
+// ── Kiểm tra syntax ──
 function checkSyntax(code) {
   const issues = [];
   const lines = code.split('\n');
-  const stack = []; // {tag, line, text}
+  const stack = [];
   const tagRegex = /<(\/)?([a-zA-Z][a-zA-Z0-9]*)([^>]*)>/g;
   let match;
 
@@ -812,13 +1102,12 @@ function checkSyntax(code) {
     const lineText = rawLine.trim();
     tagRegex.lastIndex = 0;
     while ((match = tagRegex.exec(rawLine)) !== null) {
-      const [fullMatch, isClosing, tagName, attrStr] = match;
+      const [, isClosing, tagName, attrStr] = match;
       const tag = tagName.toLowerCase();
       if (SELF_CLOSING.has(tag)) {
-        // Kiểm tra thuộc tính thiếu dấu nháy
         if (/\w+=[^"'\s>][^\s>]*/.test(attrStr)) {
           issues.push({ type:'warn', title:`Dòng ${lineNum}: Thuộc tính thiếu dấu nháy`,
-            msg:`Thuộc tính phải được bọc trong dấu nháy kép.`,
+            msg:'Thuộc tính phải được bọc trong dấu nháy kép.',
             hint:'Sửa thành: <code>attr="value"</code>',
             snippet: codeSnippet(lineNum, lineText) });
         }
@@ -828,7 +1117,7 @@ function checkSyntax(code) {
         if (stack.length === 0) {
           issues.push({ type:'error', title:`Dòng ${lineNum}: Thẻ đóng thừa <code>&lt;/${tagName}&gt;</code>`,
             msg:`Thẻ đóng <code>&lt;/${tagName}&gt;</code> không có thẻ mở tương ứng.`,
-            hint:'Xóa thẻ đóng này hoặc thêm thẻ mở &lt;' + tagName + '&gt; ở trước.',
+            hint:'Xóa thẻ đóng này hoặc thêm thẻ mở tương ứng.',
             snippet: codeSnippet(lineNum, lineText) });
         } else if (stack[stack.length-1].tag === tag) {
           stack.pop();
@@ -836,14 +1125,13 @@ function checkSyntax(code) {
           const expected = stack[stack.length-1];
           issues.push({ type:'error', title:`Dòng ${lineNum}: Sai thứ tự đóng thẻ`,
             msg:`Mong đợi <code>&lt;/${expected.tag}&gt;</code> (mở tại dòng ${expected.line}) nhưng thấy <code>&lt;/${tagName}&gt;</code>`,
-            hint:'Các thẻ phải được đóng theo thứ tự ngược lại với khi mở (LIFO).',
+            hint:'Các thẻ phải được đóng theo thứ tự ngược lại (LIFO).',
             snippet: codeSnippet(lineNum, lineText) });
         }
       } else {
-        // Kiểm tra thuộc tính thiếu dấu nháy
         if (/\w+=[^"'\s>][^\s>]*/.test(attrStr)) {
           issues.push({ type:'warn', title:`Dòng ${lineNum}: Thuộc tính thiếu dấu nháy`,
-            msg:`Thuộc tính phải được bọc trong dấu nháy kép.`,
+            msg:'Thuộc tính phải được bọc trong dấu nháy kép.',
             hint:'Sửa thành: <code>attr="value"</code>',
             snippet: codeSnippet(lineNum, lineText) });
         }
@@ -854,27 +1142,193 @@ function checkSyntax(code) {
 
   if (stack.length > 0) {
     const unclosed = stack.map(s => `<code>&lt;${s.tag}&gt;</code> (dòng ${s.line})`).join(', ');
-    issues.push({ type:'error', title:`Thiếu thẻ đóng`,
+    issues.push({ type:'error', title:'Thiếu thẻ đóng',
       msg:`Các thẻ sau chưa được đóng: ${unclosed}`,
       hint:'Mỗi thẻ mở phải có một thẻ đóng tương ứng.',
       snippet: stack.map(s => codeSnippet(s.line, s.text)).join('') });
   }
-
   return issues;
 }
 
-// Legacy calcScore (dùng khi không có criteria)
-function calcScore_legacy(structIssues, tcIssues, syntaxIssues, ex) {
-  const STRUCT_TOTAL = 2.5, TC_TOTAL = 5.0, SYNTAX_TOTAL = 2.5;
-  const structErrors = structIssues.filter(i => i.type === 'error').length;
-  const structScore = (Math.max(0, 5 - structErrors) / 5) * STRUCT_TOTAL;
-  const tcTotal = ex ? (ex.test_cases || []).reduce((s,tc) => tc.type==='tag_exist'&&tc.tags ? s+tc.tags.length : s+1, 0) : 0;
-  const tcErrors = tcIssues.filter(i => i.type === 'error').length;
-  const tcScore = tcTotal > 0 ? (Math.max(0, tcTotal - tcErrors) / tcTotal) * TC_TOTAL : TC_TOTAL;
-  const syntaxScore = Math.max(0, SYNTAX_TOTAL - syntaxIssues.filter(i=>i.type==='error').length * 0.5 - syntaxIssues.filter(i=>i.type==='warn').length * 0.2);
-  return Math.max(0, Math.min(10, Math.round((structScore + tcScore + syntaxScore) * 10) / 10));
+// ── Chạy một check đơn lẻ ──
+function runSingleCheck(check, doc, code, syntaxIssues, hasHtml) {
+  const {type, tag, tags, attr, value, min, points, label, hint} = check;
+  let passed = false;
+  let issue = null;
+
+  switch(type) {
+    case 'has_doctype': {
+      passed = /^\s*<!doctype\s+html/i.test(code);
+      if(!passed) issue = {type:'error', title:'Thiếu &lt;!DOCTYPE html&gt;',
+        msg:'Dòng đầu tiên phải là <code>&lt;!DOCTYPE html&gt;</code>.', hint,
+        snippet: codeSnippet(1, code.split('\n')[0].trim())};
+      break;
+    }
+    case 'has_tag': {
+      // html/head/body: kiểm tra trên text gốc (DOMParser tự thêm)
+      const rawCheck = ['html','head','body'];
+      if(rawCheck.includes(tag.toLowerCase())) {
+        passed = new RegExp(`<${tag}[\\s>]`, 'i').test(code);
+      } else {
+        passed = doc.querySelectorAll(tag).length > 0;
+      }
+      if(!passed) issue = {type:'error', title:`Thiếu thẻ &lt;${tag}&gt;`,
+        msg:`Không tìm thấy thẻ <code>&lt;${tag}&gt;</code> trong code.`, hint};
+      break;
+    }
+    case 'has_tag_any': {
+      // Hỗ trợ cả selector phức tạp như 'input[type=submit]'
+      passed = tags.some(t => {
+        try { return doc.querySelectorAll(t).length > 0; }
+        catch(e) { return false; }
+      });
+      if(!passed) issue = {type:'error',
+        title:`Thiếu ${tags.map(t=>`&lt;${t}&gt;`).join(' hoặc ')}`,
+        msg:`Cần có ít nhất một trong: ${tags.map(t=>`<code>&lt;${t}&gt;</code>`).join(', ')}.`, hint};
+      break;
+    }
+    case 'tag_count': {
+      const els = doc.querySelectorAll(tag);
+      passed = els.length >= min;
+      if(!passed) issue = {type:'error', title:`Không đủ thẻ &lt;${tag}&gt;`,
+        msg:`Cần ít nhất <b>${min}</b> thẻ <code>&lt;${tag}&gt;</code>, tìm thấy <b>${els.length}</b>.`, hint};
+      break;
+    }
+    case 'has_attr': {
+      const els = Array.from(doc.querySelectorAll(tag));
+      if(els.length === 0) {
+        passed = false;
+        issue = {type:'error', title:`Thiếu thẻ &lt;${tag}&gt;`,
+          msg:`Không tìm thấy thẻ <code>&lt;${tag}&gt;</code> trong code.`, hint};
+      } else {
+        const missing = els.filter(el => !el.hasAttribute(attr));
+        passed = missing.length === 0;
+        if(!passed) {
+          const loc = findLineOf(code, new RegExp(`<${tag}[^>]*>`, 'i'));
+          issue = {type:'error', title:`Thiếu thuộc tính <code>${attr}</code> trên &lt;${tag}&gt;`,
+            msg:`Thẻ <code>&lt;${tag}&gt;</code> cần có thuộc tính <code>${attr}</code>.`, hint,
+            snippet: loc ? codeSnippet(loc.line, loc.text) : ''};
+        }
+      }
+      break;
+    }
+    case 'has_attr_any': {
+      const allEls = tags.flatMap(t => Array.from(doc.querySelectorAll(t)));
+      passed = allEls.some(el => el.hasAttribute(attr));
+      if(!passed) issue = {type:'error', title:`Thiếu thuộc tính <code>${attr}</code>`,
+        msg:`Cần có thuộc tính <code>${attr}</code> trên một trong: ${tags.map(t=>`<code>&lt;${t}&gt;</code>`).join(', ')}.`, hint};
+      break;
+    }
+    case 'has_bool_attr': {
+      const els = Array.from(doc.querySelectorAll(tag));
+      if(els.length === 0) {
+        passed = false;
+        issue = {type:'error', title:`Thiếu thẻ &lt;${tag}&gt;`,
+          msg:`Không tìm thấy thẻ <code>&lt;${tag}&gt;</code> trong code.`, hint};
+      } else {
+        passed = els.some(el => el.hasAttribute(attr));
+        if(!passed) {
+          const loc = findLineOf(code, new RegExp(`<${tag}[^>]*>`, 'i'));
+          issue = {type:'error', title:`Thiếu thuộc tính <code>${attr}</code> trên &lt;${tag}&gt;`,
+            msg:`Thẻ <code>&lt;${tag}&gt;</code> cần có thuộc tính <code>${attr}</code>.`, hint,
+            snippet: loc ? codeSnippet(loc.line, loc.text) : ''};
+        }
+      }
+      break;
+    }
+    case 'attr_value': {
+      const els = Array.from(doc.querySelectorAll(tag));
+      passed = els.some(el => (el.getAttribute(attr)||'').toLowerCase() === value.toLowerCase());
+      if(!passed) {
+        const loc = findLineOf(code, new RegExp(`<${tag}[^>]*>`, 'i'));
+        issue = {type:'error', title:`Thiếu <code>&lt;${tag} ${attr}="${value}"&gt;</code>`,
+          msg:`Cần có <code>&lt;${tag}&gt;</code> với <code>${attr}="${value}"</code>.`, hint,
+          snippet: loc ? codeSnippet(loc.line, loc.text) : ''};
+      }
+      break;
+    }
+    case 'has_attr_title_nonempty': {
+      const titleEl = doc.querySelector('title');
+      passed = titleEl && titleEl.textContent.trim().length > 0;
+      if(!passed) issue = {type:'error', title:'Thẻ &lt;title&gt; không có nội dung',
+        msg:'Thẻ <code>&lt;title&gt;</code> cần có nội dung (tên trang).', hint};
+      break;
+    }
+    case 'has_label_or_p': {
+      passed = doc.querySelectorAll('label').length > 0 || doc.querySelectorAll('p').length > 0;
+      if(!passed) issue = {type:'error', title:'Thiếu &lt;label&gt; hoặc &lt;p&gt; mô tả',
+        msg:'Cần có <code>&lt;label&gt;</code> hoặc <code>&lt;p&gt;</code> để mô tả trường nhập liệu.', hint};
+      break;
+    }
+    case 'no_attr_colon_syntax': {
+      // Kiểm tra lỗi cú pháp attr:value; hoặc attr:value
+      passed = !/([\w-]+)\s*:\s*["']?[\w#]+["']?\s*[;]?/.test(code.replace(/<style[^>]*>[\s\S]*?<\/style>/gi,'').replace(/<!--[\s\S]*?-->/g,''));
+      if(!passed) issue = {type:'error', title:'Lỗi cú pháp thuộc tính (dùng : thay vì =)',
+        msg:'Thuộc tính HTML phải dùng dấu bằng: <code>attr="value"</code>, không phải <code>attr:value</code>.', hint};
+      break;
+    }
+    case 'no_syntax_error': {
+      // CHỈ tính điểm cú pháp nếu code có thẻ HTML
+      if(!hasHtml) {
+        passed = false;
+        issue = {type:'error', title:'Không có thẻ HTML nào',
+          msg:'Code phải chứa các thẻ HTML hợp lệ để được tính điểm cú pháp.', hint:'Thêm cấu trúc HTML cơ bản trước'};
+        break;
+      }
+      const syntaxErrs = syntaxIssues.filter(i => i.type === 'error');
+      passed = syntaxErrs.length === 0;
+      if(!passed) issue = {type:'error', title:`Có ${syntaxErrs.length} lỗi cú pháp`,
+        msg:'Phát hiện lỗi thẻ đóng/mở không khớp.', hint};
+      break;
+    }
+    case 'no_quote_error': {
+      // CHỈ tính điểm nháy kép nếu code có thẻ HTML
+      if(!hasHtml) {
+        passed = false;
+        issue = {type:'warn', title:'Không có thẻ HTML nào',
+          msg:'Code phải chứa các thẻ HTML hợp lệ để được tính điểm định dạng.', hint:'Thêm cấu trúc HTML cơ bản trước'};
+        break;
+      }
+      const quoteWarns = syntaxIssues.filter(i => i.type === 'warn');
+      passed = quoteWarns.length === 0;
+      if(!passed) issue = {type:'warn', title:`Có ${quoteWarns.length} cảnh báo dấu nháy`,
+        msg:'Thuộc tính phải được bọc trong dấu nháy kép.', hint};
+      break;
+    }
+    default:
+      passed = true;
+  }
+  return {passed, issue};
 }
 
+// ── Chạy tất cả criteria ──
+function runCriteriaChecks(ex, doc, code) {
+  const syntaxIssues = checkSyntax(code);
+  const hasHtml = hasAnyHtmlTag(code);
+  let totalScore = 0;
+  const allIssues = [];
+
+  for(const criterion of (ex.criteria || [])) {
+    for(const check of (criterion.checks || [])) {
+      const {passed, issue} = runSingleCheck(check, doc, code, syntaxIssues, hasHtml);
+      if(passed) {
+        totalScore += check.points;
+        allIssues.push({type:'pass', title:`✓ ${check.label}`, points:check.points});
+      } else {
+        if(issue) allIssues.push(issue);
+      }
+    }
+  }
+
+  return {
+    score: Math.max(0, Math.min(10, Math.round(totalScore * 10) / 10)),
+    issues: allIssues
+  };
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  GRADE CODE
+// ═══════════════════════════════════════════════════════════════════
 function gradeCode(){
   const code = document.getElementById('htmlCode').value.trim();
   const id = document.getElementById('exerciseSelect').value;
@@ -886,14 +1340,7 @@ function gradeCode(){
 
   setTimeout(() => {
     const doc = parseHTML(code);
-    const {score, issues: allIssues} = ex && ex.criteria && ex.criteria.length > 0
-      ? runCriteriaChecks(ex, doc, code)
-      : (() => {
-          const structIssues = checkStructure(doc, code);
-          const tcIssues = runTestCases_legacy(doc, ex, code);
-          const syntaxIssues = checkSyntax(code);
-          return {score: calcScore_legacy(structIssues, tcIssues, syntaxIssues, ex), issues: [...structIssues, ...tcIssues, ...syntaxIssues]};
-        })();
+    const {score, issues: allIssues} = runCriteriaChecks(ex || {criteria:[]}, doc, code);
 
     // Score circle
     const deg = (score / 10) * 360;
@@ -906,7 +1353,6 @@ function gradeCode(){
     document.getElementById('scoreStatus').textContent = statusText;
     document.getElementById('scoreStatus').style.color = color;
 
-    // Stats: chỉ đếm lỗi và cảnh báo (bỏ qua pass khỏi thống kê đủng/sai)
     const passItems = allIssues.filter(i=>i.type==='pass');
     const failItems = allIssues.filter(i=>i.type==='error');
     const warnItems = allIssues.filter(i=>i.type==='warn');
@@ -914,18 +1360,12 @@ function gradeCode(){
     document.getElementById('statFail').textContent = failItems.length;
     document.getElementById('statWarn').textContent = warnItems.length;
 
-    // Detail list: hiển thị lỗi trước, pass sau
-    const sortedIssues = [
-      ...failItems,
-      ...warnItems,
-      ...passItems
-    ];
+    // Detail list
     let detailHTML = '';
     if(failItems.length === 0 && warnItems.length === 0){
       detailHTML = `<div class="detail-item pass"><div class="detail-title" style="color:var(--green)">✅ Tất cả tiêu chí đều đạt!</div><div class="detail-msg">Code HTML của bạn đáp ứng đầy đủ yêu cầu bài tập.</div></div>`;
     } else {
-      sortedIssues.forEach(issue => {
-        if(issue.type === 'pass') return; // Ẩn pass để gọn
+      [...failItems, ...warnItems].forEach(issue => {
         const cls = issue.type === 'error' ? 'fail' : 'warn';
         const icon = issue.type === 'error' ? '❌' : '⚠️';
         detailHTML += `<div class="detail-item ${cls}">
@@ -935,17 +1375,18 @@ function gradeCode(){
           ${issue.hint ? `<div class="detail-hint">💡 ${issue.hint}</div>` : ''}
         </div>`;
       });
-      // Thêm summary pass
-      if(passItems.length > 0) {
-        detailHTML += `<div class="detail-item pass" style="margin-top:8px"><div class="detail-title" style="color:var(--green)">✅ ${passItems.length} tiêu chí đạt</div></div>`;
-      }
+    }
+    if(passItems.length > 0) {
+      detailHTML += `<div class="detail-item pass" style="margin-top:8px">
+        <div class="detail-title" style="color:var(--green)">✅ ${passItems.length} tiêu chí đạt</div>
+        <div class="detail-msg">${passItems.map(p=>`<span style="color:var(--green)">✓</span> ${p.title.replace('✓ ','')}`).join('<br>')}</div>
+      </div>`;
     }
     document.getElementById('detailList').innerHTML = detailHTML;
     document.getElementById('scoreContent').style.display = 'block';
 
-    // Output bar
     document.getElementById('outputContent').innerHTML =
-      `<span style="color:${color}">Điểm: ${score.toFixed(1)}/10 — ${statusText} | Lỗi: ${failItems.length} | Cảnh báo: ${warnItems.length}</span>`;
+      `<span style="color:${color}">Điểm: ${score.toFixed(1)}/10 — ${statusText} | Đúng: ${passItems.length} | Sai: ${failItems.length} | Cảnh báo: ${warnItems.length}</span>`;
   }, 300);
 }
 </script>
