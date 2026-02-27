@@ -379,7 +379,7 @@
 // ═══════════════════════════════════════════════════════════════════
 //  VERSION (tự động bump)
 // ═══════════════════════════════════════════════════════════════════
-const VERSION = '1.2.13';
+const VERSION = '1.2.14';
 document.getElementById('versionBadge').textContent = 'v' + VERSION;
 document.title = 'HTML Grader | Công cụ chấm điểm code HTML tự động · THPT Thủ Thiêm';
 
@@ -600,8 +600,16 @@ function runSingleCheck(check, doc, code, syntaxIssues) {
       break;
     }
     case 'has_tag': {
-      const els = doc.querySelectorAll(tag);
-      passed = els.length > 0;
+      // Với các thẻ cơ bản mà DOMParser tự thêm (html, head, body),
+      // phải kiểm tra trực tiếp trên text code gốc
+      const autoTags = ['html','head','body'];
+      if(autoTags.includes(tag.toLowerCase())) {
+        const re = new RegExp(`<${tag}[\\s>]`, 'i');
+        passed = re.test(code);
+      } else {
+        const els = doc.querySelectorAll(tag);
+        passed = els.length > 0;
+      }
       if(!passed) issue = {type:'error', title:`Thiếu thẻ &lt;${tag}&gt;`, msg:`Không tìm thấy thẻ <code>&lt;${tag}&gt;</code> trong code.`, hint};
       break;
     }
@@ -776,14 +784,15 @@ function checkStructure(doc, code) {
       hint:'Thêm <code>&lt;!DOCTYPE html&gt;</code> vào đầu file.',
       snippet: codeSnippet(1, lines[0]) });
   }
+  // Kiểm tra trên TEXT gốc (DOMParser tự thêm html/head/body nếu thiếu)
   const checks = [
-    { sel:'html', label:'&lt;html&gt;', hint:'Bọc toàn bộ nội dung trong &lt;html&gt;...&lt;/html&gt;.' },
-    { sel:'head', label:'&lt;head&gt;', hint:'Thêm &lt;head&gt;...&lt;/head&gt; bên trong &lt;html&gt;.' },
-    { sel:'title', label:'&lt;title&gt;', hint:'Thêm &lt;title&gt;Tiêu đề&lt;/title&gt; vào trong &lt;head&gt;.' },
-    { sel:'body', label:'&lt;body&gt;', hint:'Thêm &lt;body&gt;...&lt;/body&gt; bên trong &lt;html&gt;.' },
+    { re:/<html[\s>]/i,  label:'&lt;html&gt;',  hint:'Bọc toàn bộ nội dung trong &lt;html&gt;...&lt;/html&gt;.' },
+    { re:/<head[\s>]/i,  label:'&lt;head&gt;',  hint:'Thêm &lt;head&gt;...&lt;/head&gt; bên trong &lt;html&gt;.' },
+    { re:/<title[\s>]/i, label:'&lt;title&gt;', hint:'Thêm &lt;title&gt;Tiêu đề&lt;/title&gt; vào trong &lt;head&gt;.' },
+    { re:/<body[\s>]/i,  label:'&lt;body&gt;',  hint:'Thêm &lt;body&gt;...&lt;/body&gt; bên trong &lt;html&gt;.' },
   ];
-  checks.forEach(({sel, label, hint}) => {
-    if (!doc.querySelector(sel)) {
+  checks.forEach(({re, label, hint}) => {
+    if (!re.test(code)) {
       issues.push({ type:'error', title:`Thiếu thẻ ${label}`,
         msg:`Cấu trúc HTML cần có thẻ ${label}.`, hint });
     }
