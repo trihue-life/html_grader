@@ -73,6 +73,7 @@
     .grade-title{font-size:11px;font-weight:700;color:var(--accent);letter-spacing:.5px}
     .grade-tabs{display:flex;gap:4px}
     .grade-tab{background:none;border:none;padding:5px 10px;border-radius:6px;font-size:11px;font-weight:600;color:var(--muted);cursor:pointer;transition:all .2s}
+    .grade-tab.active-preview{background:var(--green);color:#fff}
     .grade-tab:hover{color:var(--text);background:var(--surface3)}
     .grade-tab.active{background:var(--accent);color:#fff}
     .grade-tab.active-desc{background:var(--yellow);color:#000}
@@ -296,6 +297,7 @@
         <button class="grade-tab active" id="tabResult" onclick="switchGradeTab('result')">📊 Kết quả</button>
         <button class="grade-tab" id="tabDesc" onclick="switchGradeTab('desc')">📝 Đề bài</button>
         <button class="grade-tab" id="tabCrit" onclick="switchGradeTab('crit')">⚙ Tiêu chí</button>
+        <button class="grade-tab" id="tabPreview" onclick="switchGradeTab('preview')">▶ Preview</button>
       </div>
     </div>
 
@@ -377,7 +379,7 @@
 // ═══════════════════════════════════════════════════════════════════
 //  VERSION (tự động bump)
 // ═══════════════════════════════════════════════════════════════════
-const VERSION = '1.2.12';
+const VERSION = '1.2.13';
 document.getElementById('versionBadge').textContent = 'v' + VERSION;
 document.title = 'HTML Grader | Công cụ chấm điểm code HTML tự động · THPT Thủ Thiêm';
 
@@ -474,6 +476,7 @@ function switchGradeTab(tab){
     result:  {panel:'panelResult',  btn:'tabResult',  cls:'active'},
     desc:    {panel:'panelDesc',    btn:'tabDesc',    cls:'active-desc'},
     crit:    {panel:'panelCrit',    btn:'tabCrit',    cls:'active-crit'},
+    preview: {panel:'panelPreview', btn:'tabPreview', cls:'active-preview'},
   };
   Object.values(tabs).forEach(({panel,btn})=>{
     const p = document.getElementById(panel);
@@ -520,15 +523,19 @@ function renderCriteria(ex){
 function runCode(){
   const code = document.getElementById('htmlCode').value.trim();
   if(!code){ alert('Vui lòng nhập code HTML!'); return; }
-  // Render vào iframe (nếu có)
+  // Render vào iframe
   const frame = document.getElementById('previewFrame');
   if(frame){
-    frame.classList.add('visible');
-    const empty = document.getElementById('previewEmpty');
-    if(empty) empty.style.display = 'none';
     const doc = frame.contentDocument || frame.contentWindow.document;
     doc.open(); doc.write(code); doc.close();
+    const label = document.getElementById('previewLabel');
+    if(label) label.textContent = 'Output HTML';
+    const empty = document.getElementById('previewEmpty');
+    if(empty) empty.style.display = 'none';
+    frame.style.display = 'block';
   }
+  // Chuyển sang tab Preview
+  switchGradeTab('preview');
   // Output bar
   document.getElementById('outputContent').innerHTML = `<span style="color:var(--green)">✓ Đã render HTML thành công — xem kết quả bên phải</span>`;
 }
