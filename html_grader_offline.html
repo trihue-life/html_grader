@@ -377,7 +377,7 @@
 // ═══════════════════════════════════════════════════════════════════
 //  VERSION (tự động bump)
 // ═══════════════════════════════════════════════════════════════════
-const VERSION = '1.2.10';
+const VERSION = '1.2.11';
 document.getElementById('versionBadge').textContent = 'v' + VERSION;
 document.title = 'HTML Grader | Công cụ chấm điểm code HTML tự động · THPT Thủ Thiêm';
 
@@ -583,50 +583,96 @@ function parseHTML(code) {
 function runTestCases(doc, ex, code) {
   const issues = [];
   for (const tc of (ex.test_cases || [])) {
+    // Hỗ trợ cả tags (mảng) lẫn tag (chuỗi)
+    if (tc.type === 'tag_exist' && tc.tags) {
+      for (const tagName of tc.tags) {
+        const els = Array.from(doc.querySelectorAll(tagName));
+        if (els.length === 0) {
+          const errMsg = (tc.error || 'Thiếu thẻ <{tag}>').replace('{tag}', tagName);
+          const hintMsg = (tc.hint || 'Thêm thẻ <{tag}>').replace('{tag}', tagName);
+          issues.push({ type:'error', title:`Thiếu thẻ &lt;${tagName}&gt;`, msg: errMsg, hint: hintMsg });
+        }
+      }
+      continue;
+    }
+
     let elements = [];
     if (tc.tag) elements = Array.from(doc.querySelectorAll(tc.tag));
 
     switch (tc.type) {
       case 'tag_exist': {
         if (elements.length === 0) {
-          issues.push({ type:'error', title:`Thiếu thẻ &lt;${tc.tag}&gt;`, msg: tc.error, hint: tc.hint });
+          const errMsg = (tc.error || 'Thiếu thẻ').replace('{tag}', tc.tag);
+          const hintMsg = (tc.hint || '').replace('{tag}', tc.tag);
+          issues.push({ type:'error', title:`Thiếu thẻ &lt;${tc.tag}&gt;`, msg: errMsg, hint: hintMsg });
         }
         break;
       }
       case 'tag_count': {
         if (elements.length < tc.min) {
-          issues.push({ type:'warn', title:`Không đủ thẻ &lt;${tc.tag}&gt;`, msg:`Cần ít nhất ${tc.min} thẻ &lt;${tc.tag}&gt;, tìm thấy ${elements.length}`, hint: tc.hint });
+          issues.push({ type:'error', title:`Không đủ thẻ &lt;${tc.tag}&gt;`,
+            msg:`Cần ít nhất ${tc.min} thẻ &lt;${tc.tag}&gt;, tìm thấy ${elements.length}`, hint: tc.hint });
         }
         break;
       }
       case 'attr_exist': {
-        const missing = elements.filter(el => !el.hasAttribute(tc.attr));
-        if (elements.length > 0 && missing.length > 0) {
-          const loc = findLineOf(code, new RegExp(`<${tc.tag}[^>]*>`, 'i'));
-          issues.push({ type:'error', title:`Thiếu thuộc tính <code>${tc.attr}</code> trên &lt;${tc.tag}&gt;`,
-            msg: tc.error, hint: tc.hint,
-            snippet: loc ? codeSnippet(loc.line, loc.text) : '' });
+        if (elements.length === 0) {
+          issues.push({ type:'error', title:`Thiếu thẻ &lt;${tc.tag}&gt;`,
+            msg:`Không tìm thấy thẻ &lt;${tc.tag}&gt; trong code.`, hint: tc.hint });
+        } else {
+          const missing = elements.filter(el => !el.hasAttribute(tc.attr));
+          if (missing.length > 0) {
+            const loc = findLineOf(code, new RegExp(`<${tc.tag}[^>]*>`, 'i'));
+            issues.push({ type:'error', title:`Thiếu thuộc tính <code>${tc.attr}</code> trên &lt;${tc.tag}&gt;`,
+              msg: tc.error, hint: tc.hint,
+              snippet: loc ? codeSnippet(loc.line, loc.text) : '' });
+          }
         }
         break;
       }
       case 'attr_value': {
-        const wrong = elements.filter(el => el.getAttribute(tc.attr) !== tc.value);
-        if (elements.length > 0 && wrong.length > 0) {
-          const actual = wrong[0].getAttribute(tc.attr);
-          const loc = findLineOf(code, new RegExp(`<${tc.tag}[^>]*${tc.attr}`, 'i'));
-          issues.push({ type:'error', title:`Sai giá trị <code>${tc.attr}</code> trên &lt;${tc.tag}&gt;`,
-            msg:`Hiện tại: <code>${actual||'(trống)'}</code> → Cần: <code>${tc.value}</code>`, hint: tc.hint,
-            snippet: loc ? codeSnippet(loc.line, loc.text) : '' });
+        if (elements.length === 0) {
+          issues.push({ type:'error', title:`Thiếu thẻ &lt;${tc.tag}&gt;`,
+            msg:`Không tìm thấy thẻ &lt;${tc.tag}&gt; trong code.`, hint: tc.hint });
+        } else {
+          const wrong = elements.filter(el => el.getAttribute(tc.attr) !== tc.value);
+          if (wrong.length > 0) {
+            const actual = wrong[0].getAttribute(tc.attr);
+            const loc = findLineOf(code, new RegExp(`<${tc.tag}[^>]*${tc.attr}`, 'i'));
+            issues.push({ type:'error', title:`Sai giá trị <code>${tc.attr}</code> trên &lt;${tc.tag}&gt;`,
+              msg:`Hiện tại: <code>${actual||'(trống)'}</code> → Cần: <code>${tc.value}</code>`, hint: tc.hint,
+              snippet: loc ? codeSnippet(loc.line, loc.text) : '' });
+          }
+        }
+        break;
+      }
+      case 'bool_attr': {
+        if (elements.length === 0) {
+          issues.push({ type:'error', title:`Thiếu thẻ &lt;${tc.tag}&gt;`,
+            msg:`Không tìm thấy thẻ &lt;${tc.tag}&gt; trong code.`, hint: tc.hint });
+        } else {
+          const missing = elements.filter(el => !el.hasAttribute(tc.attr));
+          if (missing.length > 0) {
+            const loc = findLineOf(code, new RegExp(`<${tc.tag}[^>]*>`, 'i'));
+            issues.push({ type:'error', title:`Thiếu thuộc tính <code>${tc.attr}</code> trên &lt;${tc.tag}&gt;`,
+              msg: tc.error, hint: tc.hint,
+              snippet: loc ? codeSnippet(loc.line, loc.text) : '' });
+          }
         }
         break;
       }
       case 'content_contains': {
-        const wrong = elements.filter(el => !el.textContent.includes(tc.value));
-        if (elements.length > 0 && wrong.length > 0) {
-          const loc = findLineOf(code, new RegExp(`<${tc.tag}[^>]*>`, 'i'));
-          issues.push({ type:'error', title:`Nội dung thẻ &lt;${tc.tag}&gt; không đúng`,
-            msg:`Nội dung phải chứa: <code>${tc.value}</code>`, hint: tc.hint,
-            snippet: loc ? codeSnippet(loc.line, loc.text) : '' });
+        if (elements.length === 0) {
+          issues.push({ type:'error', title:`Thiếu thẻ &lt;${tc.tag}&gt;`,
+            msg:`Không tìm thấy thẻ &lt;${tc.tag}&gt; trong code.`, hint: tc.hint });
+        } else {
+          const wrong = elements.filter(el => !el.textContent.includes(tc.value));
+          if (wrong.length > 0) {
+            const loc = findLineOf(code, new RegExp(`<${tc.tag}[^>]*>`, 'i'));
+            issues.push({ type:'error', title:`Nội dung thẻ &lt;${tc.tag}&gt; không đúng`,
+              msg:`Nội dung phải chứa: <code>${tc.value}</code>`, hint: tc.hint,
+              snippet: loc ? codeSnippet(loc.line, loc.text) : '' });
+          }
         }
         break;
       }
@@ -724,12 +770,41 @@ function checkSyntax(code) {
 }
 
 function calcScore(structIssues, tcIssues, syntaxIssues, ex) {
-  let score = 10;
-  const allErrors = [...structIssues, ...tcIssues, ...syntaxIssues].filter(i => i.type === 'error');
-  const allWarns  = [...structIssues, ...tcIssues, ...syntaxIssues].filter(i => i.type === 'warn');
-  score -= allErrors.length * 1.2;
-  score -= allWarns.length  * 0.4;
-  return Math.max(0, Math.min(10, Math.round(score * 10) / 10));
+  // Hệ thống tính điểm CỘNG từ 0: chỉ cộng điểm khi tiêu chí PASS
+  // Phân bổ điểm:
+  //   - Cấu trúc cơ bản (DOCTYPE, html, head, title, body): 2.5đ
+  //   - Test cases bài tập: 5.0đ
+  //   - Cú pháp (thẻ đóng, dấu nháy): 2.5đ
+
+  const STRUCT_TOTAL = 2.5;
+  const TC_TOTAL = 5.0;
+  const SYNTAX_TOTAL = 2.5;
+
+  // --- Điểm cấu trúc ---
+  // 5 mục: DOCTYPE, html, head, title, body → mỗi mục 0.5đ
+  const structErrors = structIssues.filter(i => i.type === 'error').length;
+  const structMax = 5; // 5 mục cấu trúc
+  const structPassed = Math.max(0, structMax - structErrors);
+  const structScore = (structPassed / structMax) * STRUCT_TOTAL;
+
+  // --- Điểm test cases ---
+  const tcErrors = tcIssues.filter(i => i.type === 'error').length;
+  const tcTotal = ex ? (ex.test_cases || []).reduce((sum, tc) => {
+    // Đếm số test case thực tế (tags mảng tính từng tag)
+    if (tc.type === 'tag_exist' && tc.tags) return sum + tc.tags.length;
+    return sum + 1;
+  }, 0) : 0;
+  const tcPassed = Math.max(0, tcTotal - tcErrors);
+  const tcScore = tcTotal > 0 ? (tcPassed / tcTotal) * TC_TOTAL : TC_TOTAL;
+
+  // --- Điểm cú pháp ---
+  const syntaxErrors = syntaxIssues.filter(i => i.type === 'error').length;
+  const syntaxWarns  = syntaxIssues.filter(i => i.type === 'warn').length;
+  // Trừ điểm: mỗi lỗi cú pháp -0.5đ, mỗi cảnh báo -0.2đ
+  const syntaxScore = Math.max(0, SYNTAX_TOTAL - syntaxErrors * 0.5 - syntaxWarns * 0.2);
+
+  const total = structScore + tcScore + syntaxScore;
+  return Math.max(0, Math.min(10, Math.round(total * 10) / 10));
 }
 
 function gradeCode(){
