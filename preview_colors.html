@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.17/codemirror.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.17/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.17/mode/xml/xml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.17/mode/htmlmixed/htmlmixed.min.js"></script>
+<style>
+body { background: #1e1e1e; margin: 0; padding: 20px; font-family: monospace; }
+.CodeMirror { background: #1e1e1e !important; color: #d4d4d4 !important; font-size: 14px; line-height: 1.8; font-family: 'Cascadia Code', 'Fira Code', Consolas, monospace; height: auto !important; }
+.CodeMirror-gutters { background: #1e1e1e !important; border-right: 1px solid #3c3c3c !important; }
+.CodeMirror-linenumber { color: #858585 !important; }
+.cm-s-default .cm-meta { color: #569cd6 !important; }
+.cm-s-default .cm-tag:not(.cm-bracket) { color: #4ec9b0 !important; }
+.cm-s-default .cm-tag.cm-bracket { color: #808080 !important; }
+.cm-s-default .cm-bracket { color: #808080 !important; }
+.cm-s-default .cm-attribute { color: #9cdcfe !important; }
+.cm-s-default .cm-string { color: #ce9178 !important; }
+.cm-s-default .cm-comment { color: #6a9955 !important; font-style: italic !important; }
+.cm-s-default .cm-error { color: #f44747 !important; }
+</style>
+</head>
+<body>
+<textarea id="code"><!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Trang của tôi</title>
+</head>
+<body>
+  <!-- Đây là comment HTML -->
+  <h1 class="title">Xin chào!</h1>
+  <p style="color: red;">Đoạn văn bản.</p>
+  <a href="https://example.com">Liên kết</a>
+  <img src="anh.jpg" alt="Ảnh" width="150">
+  <ul>
+    <li>Mục 1</li>
+    <li>Mục 2</li>
+  </ul>
+  <input type="text" placeholder="Nhập tên" required>
+</body>
+</html></textarea>
+<script>
+const editor = CodeMirror.fromTextArea(document.getElementById('code'), {
+  mode: 'htmlmixed',
+  lineNumbers: true,
+  readOnly: true,
+  viewportMargin: Infinity
+});
+</script>
+</body>
+</html>

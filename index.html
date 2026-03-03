@@ -4,6 +4,18 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>HTML Grader | Công cụ chấm điểm code HTML tự động · THPT Thủ Thiêm</title>
+
+  <!-- ══ CodeMirror 5 via CDN ══ -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.17/codemirror.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.17/codemirror.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.17/mode/xml/xml.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.17/mode/javascript/javascript.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.17/mode/css/css.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.17/mode/htmlmixed/htmlmixed.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.17/addon/edit/matchbrackets.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.17/addon/edit/closetag.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.17/addon/selection/active-line.min.js"></script>
+
   <style>
     *{box-sizing:border-box;margin:0;padding:0}
     :root{
@@ -42,8 +54,80 @@
     .editor-header{background:var(--surface2);border-bottom:1px solid var(--border);padding:7px 16px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
     .editor-title{font-size:11px;font-weight:700;color:var(--green);letter-spacing:.5px}
     .editor-pos{font-size:11px;color:var(--muted)}
-    textarea{flex:1;background:#0d1117;color:#e6edf3;border:none;padding:14px 16px;font-family:'Cascadia Code','Fira Code',Consolas,monospace;font-size:13px;line-height:1.7;resize:none;outline:none;tab-size:2;min-height:0}
-    textarea::placeholder{color:#3d4451}
+
+    /* ══ CODEMIRROR EDITOR STYLES ══ */
+    #editor-wrap{flex:1;overflow:hidden;display:flex;flex-direction:column;min-height:0}
+    .CodeMirror{
+      flex:1;
+      height:100% !important;
+      background:#0d1117 !important;
+      color:#d4d4d4 !important;
+      font-family:'Cascadia Code','Fira Code','JetBrains Mono',Consolas,'Courier New',monospace !important;
+      font-size:13px !important;
+      line-height:1.7 !important;
+    }
+    .CodeMirror-scroll{height:100% !important}
+    .CodeMirror-gutters{
+      background:#0d1117 !important;
+      border-right:1px solid #21262d !important;
+    }
+    .CodeMirror-linenumber{color:#4a5568 !important;font-size:12px !important}
+    .CodeMirror-cursor{border-left:2px solid #aeafad !important}
+    .CodeMirror-selected{background:rgba(38,79,120,.5) !important}
+    .CodeMirror-focused .CodeMirror-selected{background:rgba(38,79,120,.7) !important}
+    .CodeMirror-activeline-background{background:rgba(255,255,255,.04) !important}
+    .CodeMirror-matchingbracket{
+      color:#fff !important;
+      background:rgba(108,99,255,.3) !important;
+      border-radius:2px;
+    }
+
+    /* ══ VSCode Dark+ HTML SYNTAX COLORS ══ */
+    /* Nền editor — giống VSCode Dark+ */
+    .CodeMirror{background:#1e1e1e !important;color:#d4d4d4 !important}
+    .CodeMirror-gutters{background:#1e1e1e !important;border-right:1px solid #3c3c3c !important}
+    .CodeMirror-linenumber{color:#858585 !important}
+    /* DOCTYPE: <!DOCTYPE html> — xanh dương */
+    .cm-s-default .cm-meta,.CodeMirror .cm-meta{color:#569cd6 !important;font-style:normal !important}
+    /* Tên thẻ: html, body, h1, p, div — teal xanh ngọc */
+    .cm-s-default .cm-tag:not(.cm-bracket),.CodeMirror span.cm-tag:not(.cm-bracket){color:#4ec9b0 !important}
+    /* Dấu < > — xám */
+    .cm-s-default .cm-tag.cm-bracket,.cm-s-default .cm-bracket,
+    .CodeMirror span.cm-tag.cm-bracket,.CodeMirror span.cm-bracket{color:#808080 !important}
+    /* Thuộc tính: src, href, class, id — xanh nhạt */
+    .cm-s-default .cm-attribute,.CodeMirror span.cm-attribute{color:#9cdcfe !important}
+    /* Giá trị thuộc tính: "value" — cam đất */
+    .cm-s-default .cm-string,.CodeMirror span.cm-string{color:#ce9178 !important}
+    /* Comment: <!-- --> — xanh lá */
+    .cm-s-default .cm-comment,.CodeMirror span.cm-comment{color:#6a9955 !important;font-style:italic !important}
+    /* Lỗi — đỏ */
+    .cm-s-default .cm-error,.CodeMirror span.cm-error{color:#f44747 !important;text-decoration:underline wavy #f44747}
+    /* Số — xanh lá nhạt */
+    .cm-s-default .cm-number,.CodeMirror span.cm-number{color:#b5cea8 !important}
+    /* Keyword — tím */
+    .cm-s-default .cm-keyword,.CodeMirror span.cm-keyword{color:#c586c0 !important}
+    /* Atom — xanh dương */
+    .cm-s-default .cm-atom,.CodeMirror span.cm-atom{color:#569cd6 !important}
+    /* Variable, Property — xanh nhạt */
+    .cm-s-default .cm-variable,.cm-s-default .cm-property,
+    .CodeMirror span.cm-variable,.CodeMirror span.cm-property{color:#9cdcfe !important}
+    /* Builtin, Def — vàng */
+    .cm-s-default .cm-builtin,.cm-s-default .cm-def,
+    .CodeMirror span.cm-builtin,.CodeMirror span.cm-def{color:#dcdcaa !important}
+    /* Qualifier — vàng nhạt */
+    .cm-s-default .cm-qualifier,.CodeMirror span.cm-qualifier{color:#d7ba7d !important}
+    /* Cursor và selection */
+    .CodeMirror-cursor{border-left:2px solid #aeafad !important}
+    .CodeMirror-selected{background:rgba(38,79,120,.5) !important}
+    .CodeMirror-focused .CodeMirror-selected{background:rgba(38,79,120,.7) !important}
+    .CodeMirror-activeline-background{background:rgba(255,255,255,.04) !important}
+    .CodeMirror-matchingbracket{color:#fff !important;background:rgba(108,99,255,.3) !important;border-radius:2px}
+    /* Scrollbar */
+    .CodeMirror-vscrollbar::-webkit-scrollbar{width:8px}
+    .CodeMirror-vscrollbar::-webkit-scrollbar-track{background:#0d1117}
+    .CodeMirror-vscrollbar::-webkit-scrollbar-thumb{background:#30363d;border-radius:4px}
+    .CodeMirror-hscrollbar::-webkit-scrollbar{height:8px}
+    .CodeMirror-hscrollbar::-webkit-scrollbar-thumb{background:#30363d;border-radius:4px}
 
     /* ══ ACTION BAR ══ */
     .action-bar{background:var(--surface);border-top:1px solid var(--border);padding:8px 16px;display:flex;align-items:center;gap:8px;flex-shrink:0}
@@ -172,6 +256,7 @@
       .btn{padding:7px 12px;font-size:11px}
       .output-content{min-height:40px;max-height:80px;font-size:11px}
       .shortcut{display:none}
+      .CodeMirror{font-size:12px !important}
     }
 
     /* ══ MOBILE LANDSCAPE ══ */
@@ -214,6 +299,7 @@
       .btn{padding:6px 10px;font-size:11px}
       .output-content{min-height:36px;max-height:70px;font-size:10px}
       .shortcut{display:none}
+      .CodeMirror{font-size:12px !important}
     }
   </style>
 </head>
@@ -235,7 +321,7 @@
     <select class="nav-select" id="exerciseSelect" onchange="onExerciseChange()"></select>
   </div>
   <div class="header-right">
-    <span class="badge-version" id="versionBadge">v1.3.0</span>
+    <span class="badge-version" id="versionBadge">v1.4.0</span>
   </div>
 </header>
 
@@ -254,19 +340,8 @@
       <span class="editor-title">● CODE EDITOR — HTML</span>
       <span class="editor-pos" id="editorPos">LN 1, COL 1</span>
     </div>
-    <textarea id="htmlCode"
-      placeholder="<!-- Nhập code HTML tại đây... -->
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Trang của tôi</title>
-  </head>
-  <body>
-    <h1>Xin chào!</h1>
-    <p>Đây là trang web của tôi.</p>
-  </body>
-</html>"
-      spellcheck="false"></textarea>
+    <!-- CodeMirror sẽ được inject vào đây -->
+    <div id="editor-wrap"></div>
     <div class="action-bar">
       <button class="btn btn-run" onclick="runCode()">▶ Chạy code</button>
       <button class="btn btn-grade" onclick="gradeCode()">⚡ Chấm điểm</button>
@@ -371,24 +446,27 @@
   </div>
 </div>
 
+<!-- ══ CodeMirror 5 (stable, CDN) ══ -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.17/codemirror.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.17/codemirror.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.17/mode/xml/xml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.17/mode/htmlmixed/htmlmixed.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.17/mode/css/css.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.17/mode/javascript/javascript.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.17/addon/edit/matchbrackets.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.17/addon/edit/closetag.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.17/addon/selection/active-line.min.js"></script>
+
 <script>
 // ═══════════════════════════════════════════════════════════════════
 //  VERSION
 // ═══════════════════════════════════════════════════════════════════
-const VERSION = '1.3.1';
+const VERSION = '1.4.1';
 document.getElementById('versionBadge').textContent = 'v' + VERSION;
 
 // ═══════════════════════════════════════════════════════════════════
 //  CẤU TRÚC BÀI TẬP
-//  Mỗi criterion có: name, points, checks[]
-//  Mỗi check có: type, points, label, hint, [tag, tags, attr, value, min]
-//
-//  NGUYÊN TẮC CHẤM ĐIỂM NGHIÊM NGẶT:
-//  - Điểm cú pháp CHỈ được tính khi code có ít nhất 1 thẻ HTML hợp lệ
-//  - Không có thẻ nào = 0 điểm tuyệt đối
-//  - Mỗi check chỉ cho điểm khi THỰC SỰ tìm thấy phần tử yêu cầu
 // ═══════════════════════════════════════════════════════════════════
-
 const TOPICS = {
   'F1 — HTML Cơ bản': ['f1_apply1','f1_apply2','f1_apply3','f1_analyze1'],
   'F2 — Danh sách & Liên kết': ['f2_apply1','f2_apply2','f2_apply3'],
@@ -398,8 +476,6 @@ const TOPICS = {
   'Tổng hợp': ['tong1','tong2','tong3'],
 };
 
-// ── Tiêu chí cấu trúc HTML cơ bản (dùng lại cho nhiều bài) ──
-// Tổng: 2.5 điểm
 function basicStructureCriteria(pts) {
   pts = pts || 2.5;
   const each = +(pts/5).toFixed(2);
@@ -416,7 +492,6 @@ function basicStructureCriteria(pts) {
   };
 }
 
-// ── Tiêu chí cú pháp (dùng lại, CHỈ tính khi có HTML hợp lệ) ──
 function syntaxCriteria(pts) {
   pts = pts || 2.0;
   return {
@@ -430,9 +505,7 @@ function syntaxCriteria(pts) {
 }
 
 const EXERCISES = [
-  // ════════════════════════════════════════════════════════
-  //  F1 — HTML CƠ BẢN
-  // ════════════════════════════════════════════════════════
+  // ════ F1 — HTML CƠ BẢN ════
   {
     id: 'f1_apply1',
     group: 'F1 — HTML Cơ bản',
@@ -513,9 +586,7 @@ const EXERCISES = [
     ]
   },
 
-  // ════════════════════════════════════════════════════════
-  //  F2 — DANH SÁCH & LIÊN KẾT
-  // ════════════════════════════════════════════════════════
+  // ════ F2 — DANH SÁCH & LIÊN KẾT ════
   {
     id: 'f2_apply1',
     group: 'F2 — Danh sách & Liên kết',
@@ -578,9 +649,7 @@ const EXERCISES = [
     ]
   },
 
-  // ════════════════════════════════════════════════════════
-  //  F3 — BẢNG & BỐ CỤC
-  // ════════════════════════════════════════════════════════
+  // ════ F3 — BẢNG & BỐ CỤC ════
   {
     id: 'f3_apply1',
     group: 'F3 — Bảng & Bố cục',
@@ -644,9 +713,7 @@ const EXERCISES = [
     ]
   },
 
-  // ════════════════════════════════════════════════════════
-  //  F4 — MEDIA
-  // ════════════════════════════════════════════════════════
+  // ════ F4 — MEDIA ════
   {
     id: 'f4_apply1',
     group: 'F4 — Media (Ảnh/Video/Audio)',
@@ -671,19 +738,19 @@ const EXERCISES = [
   {
     id: 'f4_apply2',
     group: 'F4 — Media (Ảnh/Video/Audio)',
-    title: 'F4 - Vận dụng 2: Trang nhạc + lời bài hát',
-    description: 'Tạo trang web hiển thị tên bài hát bằng <code>&lt;h2&gt;</code>, lời bài hát bằng <code>&lt;p&gt;</code>, và nhúng tệp âm thanh bằng <code>&lt;audio controls&gt;</code>.',
-    required_tags: ['html','head','title','body','h2','p','audio'],
+    title: 'F4 - Vận dụng 2: Trang nhạc (audio + thông tin bài hát)',
+    description: 'Tạo trang nhạc với thẻ <code>&lt;audio controls&gt;</code>, đề mục <code>&lt;h2&gt;</code> tên bài hát và đoạn <code>&lt;p&gt;</code> lời nhạc.',
+    required_tags: ['html','head','title','body','h2','audio','p'],
     criteria: [
       basicStructureCriteria(2.5),
       {
-        name: '2. Nội dung bắt buộc',
+        name: '2. Thẻ audio bắt buộc',
         points: 5.5,
         checks: [
-          {type:'has_tag', tag:'h2', points:1.5, label:'Có thẻ &lt;h2&gt; tên bài hát', hint:'Thêm <h2>Tên bài hát</h2>'},
-          {type:'has_tag', tag:'p', points:1.0, label:'Có thẻ &lt;p&gt; lời bài hát', hint:'Thêm <p>Lời bài hát...</p>'},
           {type:'has_tag', tag:'audio', points:2.0, label:'Có thẻ &lt;audio&gt;', hint:'Thêm <audio controls>...</audio>'},
-          {type:'has_bool_attr', tag:'audio', attr:'controls', points:1.0, label:'&lt;audio&gt; có thuộc tính controls', hint:'Thêm controls vào thẻ <audio controls>'},
+          {type:'has_bool_attr', tag:'audio', attr:'controls', points:1.5, label:'&lt;audio&gt; có thuộc tính controls', hint:'Thêm controls vào thẻ <audio>'},
+          {type:'has_tag', tag:'h2', points:1.0, label:'Có thẻ &lt;h2&gt; tên bài hát', hint:'Thêm <h2>Tên bài hát</h2>'},
+          {type:'has_tag', tag:'p', points:1.0, label:'Có thẻ &lt;p&gt; lời nhạc', hint:'Thêm <p>Lời bài hát...</p>'},
         ]
       },
       syntaxCriteria(2.0),
@@ -692,17 +759,17 @@ const EXERCISES = [
   {
     id: 'f4_apply3',
     group: 'F4 — Media (Ảnh/Video/Audio)',
-    title: 'F4 - Vận dụng 3: Portfolio hoàn chỉnh (ảnh + video + audio)',
-    description: 'Hoàn thiện trang portfolio với: ảnh đại diện <code>&lt;img&gt;</code>, video hoạt động lớp <code>&lt;video&gt;</code>, bài hát yêu thích <code>&lt;audio&gt;</code>.',
+    title: 'F4 - Vận dụng 3: Portfolio đa phương tiện (ảnh + video + audio)',
+    description: 'Tạo trang portfolio tổng hợp gồm: ảnh đại diện <code>&lt;img&gt;</code>, video hoạt động <code>&lt;video controls&gt;</code> và bài hát yêu thích <code>&lt;audio controls&gt;</code>.',
     required_tags: ['html','head','title','body','h1','img','video','audio'],
     criteria: [
       basicStructureCriteria(2.5),
       {
-        name: '2. Media bắt buộc',
+        name: '2. Đa phương tiện',
         points: 5.5,
         checks: [
-          {type:'has_tag', tag:'img', points:1.5, label:'Có thẻ &lt;img&gt; ảnh', hint:'Thêm <img src="anh.jpg" alt="Mô tả">'},
-          {type:'has_attr', tag:'img', attr:'src', points:0.5, label:'&lt;img&gt; có thuộc tính src', hint:'Thêm src="đường_dẫn_ảnh" vào <img>'},
+          {type:'has_tag', tag:'img', points:1.5, label:'Có thẻ &lt;img&gt; ảnh đại diện', hint:'Thêm <img src="anh.jpg" alt="Ảnh đại diện">'},
+          {type:'has_attr', tag:'img', attr:'src', points:0.5, label:'&lt;img&gt; có thuộc tính src', hint:'Thêm src="đường_dẫn" vào <img>'},
           {type:'has_tag', tag:'video', points:1.5, label:'Có thẻ &lt;video&gt;', hint:'Thêm <video controls>...</video>'},
           {type:'has_tag', tag:'audio', points:1.5, label:'Có thẻ &lt;audio&gt;', hint:'Thêm <audio controls>...</audio>'},
           {type:'has_tag', tag:'h1', points:0.5, label:'Có thẻ &lt;h1&gt; tiêu đề', hint:'Thêm <h1>Portfolio của tôi</h1>'},
@@ -712,24 +779,22 @@ const EXERCISES = [
     ]
   },
 
-  // ════════════════════════════════════════════════════════
-  //  F5 — BIỂU MẪU (FORM)
-  // ════════════════════════════════════════════════════════
+  // ════ F5 — BIỂU MẪU ════
   {
     id: 'f5_apply1',
     group: 'F5 — Biểu mẫu (Form)',
-    title: 'F5 - Vận dụng 1: Biểu mẫu tìm kiếm',
-    description: 'Tạo biểu mẫu tìm kiếm đơn giản gồm: ô nhập từ khóa <code>type="text"</code> (có placeholder), nút bấm "Tìm kiếm" <code>type="submit"</code>. Dùng <code>method="get"</code>.',
+    title: 'F5 - Vận dụng 1: Form tìm kiếm đơn giản',
+    description: 'Tạo form tìm kiếm với thẻ <code>&lt;form&gt;</code>, ô nhập <code>&lt;input type="text"&gt;</code> và nút <code>&lt;button type="submit"&gt;</code>.',
     required_tags: ['html','head','title','body','form','input','button'],
     criteria: [
-      basicStructureCriteria(2.5),
+      basicStructureCriteria(3.0),
       {
-        name: '2. Biểu mẫu tìm kiếm',
-        points: 5.5,
+        name: '2. Form tìm kiếm',
+        points: 5.0,
         checks: [
-          {type:'has_tag', tag:'form', points:1.5, label:'Có thẻ &lt;form&gt;', hint:'Thêm <form method="get">...</form>'},
-          {type:'attr_value', tag:'input', attr:'type', value:'text', points:2.0, label:'Có &lt;input type="text"&gt;', hint:'Thêm <input type="text" placeholder="Từ khóa...">'},
-          {type:'has_tag_any', tags:['button','input[type=submit]'], points:2.0, label:'Có nút submit', hint:'Thêm <button type="submit">Tìm kiếm</button>'},
+          {type:'has_tag', tag:'form', points:1.5, label:'Có thẻ &lt;form&gt;', hint:'Thêm <form>...</form>'},
+          {type:'has_tag', tag:'input', points:2.0, label:'Có thẻ &lt;input&gt; nhập liệu', hint:'Thêm <input type="text" placeholder="Nhập từ khóa...">'},
+          {type:'has_tag', tag:'button', points:1.5, label:'Có nút &lt;button&gt; tìm kiếm', hint:'Thêm <button type="submit">Tìm kiếm</button>'},
         ]
       },
       syntaxCriteria(2.0),
@@ -738,19 +803,20 @@ const EXERCISES = [
   {
     id: 'f5_apply2',
     group: 'F5 — Biểu mẫu (Form)',
-    title: 'F5 - Vận dụng 2: Đăng ký nhận tin (email bắt buộc)',
-    description: 'Tạo biểu mẫu "Đăng ký nhận tin mới" gồm: nhãn <code>&lt;label&gt;</code>, ô nhập <code>type="email"</code> có thuộc tính <code>required</code>, nút Đăng ký.',
+    title: 'F5 - Vận dụng 2: Form đăng ký nhận tin (email + required)',
+    description: 'Tạo form đăng ký nhận tin tức với <code>&lt;input type="email"&gt;</code> có thuộc tính <code>required</code>, kèm <code>&lt;label&gt;</code> và nút submit.',
     required_tags: ['html','head','title','body','form','label','input','button'],
     criteria: [
       basicStructureCriteria(2.5),
       {
-        name: '2. Biểu mẫu email',
+        name: '2. Form email',
         points: 5.5,
         checks: [
           {type:'has_tag', tag:'form', points:1.0, label:'Có thẻ &lt;form&gt;', hint:'Thêm <form>...</form>'},
-          {type:'has_tag', tag:'label', points:1.0, label:'Có thẻ &lt;label&gt;', hint:'Thêm <label>Email:</label>'},
-          {type:'attr_value', tag:'input', attr:'type', value:'email', points:2.0, label:'Có &lt;input type="email"&gt;', hint:'Thêm <input type="email" required>'},
-          {type:'has_bool_attr', tag:'input', attr:'required', points:1.5, label:'Input email có thuộc tính required', hint:'Thêm required vào <input type="email" required>'},
+          {type:'has_tag', tag:'label', points:1.0, label:'Có thẻ &lt;label&gt;', hint:'Thêm <label for="email">Email:</label>'},
+          {type:'attr_value', tag:'input', attr:'type', value:'email', points:2.0, label:'Có &lt;input type="email"&gt;', hint:'Thêm <input type="email" name="email" required>'},
+          {type:'has_bool_attr', tag:'input', attr:'required', points:1.0, label:'Input có thuộc tính required', hint:'Thêm required vào thẻ input'},
+          {type:'has_tag', tag:'button', points:0.5, label:'Có nút &lt;button&gt;', hint:'Thêm <button type="submit">Đăng ký</button>'},
         ]
       },
       syntaxCriteria(2.0),
@@ -759,19 +825,20 @@ const EXERCISES = [
   {
     id: 'f5_apply3',
     group: 'F5 — Biểu mẫu (Form)',
-    title: 'F5 - Vận dụng 3: Khảo sát ý kiến',
-    description: 'Thiết kế biểu mẫu khảo sát gồm: Tên (text), Tuổi (number), Đánh giá mức độ hài lòng dùng <code>radio</code> (Tốt/Khá/Trung bình), nút Gửi.',
+    title: 'F5 - Vận dụng 3: Form khảo sát (radio button)',
+    description: 'Tạo form khảo sát gồm: ô nhập tên (<code>text</code>), tuổi (<code>number</code>), và nhóm lựa chọn mức độ hài lòng bằng <code>&lt;input type="radio"&gt;</code>.',
     required_tags: ['html','head','title','body','form','input','button'],
     criteria: [
       basicStructureCriteria(2.5),
       {
-        name: '2. Biểu mẫu khảo sát',
+        name: '2. Form khảo sát',
         points: 5.5,
         checks: [
           {type:'has_tag', tag:'form', points:1.0, label:'Có thẻ &lt;form&gt;', hint:'Thêm <form>...</form>'},
           {type:'attr_value', tag:'input', attr:'type', value:'text', points:1.0, label:'Có &lt;input type="text"&gt; nhập tên', hint:'Thêm <input type="text" name="ten">'},
           {type:'attr_value', tag:'input', attr:'type', value:'number', points:1.5, label:'Có &lt;input type="number"&gt; nhập tuổi', hint:'Thêm <input type="number" name="tuoi">'},
-          {type:'attr_value', tag:'input', attr:'type', value:'radio', points:2.0, label:'Có &lt;input type="radio"&gt; đánh giá', hint:'Thêm <input type="radio" name="danhgia" value="tot"> Tốt'},
+          {type:'attr_value', tag:'input', attr:'type', value:'radio', points:1.5, label:'Có &lt;input type="radio"&gt; lựa chọn', hint:'Thêm <input type="radio" name="danhgia" value="tot"> Tốt'},
+          {type:'has_tag', tag:'button', points:0.5, label:'Có nút &lt;button&gt;', hint:'Thêm <button type="submit">Gửi</button>'},
         ]
       },
       syntaxCriteria(2.0),
@@ -780,8 +847,8 @@ const EXERCISES = [
   {
     id: 'f5_apply4',
     group: 'F5 — Biểu mẫu (Form)',
-    title: 'F5 - Thực hành: Trang đăng nhập hệ thống',
-    description: 'Tạo trang đăng nhập với biểu mẫu: tên người dùng (text, required), mật khẩu (<code>password</code>, required), nút Đăng nhập. Dùng <code>method="post"</code>.',
+    title: 'F5 - Vận dụng 4: Form đăng nhập (username + password)',
+    description: 'Tạo form đăng nhập với <code>&lt;input type="text"&gt;</code> tên người dùng, <code>&lt;input type="password"&gt;</code> mật khẩu, cả hai đều có <code>required</code>.',
     required_tags: ['html','head','title','body','form','label','input','button'],
     criteria: [
       basicStructureCriteria(2.5),
@@ -790,10 +857,10 @@ const EXERCISES = [
         points: 5.5,
         checks: [
           {type:'has_tag', tag:'form', points:1.0, label:'Có thẻ &lt;form&gt;', hint:'Thêm <form method="post">...</form>'},
-          {type:'attr_value', tag:'form', attr:'method', value:'post', points:0.5, label:'Form có method="post"', hint:'Thêm method="post" vào thẻ <form>'},
-          {type:'attr_value', tag:'input', attr:'type', value:'text', points:1.5, label:'Có &lt;input type="text"&gt; tên đăng nhập', hint:'Thêm <input type="text" name="username" required>'},
-          {type:'attr_value', tag:'input', attr:'type', value:'password', points:2.0, label:'Có &lt;input type="password"&gt; mật khẩu', hint:'Thêm <input type="password" name="password" required>'},
-          {type:'has_tag', tag:'button', points:0.5, label:'Có nút &lt;button&gt; đăng nhập', hint:'Thêm <button type="submit">Đăng nhập</button>'},
+          {type:'has_tag', tag:'label', points:1.0, label:'Có thẻ &lt;label&gt;', hint:'Thêm <label for="username">Tên người dùng:</label>'},
+          {type:'attr_value', tag:'input', attr:'type', value:'text', points:1.5, label:'Có &lt;input type="text"&gt; username', hint:'Thêm <input type="text" id="username" required>'},
+          {type:'attr_value', tag:'input', attr:'type', value:'password', points:1.5, label:'Có &lt;input type="password"&gt; mật khẩu', hint:'Thêm <input type="password" id="password" required>'},
+          {type:'has_tag', tag:'button', points:0.5, label:'Có nút &lt;button&gt;', hint:'Thêm <button type="submit">Đăng nhập</button>'},
         ]
       },
       syntaxCriteria(2.0),
@@ -822,9 +889,7 @@ const EXERCISES = [
     ]
   },
 
-  // ════════════════════════════════════════════════════════
-  //  TỔNG HỢP
-  // ════════════════════════════════════════════════════════
+  // ════ TỔNG HỢP ════
   {
     id: 'tong1',
     group: 'Tổng hợp',
@@ -909,7 +974,103 @@ const exMap = {};
 EXERCISES.forEach(ex => exMap[ex.id] = ex);
 
 // ═══════════════════════════════════════════════════════════════════
-//  KHỞI TẠO
+//  KHỞI TẠO CODEMIRROR
+// ═══════════════════════════════════════════════════════════════════
+window.cmEditor = null;
+
+(function initCodeMirror(){
+  const wrap = document.getElementById('editor-wrap');
+  window.cmEditor = CodeMirror(wrap, {
+    value: '',
+    mode: 'htmlmixed',
+    theme: 'default',
+    lineNumbers: true,
+    lineWrapping: false,
+    autofocus: true,
+    tabSize: 2,
+    indentWithTabs: false,
+    matchBrackets: true,
+    autoCloseTags: true,
+    styleActiveLine: true,
+    extraKeys: {
+      'Tab': function(cm) {
+        if (cm.somethingSelected()) {
+          cm.indentSelection('add');
+        } else {
+          cm.replaceSelection('  ', 'end');
+        }
+      },
+      'Ctrl-Enter': function() { runAndGrade(); },
+      'Cmd-Enter': function() { runAndGrade(); },
+    },
+    placeholder: '<!-- Nhập code HTML tại đây... -->\n<!DOCTYPE html>\n<html>\n  <head>\n    <title>Trang của tôi</title>\n  </head>\n  <body>\n    <h1>Xin chào!</h1>\n    <p>Đây là trang web của tôi.</p>\n  </body>\n</html>',
+  });
+
+  // Cập nhật vị trí con trỏ
+  window.cmEditor.on('cursorActivity', function(cm) {
+    const cursor = cm.getCursor();
+    document.getElementById('editorPos').textContent =
+      `LN ${cursor.line + 1}, COL ${cursor.ch + 1}`;
+  });
+
+  // Inject CSS màu sắc VSCode Dark+ với độ ưu tiên cao nhất
+  const styleEl = document.createElement('style');
+  styleEl.id = 'cm-vscode-colors';
+  styleEl.textContent = `
+    /* Nền editor */
+    .CodeMirror { background: #1e1e1e !important; color: #d4d4d4 !important; }
+    .CodeMirror-gutters { background: #1e1e1e !important; border-right: 1px solid #3c3c3c !important; }
+    .CodeMirror-linenumber { color: #858585 !important; }
+    .CodeMirror-cursor { border-left: 2px solid #aeafad !important; }
+    .CodeMirror-selected { background: rgba(38,79,120,0.5) !important; }
+    .CodeMirror-focused .CodeMirror-selected { background: rgba(38,79,120,0.7) !important; }
+    .CodeMirror-activeline-background { background: rgba(255,255,255,0.04) !important; }
+    .CodeMirror-matchingbracket { color: #fff !important; background: rgba(108,99,255,0.3) !important; }
+    /* DOCTYPE: <!DOCTYPE html> — xanh dương */
+    .CodeMirror span.cm-meta { color: #569cd6 !important; }
+    /* Tên thẻ: html, body, h1, p — teal xanh ngọc (chỉ tên, không phải dấu ngoặc) */
+    .CodeMirror span.cm-tag:not(.cm-bracket) { color: #4ec9b0 !important; }
+    /* Dấu < > — xám */
+    .CodeMirror span.cm-tag.cm-bracket { color: #808080 !important; }
+    .CodeMirror span.cm-bracket { color: #808080 !important; }
+    /* Thuộc tính: src, href, class, id — xanh nhạt */
+    .CodeMirror span.cm-attribute { color: #9cdcfe !important; }
+    /* Giá trị thuộc tính: "value" — cam đất */
+    .CodeMirror span.cm-string { color: #ce9178 !important; }
+    /* Comment: <!-- --> — xanh lá */
+    .CodeMirror span.cm-comment { color: #6a9955 !important; font-style: italic !important; }
+    /* Lỗi — đỏ */
+    .CodeMirror span.cm-error { color: #f44747 !important; }
+    /* Số — xanh lá nhạt */
+    .CodeMirror span.cm-number { color: #b5cea8 !important; }
+    /* Keyword — tím */
+    .CodeMirror span.cm-keyword { color: #c586c0 !important; }
+    /* Atom — xanh dương */
+    .CodeMirror span.cm-atom { color: #569cd6 !important; }
+    /* Variable, Property — xanh nhạt */
+    .CodeMirror span.cm-variable, .CodeMirror span.cm-property { color: #9cdcfe !important; }
+    /* Builtin, Def — vàng */
+    .CodeMirror span.cm-builtin, .CodeMirror span.cm-def { color: #dcdcaa !important; }
+    /* Qualifier — vàng nhạt */
+    .CodeMirror span.cm-qualifier { color: #d7ba7d !important; }
+  `;
+  document.head.appendChild(styleEl);
+})();
+
+// Hàm lấy code từ CodeMirror
+function getCode() {
+  const cm = window.cmEditor || (document.querySelector('.CodeMirror') && document.querySelector('.CodeMirror').CodeMirror);
+  return cm ? cm.getValue() : '';
+}
+
+// Hàm set code vào CodeMirror
+function setCode(code) {
+  const cm = window.cmEditor || (document.querySelector('.CodeMirror') && document.querySelector('.CodeMirror').CodeMirror);
+  if (cm) cm.setValue(code);
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  KHỞI TẠO TOPICS & EXERCISES
 // ═══════════════════════════════════════════════════════════════════
 (function init(){
   const topicSel = document.getElementById('topicSelect');
@@ -919,30 +1080,7 @@ EXERCISES.forEach(ex => exMap[ex.id] = ex);
     topicSel.appendChild(opt);
   });
   onTopicChange();
-  const ta = document.getElementById('htmlCode');
-  ta.addEventListener('keydown', e => {
-    if(e.key === 'Tab'){
-      e.preventDefault();
-      const s = ta.selectionStart, end = ta.selectionEnd;
-      ta.value = ta.value.substring(0,s) + '  ' + ta.value.substring(end);
-      ta.selectionStart = ta.selectionEnd = s + 2;
-    }
-    if((e.ctrlKey||e.metaKey) && e.key === 'Enter'){
-      e.preventDefault();
-      runAndGrade();
-    }
-    updatePos(ta);
-  });
-  ta.addEventListener('click', e => updatePos(e.target));
-  ta.addEventListener('input', e => updatePos(e.target));
 })();
-
-function updatePos(ta){
-  const val = ta.value.substring(0, ta.selectionStart);
-  const lines = val.split('\n');
-  const ln = lines.length, col = lines[lines.length-1].length + 1;
-  document.getElementById('editorPos').textContent = `LN ${ln}, COL ${col}`;
-}
 
 function onTopicChange(){
   const topic = document.getElementById('topicSelect').value;
@@ -1026,7 +1164,7 @@ function renderCriteria(ex){
 //  RUN CODE
 // ═══════════════════════════════════════════════════════════════════
 function runCode(){
-  const code = document.getElementById('htmlCode').value.trim();
+  const code = getCode().trim();
   if(!code){ alert('Vui lòng nhập code HTML!'); return; }
   const frame = document.getElementById('previewFrame');
   if(frame){
@@ -1045,7 +1183,7 @@ function clearOutput(){
 }
 
 function clearCode(){
-  document.getElementById('htmlCode').value = '';
+  setCode('');
   clearOutput();
   document.getElementById('previewFrame').classList.remove('visible');
   document.getElementById('previewEmpty').style.display = 'flex';
@@ -1053,6 +1191,8 @@ function clearCode(){
   document.getElementById('scorePlaceholder').style.display = 'flex';
   document.getElementById('scoreContent').style.display = 'none';
   switchGradeTab('result');
+  const cm = window.cmEditor || (document.querySelector('.CodeMirror') && document.querySelector('.CodeMirror').CodeMirror);
+  if(cm) cm.focus();
 }
 
 function runAndGrade(){
@@ -1083,13 +1223,10 @@ function parseHTML(code) {
   return new DOMParser().parseFromString(code, 'text/html');
 }
 
-// ── Kiểm tra code có chứa thẻ HTML hợp lệ không ──
-// Trả về true nếu code có ít nhất 1 thẻ HTML thực sự
 function hasAnyHtmlTag(code) {
   return /<[a-zA-Z][a-zA-Z0-9]*[\s\/>]/.test(code) || /<[a-zA-Z][a-zA-Z0-9]*>/.test(code);
 }
 
-// ── Kiểm tra syntax ──
 function checkSyntax(code) {
   const issues = [];
   const lines = code.split('\n');
@@ -1150,7 +1287,6 @@ function checkSyntax(code) {
   return issues;
 }
 
-// ── Chạy một check đơn lẻ ──
 function runSingleCheck(check, doc, code, syntaxIssues, hasHtml) {
   const {type, tag, tags, attr, value, min, points, label, hint} = check;
   let passed = false;
@@ -1165,7 +1301,6 @@ function runSingleCheck(check, doc, code, syntaxIssues, hasHtml) {
       break;
     }
     case 'has_tag': {
-      // html/head/body: kiểm tra trên text gốc (DOMParser tự thêm)
       const rawCheck = ['html','head','body'];
       if(rawCheck.includes(tag.toLowerCase())) {
         passed = new RegExp(`<${tag}[\\s>]`, 'i').test(code);
@@ -1177,7 +1312,6 @@ function runSingleCheck(check, doc, code, syntaxIssues, hasHtml) {
       break;
     }
     case 'has_tag_any': {
-      // Hỗ trợ cả selector phức tạp như 'input[type=submit]'
       passed = tags.some(t => {
         try { return doc.querySelectorAll(t).length > 0; }
         catch(e) { return false; }
@@ -1261,14 +1395,12 @@ function runSingleCheck(check, doc, code, syntaxIssues, hasHtml) {
       break;
     }
     case 'no_attr_colon_syntax': {
-      // Kiểm tra lỗi cú pháp attr:value; hoặc attr:value
       passed = !/([\w-]+)\s*:\s*["']?[\w#]+["']?\s*[;]?/.test(code.replace(/<style[^>]*>[\s\S]*?<\/style>/gi,'').replace(/<!--[\s\S]*?-->/g,''));
       if(!passed) issue = {type:'error', title:'Lỗi cú pháp thuộc tính (dùng : thay vì =)',
         msg:'Thuộc tính HTML phải dùng dấu bằng: <code>attr="value"</code>, không phải <code>attr:value</code>.', hint};
       break;
     }
     case 'no_syntax_error': {
-      // CHỈ tính điểm cú pháp nếu code có thẻ HTML
       if(!hasHtml) {
         passed = false;
         issue = {type:'error', title:'Không có thẻ HTML nào',
@@ -1282,7 +1414,6 @@ function runSingleCheck(check, doc, code, syntaxIssues, hasHtml) {
       break;
     }
     case 'no_quote_error': {
-      // CHỈ tính điểm nháy kép nếu code có thẻ HTML
       if(!hasHtml) {
         passed = false;
         issue = {type:'warn', title:'Không có thẻ HTML nào',
@@ -1301,7 +1432,6 @@ function runSingleCheck(check, doc, code, syntaxIssues, hasHtml) {
   return {passed, issue};
 }
 
-// ── Chạy tất cả criteria ──
 function runCriteriaChecks(ex, doc, code) {
   const syntaxIssues = checkSyntax(code);
   const hasHtml = hasAnyHtmlTag(code);
@@ -1330,7 +1460,7 @@ function runCriteriaChecks(ex, doc, code) {
 //  GRADE CODE
 // ═══════════════════════════════════════════════════════════════════
 function gradeCode(){
-  const code = document.getElementById('htmlCode').value.trim();
+  const code = getCode().trim();
   const id = document.getElementById('exerciseSelect').value;
   const ex = exMap[id];
   if(!code){ alert('Vui lòng nhập code HTML!'); return; }
@@ -1342,7 +1472,6 @@ function gradeCode(){
     const doc = parseHTML(code);
     const {score, issues: allIssues} = runCriteriaChecks(ex || {criteria:[]}, doc, code);
 
-    // Score circle
     const deg = (score / 10) * 360;
     const color = score >= 8 ? 'var(--green)' : score >= 5 ? 'var(--yellow)' : 'var(--red)';
     document.getElementById('scoreCircle').style.background =
@@ -1360,7 +1489,6 @@ function gradeCode(){
     document.getElementById('statFail').textContent = failItems.length;
     document.getElementById('statWarn').textContent = warnItems.length;
 
-    // Detail list
     let detailHTML = '';
     if(failItems.length === 0 && warnItems.length === 0){
       detailHTML = `<div class="detail-item pass"><div class="detail-title" style="color:var(--green)">✅ Tất cả tiêu chí đều đạt!</div><div class="detail-msg">Code HTML của bạn đáp ứng đầy đủ yêu cầu bài tập.</div></div>`;
@@ -1390,5 +1518,93 @@ function gradeCode(){
   }, 300);
 }
 </script>
+
+<!-- ══ Custom VSCode Dark+ Theme for CodeMirror ══ -->
+<style>
+/* Override CodeMirror default theme with VSCode Dark+ colors */
+.cm-s-vscode-dark.CodeMirror {
+  background: #1e1e1e !important;
+  color: #d4d4d4 !important;
+}
+.cm-s-vscode-dark .CodeMirror-gutters {
+  background: #1e1e1e !important;
+  border-right: 1px solid #2d2d2d !important;
+}
+.cm-s-vscode-dark .CodeMirror-linenumber { color: #858585 !important; }
+.cm-s-vscode-dark .CodeMirror-cursor { border-left: 2px solid #aeafad !important; }
+.cm-s-vscode-dark .CodeMirror-selected { background: rgba(38,79,120,.6) !important; }
+.cm-s-vscode-dark .CodeMirror-activeline-background { background: rgba(255,255,255,.04) !important; }
+.cm-s-vscode-dark .CodeMirror-matchingbracket {
+  color: #fff !important;
+  background: rgba(99,102,241,.35) !important;
+  border-radius: 2px;
+}
+
+/* ── HTML Syntax Colors (VSCode Dark+) ── */
+/* DOCTYPE: <!DOCTYPE html> → azul claro */
+.cm-s-vscode-dark .cm-meta { color: #569cd6 !important; }
+/* Thẻ HTML: html, head, body, h1, p, ... → xanh lá nhạt (teal) */
+.cm-s-vscode-dark .cm-tag { color: #4ec9b0 !important; }
+/* Dấu ngoặc < > / → xám */
+.cm-s-vscode-dark .cm-bracket { color: #808080 !important; }
+/* Thuộc tính: src, href, class, id, type → xanh dương nhạt */
+.cm-s-vscode-dark .cm-attribute { color: #9cdcfe !important; }
+/* Giá trị thuộc tính: "value" → cam đào */
+.cm-s-vscode-dark .cm-string { color: #ce9178 !important; }
+/* Comment: <!-- --> → xanh lá đậm, nghiêng */
+.cm-s-vscode-dark .cm-comment { color: #6a9955 !important; font-style: italic !important; }
+/* Lỗi → đỏ */
+.cm-s-vscode-dark .cm-error { color: #f44747 !important; }
+/* Số → xanh lá nhạt */
+.cm-s-vscode-dark .cm-number { color: #b5cea8 !important; }
+/* Keyword → tím */
+.cm-s-vscode-dark .cm-keyword { color: #c586c0 !important; }
+/* Atom (true/false/null) → xanh dương */
+.cm-s-vscode-dark .cm-atom { color: #569cd6 !important; }
+/* Operator */
+.cm-s-vscode-dark .cm-operator { color: #d4d4d4 !important; }
+/* Property (CSS) → xanh dương nhạt */
+.cm-s-vscode-dark .cm-property { color: #9cdcfe !important; }
+/* Qualifier (CSS class/id) → vàng nhạt */
+.cm-s-vscode-dark .cm-qualifier { color: #d7ba7d !important; }
+/* Builtin */
+.cm-s-vscode-dark .cm-builtin { color: #dcdcaa !important; }
+/* Variable */
+.cm-s-vscode-dark .cm-variable { color: #9cdcfe !important; }
+/* Variable-2 (CSS value) → cam đào */
+.cm-s-vscode-dark .cm-variable-2 { color: #ce9178 !important; }
+/* Def */
+.cm-s-vscode-dark .cm-def { color: #dcdcaa !important; }
+/* Link */
+.cm-s-vscode-dark .cm-link { color: #ce9178 !important; text-decoration: underline; }
+
+/* ── Editor layout ── */
+#editor-wrap {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  background: #1e1e1e;
+}
+#editor-wrap .CodeMirror {
+  flex: 1;
+  height: 100% !important;
+  font-family: 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Consolas, 'Courier New', monospace !important;
+  font-size: 13px !important;
+  line-height: 1.7 !important;
+}
+#editor-wrap .CodeMirror-scroll {
+  height: 100% !important;
+  min-height: 0 !important;
+}
+/* Scrollbar */
+#editor-wrap .CodeMirror-vscrollbar::-webkit-scrollbar { width: 8px; }
+#editor-wrap .CodeMirror-vscrollbar::-webkit-scrollbar-track { background: #1e1e1e; }
+#editor-wrap .CodeMirror-vscrollbar::-webkit-scrollbar-thumb { background: #424242; border-radius: 4px; }
+#editor-wrap .CodeMirror-hscrollbar::-webkit-scrollbar { height: 8px; }
+#editor-wrap .CodeMirror-hscrollbar::-webkit-scrollbar-thumb { background: #424242; border-radius: 4px; }
+</style>
+
 </body>
 </html>
