@@ -461,7 +461,7 @@
 // ═══════════════════════════════════════════════════════════════════
 //  VERSION
 // ═══════════════════════════════════════════════════════════════════
-const VERSION = '1.4.1';
+const VERSION = '1.4.2';
 document.getElementById('versionBadge').textContent = 'v' + VERSION;
 
 // ═══════════════════════════════════════════════════════════════════
@@ -1013,6 +1013,24 @@ window.cmEditor = null;
       `LN ${cursor.line + 1}, COL ${cursor.ch + 1}`;
   });
 
+  // Refresh sau khi DOM đã render để số dòng hiển thị đúng
+  setTimeout(function() {
+    window.cmEditor.refresh();
+  }, 100);
+
+  // ResizeObserver: tự động refresh khi container thay đổi kích thước
+  if (window.ResizeObserver) {
+    const ro = new ResizeObserver(function() {
+      window.cmEditor.refresh();
+    });
+    ro.observe(wrap);
+  }
+
+  // Refresh khi cửa sổ thay đổi kích thước
+  window.addEventListener('resize', function() {
+    window.cmEditor.refresh();
+  });
+
   // Inject CSS màu sắc VSCode Dark+ với độ ưu tiên cao nhất
   const styleEl = document.createElement('style');
   styleEl.id = 'cm-vscode-colors';
@@ -1066,7 +1084,11 @@ function getCode() {
 // Hàm set code vào CodeMirror
 function setCode(code) {
   const cm = window.cmEditor || (document.querySelector('.CodeMirror') && document.querySelector('.CodeMirror').CodeMirror);
-  if (cm) cm.setValue(code);
+  if (cm) {
+    cm.setValue(code);
+    // Refresh để số dòng cập nhật đúng sau khi set value
+    setTimeout(function() { cm.refresh(); }, 50);
+  }
 }
 
 // ═══════════════════════════════════════════════════════════════════
