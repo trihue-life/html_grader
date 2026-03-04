@@ -461,7 +461,7 @@
 // ═══════════════════════════════════════════════════════════════════
 //  VERSION
 // ═══════════════════════════════════════════════════════════════════
-const VERSION = '1.4.2';
+const VERSION = '1.4.3';
 document.getElementById('versionBadge').textContent = 'v' + VERSION;
 
 // ═══════════════════════════════════════════════════════════════════
@@ -992,6 +992,11 @@ window.cmEditor = null;
     matchBrackets: true,
     autoCloseTags: true,
     styleActiveLine: true,
+    // Hỗ trợ IME / bộ gõ tiếng Việt (Unikey, Google Input, v.v.)
+    inputStyle: 'contenteditable',
+    spellcheck: false,
+    autocorrect: false,
+    autocapitalize: false,
     extraKeys: {
       'Tab': function(cm) {
         if (cm.somethingSelected()) {
@@ -1030,6 +1035,44 @@ window.cmEditor = null;
   window.addEventListener('resize', function() {
     window.cmEditor.refresh();
   });
+
+  // ═══════════════════════════════════════════════════════════════════
+  //  FIX GÕ TIỬNG VIỆT (IME / Unikey / Google Input)
+  //  CodeMirror 5 can thiệp vào keydown khiến bộ gõ không compose được
+  //  dấu tiếng Việt. Giải pháp: lắng nghe sự kiện 'input' trên textarea
+  //  ẩn của CodeMirror và đồng bộ nội dung vào editor.
+  // ═══════════════════════════════════════════════════════════════════
+  (function fixVietnameseInput(cm) {
+    // Lấy textarea ẩn mà CodeMirror dùng để nhận input
+    const cmTextarea = cm.getInputField();
+    if (!cmTextarea) return;
+
+    let isComposing = false;
+
+    // Bắt đầu compose (người dùng bắt đầu gõ có dấu)
+    cmTextarea.addEventListener('compositionstart', function() {
+      isComposing = true;
+    });
+
+    // Kết thúc compose — đây là lúc ký tự đã hoàn chỉnh
+    cmTextarea.addEventListener('compositionend', function(e) {
+      isComposing = false;
+      // Buộc CodeMirror đọc lại nội dung từ textarea
+      if (cm.display && cm.display.input && cm.display.input.poll) {
+        cm.display.input.poll();
+      }
+    });
+
+    // Khi có input (bao gồm cả sau compositionend)
+    cmTextarea.addEventListener('input', function(e) {
+      if (!isComposing) {
+        // Buộc CodeMirror đọc lại nội dung từ textarea
+        if (cm.display && cm.display.input && cm.display.input.poll) {
+          cm.display.input.poll();
+        }
+      }
+    });
+  })(window.cmEditor);
 
   // Inject CSS màu sắc VSCode Dark+ với độ ưu tiên cao nhất
   const styleEl = document.createElement('style');
