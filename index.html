@@ -461,7 +461,7 @@
 // ═══════════════════════════════════════════════════════════════════
 //  VERSION
 // ═══════════════════════════════════════════════════════════════════
-const VERSION = '1.4.3';
+const VERSION = '1.4.4';
 document.getElementById('versionBadge').textContent = 'v' + VERSION;
 
 // ═══════════════════════════════════════════════════════════════════
@@ -476,6 +476,11 @@ const TOPICS = {
   'Tổng hợp': ['tong1','tong2','tong3'],
 };
 
+
+
+// ═══════════════════════════════════════════════════════════════════
+//  HELPER CRITERIA BUILDERS
+// ═══════════════════════════════════════════════════════════════════
 function basicStructureCriteria(pts) {
   pts = pts || 2.5;
   const each = +(pts/5).toFixed(2);
@@ -483,11 +488,11 @@ function basicStructureCriteria(pts) {
     name: '1. Cấu trúc HTML cơ bản',
     points: pts,
     checks: [
-      {type:'has_doctype', points:each, label:'Có &lt;!DOCTYPE html&gt;', hint:'Thêm <!DOCTYPE html> vào dòng đầu tiên'},
-      {type:'has_tag', tag:'html', points:each, label:'Có thẻ &lt;html&gt;', hint:'Bọc toàn bộ nội dung trong <html>...</html>'},
-      {type:'has_tag', tag:'head', points:each, label:'Có thẻ &lt;head&gt;', hint:'Thêm <head>...</head> bên trong <html>'},
-      {type:'has_tag', tag:'title', points:each, label:'Có thẻ &lt;title&gt;', hint:'Thêm <title>Tiêu đề</title> vào trong <head>'},
-      {type:'has_tag', tag:'body', points:each, label:'Có thẻ &lt;body&gt;', hint:'Thêm <body>...</body> bên trong <html>'},
+      {type:'has_doctype', points:each, label:'Có <code>&lt;!DOCTYPE html&gt;</code>', hint:'Dòng đầu tiên phải là <!DOCTYPE html>'},
+      {type:'has_tag', tag:'html', points:each, label:'Có thẻ <code>&lt;html&gt;</code>', hint:'Bọc toàn bộ trong <html>...</html>'},
+      {type:'has_tag', tag:'head', points:each, label:'Có thẻ <code>&lt;head&gt;</code>', hint:'Thêm <head>...</head> bên trong <html>'},
+      {type:'has_tag', tag:'title', points:each, label:'Có thẻ <code>&lt;title&gt;</code>', hint:'Thêm <title>Tiêu đề</title> vào trong <head>'},
+      {type:'has_tag', tag:'body', points:each, label:'Có thẻ <code>&lt;body&gt;</code>', hint:'Thêm <body>...</body> bên trong <html>'},
     ]
   };
 }
@@ -498,39 +503,64 @@ function syntaxCriteria(pts) {
     name: 'Cú pháp & Định dạng',
     points: pts,
     checks: [
-      {type:'no_syntax_error', points:+(pts*0.7).toFixed(2), label:'Không có lỗi thẻ đóng/mở', hint:'Mỗi thẻ mở phải có thẻ đóng tương ứng'},
-      {type:'no_quote_error',  points:+(pts*0.3).toFixed(2), label:'Thuộc tính dùng dấu nháy kép', hint:'Dùng dấu nháy kép: attr="value"'},
+      {type:'no_syntax_error',  points:+(pts*0.5).toFixed(2), label:'Không có lỗi thẻ đóng/mở', hint:'Mỗi thẻ mở phải có thẻ đóng tương ứng'},
+      {type:'no_stray_attr',    points:+(pts*0.3).toFixed(2), label:'Thuộc tính nằm đúng bên trong thẻ', hint:'Thuộc tính phải viết trong <tag attr="value">'},
+      {type:'no_quote_error',   points:+(pts*0.2).toFixed(2), label:'Thuộc tính dùng dấu nháy kép', hint:'Dùng dấu nháy kép: attr="value"'},
     ]
   };
 }
 
+// ═══════════════════════════════════════════════════════════════════
+//  EXERCISES DATA — 20 BÀI TẬP
+// ═══════════════════════════════════════════════════════════════════
 const EXERCISES = [
-  // ════ F1 — HTML CƠ BẢN ════
+
+  // ════════════════════════════════════════════════════════════════
+  //  F1 — HTML CƠ BẢN (4 bài)
+  // ════════════════════════════════════════════════════════════════
   {
     id: 'f1_apply1',
     group: 'F1 — HTML Cơ bản',
-    title: 'F1 - Vận dụng 1: Trang thông tin cá nhân',
-    description: 'Viết mã HTML hoàn chỉnh tạo trang web có <strong>tiêu đề</strong> là "Thông tin cá nhân", chứa <code>&lt;h1&gt;</code> ghi tên và <code>&lt;p&gt;</code> giới thiệu sở thích.',
-    required_tags: ['html','head','title','body','h1','p'],
+    title: 'F1 - Vận dụng 1: Trang giới thiệu bản thân',
+    description: `Tạo trang web giới thiệu bản thân với cấu trúc HTML đầy đủ. Yêu cầu:<br>
+      <ul style="margin:6px 0 0 16px;line-height:1.9">
+        <li>Dòng đầu: <code>&lt;!DOCTYPE html&gt;</code></li>
+        <li>Thẻ <code>&lt;title&gt;</code> ghi "Giới thiệu bản thân"</li>
+        <li>Thẻ <code>&lt;h1&gt;</code> ghi họ tên của bạn</li>
+        <li>Thẻ <code>&lt;h2&gt;</code> ghi "Sở thích của tôi"</li>
+        <li>Thẻ <code>&lt;p&gt;</code> viết đoạn giới thiệu (ít nhất 1 câu)</li>
+        <li>Thẻ <code>&lt;ul&gt;</code> liệt kê ít nhất 3 sở thích bằng <code>&lt;li&gt;</code></li>
+      </ul>`,
+    required_tags: ['html','head','title','body','h1','h2','p','ul','li'],
     criteria: [
       basicStructureCriteria(3.0),
       {
         name: '2. Nội dung bắt buộc',
         points: 5.0,
         checks: [
-          {type:'has_tag', tag:'h1', points:2.0, label:'Có thẻ &lt;h1&gt; tên', hint:'Thêm <h1>Tên của bạn</h1>'},
-          {type:'tag_count', tag:'p', min:1, points:2.0, label:'Có ít nhất 1 thẻ &lt;p&gt; giới thiệu', hint:'Thêm <p>Nội dung giới thiệu sở thích</p>'},
-          {type:'has_attr_title_nonempty', points:1.0, label:'Thẻ &lt;title&gt; có nội dung', hint:'Thêm nội dung vào <title>Thông tin cá nhân</title>'},
+          {type:'has_tag', tag:'h1', points:1.0, label:'Có thẻ <code>&lt;h1&gt;</code> họ tên', hint:'Thêm <h1>Họ và tên của bạn</h1>'},
+          {type:'has_tag', tag:'h2', points:1.0, label:'Có thẻ <code>&lt;h2&gt;</code> tiêu đề phụ', hint:'Thêm <h2>Sở thích của tôi</h2>'},
+          {type:'tag_count', tag:'p', min:1, points:1.0, label:'Có ít nhất 1 thẻ <code>&lt;p&gt;</code> giới thiệu', hint:'Thêm <p>Đoạn văn giới thiệu bản thân...</p>'},
+          {type:'has_tag', tag:'ul', points:1.0, label:'Có thẻ <code>&lt;ul&gt;</code> danh sách sở thích', hint:'Thêm <ul>...</ul>'},
+          {type:'tag_count', tag:'li', min:3, points:1.0, label:'Có ít nhất 3 thẻ <code>&lt;li&gt;</code> sở thích', hint:'Thêm ít nhất 3 <li>Sở thích</li> trong <ul>'},
         ]
       },
       syntaxCriteria(2.0),
     ]
   },
+
   {
     id: 'f1_apply2',
     group: 'F1 — HTML Cơ bản',
-    title: 'F1 - Vận dụng 2: Trang có ô nhập số điện thoại',
-    description: 'Sử dụng thẻ <code>&lt;input&gt;</code> để tạo trang web hoàn chỉnh có khung nhập liệu "Số điện thoại:" kèm đề mục <code>&lt;h1&gt;</code> "Liên hệ với chúng tôi".',
+    title: 'F1 - Vận dụng 2: Trang liên hệ có ô nhập liệu',
+    description: `Tạo trang web "Liên hệ với chúng tôi" có ô nhập liệu. Yêu cầu:<br>
+      <ul style="margin:6px 0 0 16px;line-height:1.9">
+        <li>Thẻ <code>&lt;h1&gt;</code> ghi "Liên hệ với chúng tôi"</li>
+        <li>Thẻ <code>&lt;p&gt;</code> hoặc <code>&lt;label&gt;</code> ghi nhãn "Số điện thoại:"</li>
+        <li>Thẻ <code>&lt;input type="tel"&gt;</code> để nhập số điện thoại</li>
+        <li>Thẻ <code>&lt;input type="text"&gt;</code> hoặc <code>&lt;input type="email"&gt;</code> để nhập tên/email</li>
+        <li>Thuộc tính <code>placeholder</code> trên ít nhất 1 input</li>
+      </ul>`,
     required_tags: ['html','head','title','body','h1','input'],
     criteria: [
       basicStructureCriteria(3.0),
@@ -538,19 +568,27 @@ const EXERCISES = [
         name: '2. Nội dung bắt buộc',
         points: 5.0,
         checks: [
-          {type:'has_tag', tag:'h1', points:2.0, label:'Có thẻ &lt;h1&gt; tiêu đề', hint:'Thêm <h1>Liên hệ với chúng tôi</h1>'},
-          {type:'has_tag', tag:'input', points:2.0, label:'Có thẻ &lt;input&gt; nhập liệu', hint:'Thêm <input type="tel" placeholder="Số điện thoại">'},
-          {type:'has_label_or_p', points:1.0, label:'Có nhãn &lt;label&gt; hoặc &lt;p&gt; mô tả', hint:'Thêm <label>Số điện thoại:</label> hoặc <p>Nhập số:</p>'},
+          {type:'has_tag', tag:'h1', points:1.0, label:'Có thẻ <code>&lt;h1&gt;</code> tiêu đề', hint:'Thêm <h1>Liên hệ với chúng tôi</h1>'},
+          {type:'has_label_or_p', points:1.0, label:'Có <code>&lt;label&gt;</code> hoặc <code>&lt;p&gt;</code> nhãn mô tả', hint:'Thêm <label>Số điện thoại:</label> hoặc <p>Nhập số:</p>'},
+          {type:'tag_count', tag:'input', min:2, points:1.5, label:'Có ít nhất 2 thẻ <code>&lt;input&gt;</code>', hint:'Thêm ít nhất 2 ô nhập liệu'},
+          {type:'has_attr', tag:'input', attr:'placeholder', points:1.5, label:'Thẻ <code>&lt;input&gt;</code> có thuộc tính <code>placeholder</code>', hint:'Thêm placeholder="Nhập số điện thoại..." vào input'},
         ]
       },
       syntaxCriteria(2.0),
     ]
   },
+
   {
     id: 'f1_apply3',
     group: 'F1 — HTML Cơ bản',
-    title: 'F1 - Vận dụng 3: Lí lịch trích ngang (có &lt;hr&gt;)',
-    description: 'Tạo trang web dùng thẻ <code>&lt;hr&gt;</code> để ngăn cách giữa hai phần "Thông tin cá nhân" và "Thành tích học tập". Mỗi phần có <code>&lt;h1&gt;</code> và <code>&lt;p&gt;</code>.',
+    title: 'F1 - Vận dụng 3: Lí lịch trích ngang (dùng &lt;hr&gt;)',
+    description: `Tạo trang lí lịch trích ngang gồm 2 phần, ngăn cách bằng đường kẻ ngang. Yêu cầu:<br>
+      <ul style="margin:6px 0 0 16px;line-height:1.9">
+        <li>Phần 1: <code>&lt;h1&gt;</code> "Thông tin cá nhân" + <code>&lt;p&gt;</code> ghi họ tên, ngày sinh, địa chỉ</li>
+        <li>Thẻ <code>&lt;hr&gt;</code> ngăn cách giữa 2 phần</li>
+        <li>Phần 2: <code>&lt;h1&gt;</code> "Thành tích học tập" + <code>&lt;p&gt;</code> ghi thành tích</li>
+        <li>Tổng cộng: ít nhất 2 thẻ <code>&lt;h1&gt;</code>, ít nhất 2 thẻ <code>&lt;p&gt;</code>, 1 thẻ <code>&lt;hr&gt;</code></li>
+      </ul>`,
     required_tags: ['html','head','title','body','h1','p','hr'],
     criteria: [
       basicStructureCriteria(2.5),
@@ -558,60 +596,91 @@ const EXERCISES = [
         name: '2. Nội dung bắt buộc',
         points: 5.5,
         checks: [
-          {type:'tag_count', tag:'h1', min:2, points:2.0, label:'Có ít nhất 2 thẻ &lt;h1&gt; (2 phần)', hint:'Thêm <h1>Thông tin cá nhân</h1> và <h1>Thành tích học tập</h1>'},
-          {type:'tag_count', tag:'p', min:2, points:2.0, label:'Có ít nhất 2 thẻ &lt;p&gt; nội dung', hint:'Mỗi phần cần ít nhất 1 đoạn văn <p>'},
-          {type:'has_tag', tag:'hr', points:1.5, label:'Có thẻ &lt;hr&gt; ngăn cách', hint:'Thêm <hr> giữa hai phần để ngăn cách'},
+          {type:'tag_count', tag:'h1', min:2, points:2.0, label:'Có ít nhất 2 thẻ <code>&lt;h1&gt;</code> (2 phần)', hint:'Thêm <h1>Thông tin cá nhân</h1> và <h1>Thành tích học tập</h1>'},
+          {type:'tag_count', tag:'p', min:2, points:2.0, label:'Có ít nhất 2 thẻ <code>&lt;p&gt;</code> nội dung', hint:'Mỗi phần cần ít nhất 1 đoạn văn <p>'},
+          {type:'has_tag', tag:'hr', points:1.5, label:'Có thẻ <code>&lt;hr&gt;</code> ngăn cách', hint:'Thêm <hr> giữa hai phần để tạo đường kẻ ngang'},
         ]
       },
       syntaxCriteria(2.0),
     ]
   },
+
   {
     id: 'f1_analyze1',
     group: 'F1 — HTML Cơ bản',
     title: 'F1 - Phân tích: Sửa lỗi cú pháp thuộc tính',
-    description: 'Đoạn mã có lỗi <strong>cú pháp thuộc tính</strong> khiến màu nền không hiển thị đúng. Học sinh cần sửa lại cho đúng cú pháp HTML: <code>bgcolor="green"</code> (không dùng dấu hai chấm hay chấm phẩy).',
+    description: `Đoạn mã sau có <strong>2 lỗi cú pháp thuộc tính</strong> — học sinh cần tìm và sửa:<br>
+      <pre style="background:#1a1a2e;color:#e0e0e0;padding:10px;border-radius:6px;margin:8px 0;font-size:12px;overflow:auto">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+  &lt;title&gt;Trang màu xanh&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt; bgcolor=green
+  &lt;h1 style:"color:red"&gt;Trang web màu xanh&lt;/h1&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+      <strong>Lỗi 1:</strong> <code>bgcolor=green</code> viết <em>ngoài thẻ</em> → phải viết <em>bên trong</em>: <code>&lt;body bgcolor="green"&gt;</code><br>
+      <strong>Lỗi 2:</strong> <code>style:"color:red"</code> dùng dấu <code>:</code> thay vì <code>=</code> → phải sửa thành <code>style="color:red"</code>`,
     required_tags: ['html','head','title','body','h1'],
     criteria: [
       basicStructureCriteria(3.0),
       {
-        name: '2. Nội dung bắt buộc',
-        points: 4.0,
+        name: '2. Sửa lỗi cú pháp',
+        points: 5.0,
         checks: [
-          {type:'has_tag', tag:'h1', points:2.0, label:'Có thẻ &lt;h1&gt;', hint:'Thêm <h1>Tiêu đề</h1>'},
-          {type:'no_attr_colon_syntax', points:2.0, label:'Không có lỗi cú pháp thuộc tính (attr:value)', hint:'Sửa bgcolor:"green"; thành bgcolor="green"'},
+          {type:'has_tag', tag:'h1', points:1.0, label:'Có thẻ <code>&lt;h1&gt;</code>', hint:'Thêm <h1>Trang web màu xanh</h1>'},
+          {type:'no_stray_attr', points:2.0, label:'Thuộc tính nằm đúng bên trong thẻ (không viết ngoài)', hint:'Sửa: <body> bgcolor=green → <body bgcolor="green">'},
+          {type:'no_attr_colon_syntax', points:2.0, label:'Không dùng dấu hai chấm thay dấu bằng (attr:value)', hint:'Sửa: style:"color:red" → style="color:red"'},
         ]
       },
-      syntaxCriteria(3.0),
+      syntaxCriteria(2.0),
     ]
   },
 
-  // ════ F2 — DANH SÁCH & LIÊN KẾT ════
+  // ════════════════════════════════════════════════════════════════
+  //  F2 — DANH SÁCH & LIÊN KẾT (3 bài)
+  // ════════════════════════════════════════════════════════════════
   {
     id: 'f2_apply1',
     group: 'F2 — Danh sách & Liên kết',
     title: 'F2 - Vận dụng 1: Danh sách môn học yêu thích (in đậm)',
-    description: 'Viết mã HTML tạo danh sách <strong>không thứ tự &lt;ul&gt;</strong> gồm ít nhất 3 môn học yêu thích, tên môn được in đậm bằng thẻ <code>&lt;strong&gt;</code> hoặc <code>&lt;b&gt;</code>.',
-    required_tags: ['html','head','title','body','ul','li','strong'],
+    description: `Tạo trang web liệt kê môn học yêu thích. Yêu cầu:<br>
+      <ul style="margin:6px 0 0 16px;line-height:1.9">
+        <li>Thẻ <code>&lt;h1&gt;</code> ghi "Môn học yêu thích của tôi"</li>
+        <li>Thẻ <code>&lt;ul&gt;</code> chứa danh sách không thứ tự</li>
+        <li>Ít nhất <strong>3 thẻ <code>&lt;li&gt;</code></strong> — mỗi li là 1 môn học</li>
+        <li>Tên môn học phải được <strong>in đậm</strong> bằng <code>&lt;strong&gt;</code> hoặc <code>&lt;b&gt;</code></li>
+        <li>Ví dụ: <code>&lt;li&gt;&lt;strong&gt;Toán học&lt;/strong&gt;&lt;/li&gt;</code></li>
+      </ul>`,
+    required_tags: ['html','head','title','body','h1','ul','li','strong'],
     criteria: [
       basicStructureCriteria(2.5),
       {
         name: '2. Danh sách bắt buộc',
         points: 5.5,
         checks: [
-          {type:'has_tag', tag:'ul', points:1.5, label:'Có thẻ &lt;ul&gt; danh sách không thứ tự', hint:'Thêm <ul>...</ul>'},
-          {type:'tag_count', tag:'li', min:3, points:2.0, label:'Có ít nhất 3 thẻ &lt;li&gt; môn học', hint:'Thêm ít nhất 3 <li>Tên môn</li>'},
-          {type:'has_tag_any', tags:['strong','b'], points:2.0, label:'Có thẻ &lt;strong&gt; hoặc &lt;b&gt; in đậm', hint:'Bọc tên môn trong <strong>Tên môn</strong>'},
+          {type:'has_tag', tag:'h1', points:1.0, label:'Có thẻ <code>&lt;h1&gt;</code> tiêu đề', hint:'Thêm <h1>Môn học yêu thích của tôi</h1>'},
+          {type:'has_tag', tag:'ul', points:1.5, label:'Có thẻ <code>&lt;ul&gt;</code> danh sách không thứ tự', hint:'Thêm <ul>...</ul>'},
+          {type:'tag_count', tag:'li', min:3, points:1.5, label:'Có ít nhất 3 thẻ <code>&lt;li&gt;</code> môn học', hint:'Thêm ít nhất 3 <li>Tên môn</li>'},
+          {type:'has_tag_any', tags:['strong','b'], points:1.5, label:'Tên môn được in đậm bằng <code>&lt;strong&gt;</code> hoặc <code>&lt;b&gt;</code>', hint:'Bọc tên môn trong <strong>Tên môn</strong>'},
         ]
       },
       syntaxCriteria(2.0),
     ]
   },
+
   {
     id: 'f2_apply2',
     group: 'F2 — Danh sách & Liên kết',
-    title: 'F2 - Vận dụng 2: Trang thành viên lớp + liên kết',
-    description: 'Tạo trang với tiêu đề <code>&lt;h1&gt;</code> "Kỉ yếu lớp 12A", danh sách thành viên dùng thẻ <code>&lt;a href&gt;</code> liên kết đến từng trang cá nhân.',
+    title: 'F2 - Vận dụng 2: Kỉ yếu lớp — Danh sách thành viên có liên kết',
+    description: `Tạo trang kỉ yếu lớp với danh sách thành viên có liên kết. Yêu cầu:<br>
+      <ul style="margin:6px 0 0 16px;line-height:1.9">
+        <li>Thẻ <code>&lt;h1&gt;</code> ghi "Kỉ yếu lớp 12A"</li>
+        <li>Thẻ <code>&lt;ul&gt;</code> hoặc <code>&lt;ol&gt;</code> chứa danh sách thành viên</li>
+        <li>Ít nhất <strong>2 thẻ <code>&lt;a href="..."&gt;</code></strong> liên kết đến trang cá nhân</li>
+        <li>Thuộc tính <code>href</code> phải có giá trị (URL hoặc đường dẫn file)</li>
+        <li>Ví dụ: <code>&lt;a href="nguyen-van-a.html"&gt;Nguyễn Văn A&lt;/a&gt;</code></li>
+      </ul>`,
     required_tags: ['html','head','title','body','h1','a'],
     criteria: [
       basicStructureCriteria(2.5),
@@ -619,42 +688,61 @@ const EXERCISES = [
         name: '2. Nội dung bắt buộc',
         points: 5.5,
         checks: [
-          {type:'has_tag', tag:'h1', points:1.5, label:'Có thẻ &lt;h1&gt; tiêu đề', hint:'Thêm <h1>Kỉ yếu lớp 12A</h1>'},
-          {type:'tag_count', tag:'a', min:2, points:2.0, label:'Có ít nhất 2 thẻ &lt;a&gt; liên kết', hint:'Thêm <a href="trang.html">Tên thành viên</a>'},
-          {type:'has_attr', tag:'a', attr:'href', points:2.0, label:'Thẻ &lt;a&gt; có thuộc tính href', hint:'Thêm href="đường_dẫn" vào thẻ <a>'},
-        ]
-      },
-      syntaxCriteria(2.0),
-    ]
-  },
-  {
-    id: 'f2_apply3',
-    group: 'F2 — Danh sách & Liên kết',
-    title: 'F2 - Vận dụng 3: Portfolio — Sở thích & Hoạt động',
-    description: 'Cập nhật trang portfolio với danh sách <code>&lt;ul&gt;</code> sở thích và danh sách <code>&lt;ol&gt;</code> các hoạt động đã tham gia. Phân cách bằng <code>&lt;hr&gt;</code>.',
-    required_tags: ['html','head','title','body','h1','ul','ol','li','hr'],
-    criteria: [
-      basicStructureCriteria(2.5),
-      {
-        name: '2. Nội dung bắt buộc',
-        points: 5.5,
-        checks: [
-          {type:'has_tag', tag:'ul', points:1.5, label:'Có &lt;ul&gt; danh sách sở thích', hint:'Thêm <ul>...</ul> cho danh sách sở thích'},
-          {type:'has_tag', tag:'ol', points:1.5, label:'Có &lt;ol&gt; danh sách hoạt động', hint:'Thêm <ol>...</ol> cho danh sách hoạt động'},
-          {type:'tag_count', tag:'li', min:4, points:1.5, label:'Có ít nhất 4 thẻ &lt;li&gt;', hint:'Thêm ít nhất 2 li trong ul và 2 li trong ol'},
-          {type:'has_tag', tag:'hr', points:1.0, label:'Có &lt;hr&gt; phân cách', hint:'Thêm <hr> giữa hai danh sách'},
+          {type:'has_tag', tag:'h1', points:1.0, label:'Có thẻ <code>&lt;h1&gt;</code> tiêu đề', hint:'Thêm <h1>Kỉ yếu lớp 12A</h1>'},
+          {type:'has_tag_any', tags:['ul','ol'], points:1.0, label:'Có thẻ <code>&lt;ul&gt;</code> hoặc <code>&lt;ol&gt;</code> danh sách', hint:'Bọc danh sách trong <ul>...</ul>'},
+          {type:'tag_count', tag:'a', min:2, points:2.0, label:'Có ít nhất 2 thẻ <code>&lt;a&gt;</code> liên kết', hint:'Thêm <a href="trang.html">Tên thành viên</a>'},
+          {type:'has_attr', tag:'a', attr:'href', points:1.5, label:'Thẻ <code>&lt;a&gt;</code> có thuộc tính <code>href</code>', hint:'Thêm href="đường_dẫn" vào thẻ <a>'},
         ]
       },
       syntaxCriteria(2.0),
     ]
   },
 
-  // ════ F3 — BẢNG & BỐ CỤC ════
+  {
+    id: 'f2_apply3',
+    group: 'F2 — Danh sách & Liên kết',
+    title: 'F2 - Vận dụng 3: Portfolio — Sở thích & Hoạt động',
+    description: `Tạo trang portfolio cá nhân với 2 danh sách. Yêu cầu:<br>
+      <ul style="margin:6px 0 0 16px;line-height:1.9">
+        <li>Thẻ <code>&lt;h1&gt;</code> ghi tên trang</li>
+        <li>Phần 1: <code>&lt;h2&gt;</code> "Sở thích" + <code>&lt;ul&gt;</code> (danh sách <em>không</em> thứ tự) ít nhất 2 <code>&lt;li&gt;</code></li>
+        <li>Thẻ <code>&lt;hr&gt;</code> ngăn cách giữa 2 phần</li>
+        <li>Phần 2: <code>&lt;h2&gt;</code> "Hoạt động đã tham gia" + <code>&lt;ol&gt;</code> (danh sách <em>có</em> thứ tự) ít nhất 2 <code>&lt;li&gt;</code></li>
+        <li>Tổng cộng ít nhất 4 thẻ <code>&lt;li&gt;</code></li>
+      </ul>`,
+    required_tags: ['html','head','title','body','h1','h2','ul','ol','li','hr'],
+    criteria: [
+      basicStructureCriteria(2.5),
+      {
+        name: '2. Nội dung bắt buộc',
+        points: 5.5,
+        checks: [
+          {type:'has_tag', tag:'ul', points:1.0, label:'Có <code>&lt;ul&gt;</code> danh sách sở thích', hint:'Thêm <ul>...</ul> cho danh sách sở thích'},
+          {type:'has_tag', tag:'ol', points:1.0, label:'Có <code>&lt;ol&gt;</code> danh sách hoạt động', hint:'Thêm <ol>...</ol> cho danh sách hoạt động'},
+          {type:'tag_count', tag:'li', min:4, points:1.5, label:'Có ít nhất 4 thẻ <code>&lt;li&gt;</code>', hint:'Thêm ít nhất 2 li trong ul và 2 li trong ol'},
+          {type:'has_tag', tag:'hr', points:1.0, label:'Có <code>&lt;hr&gt;</code> phân cách', hint:'Thêm <hr> giữa hai danh sách'},
+          {type:'tag_count', tag:'h2', min:2, points:1.0, label:'Có ít nhất 2 thẻ <code>&lt;h2&gt;</code> tiêu đề phần', hint:'Thêm <h2>Sở thích</h2> và <h2>Hoạt động đã tham gia</h2>'},
+        ]
+      },
+      syntaxCriteria(2.0),
+    ]
+  },
+
+  // ════════════════════════════════════════════════════════════════
+  //  F3 — BẢNG & BỐ CỤC (3 bài)
+  // ════════════════════════════════════════════════════════════════
   {
     id: 'f3_apply1',
     group: 'F3 — Bảng & Bố cục',
     title: 'F3 - Vận dụng 1: Bảng danh sách điểm thi',
-    description: 'Tạo bảng gồm các cột: STT, Họ tên, Điểm Toán, Điểm Văn. Hàng tiêu đề dùng <code>&lt;th&gt;</code>, ít nhất 2 hàng dữ liệu <code>&lt;td&gt;</code>.',
+    description: `Tạo bảng điểm thi với cấu trúc đúng chuẩn HTML. Yêu cầu:<br>
+      <ul style="margin:6px 0 0 16px;line-height:1.9">
+        <li>Thẻ <code>&lt;table border="1"&gt;</code> tạo bảng có viền</li>
+        <li>Hàng tiêu đề: <code>&lt;tr&gt;</code> chứa 4 thẻ <code>&lt;th&gt;</code>: STT | Họ tên | Điểm Toán | Điểm Văn</li>
+        <li>Ít nhất <strong>2 hàng dữ liệu</strong>: <code>&lt;tr&gt;</code> chứa 4 thẻ <code>&lt;td&gt;</code></li>
+        <li>Tổng cộng: ít nhất 3 thẻ <code>&lt;tr&gt;</code> (1 tiêu đề + 2 dữ liệu)</li>
+        <li>Cấu trúc đúng: <code>&lt;table&gt; → &lt;tr&gt; → &lt;th&gt;/&lt;td&gt;</code></li>
+      </ul>`,
     required_tags: ['html','head','title','body','table','tr','th','td'],
     criteria: [
       basicStructureCriteria(2.5),
@@ -662,20 +750,29 @@ const EXERCISES = [
         name: '2. Cấu trúc bảng',
         points: 5.5,
         checks: [
-          {type:'has_tag', tag:'table', points:1.5, label:'Có thẻ &lt;table&gt;', hint:'Thêm <table>...</table>'},
-          {type:'has_tag', tag:'th', points:1.5, label:'Có thẻ &lt;th&gt; tiêu đề cột', hint:'Dùng <th>STT</th>, <th>Họ tên</th>... cho hàng tiêu đề'},
-          {type:'tag_count', tag:'tr', min:3, points:1.5, label:'Có ít nhất 3 hàng &lt;tr&gt; (1 tiêu đề + 2 dữ liệu)', hint:'Thêm ít nhất 2 hàng dữ liệu vào bảng'},
-          {type:'has_tag', tag:'td', points:1.0, label:'Có thẻ &lt;td&gt; dữ liệu', hint:'Dùng <td>...</td> cho ô dữ liệu'},
+          {type:'has_tag', tag:'table', points:1.0, label:'Có thẻ <code>&lt;table&gt;</code>', hint:'Thêm <table border="1">...</table>'},
+          {type:'has_attr', tag:'table', attr:'border', points:0.5, label:'<code>&lt;table&gt;</code> có thuộc tính <code>border</code>', hint:'Thêm border="1" vào <table border="1">'},
+          {type:'has_tag', tag:'th', points:1.5, label:'Có thẻ <code>&lt;th&gt;</code> tiêu đề cột', hint:'Dùng <th>STT</th>, <th>Họ tên</th>... cho hàng tiêu đề'},
+          {type:'tag_count', tag:'tr', min:3, points:1.5, label:'Có ít nhất 3 hàng <code>&lt;tr&gt;</code> (1 tiêu đề + 2 dữ liệu)', hint:'Thêm ít nhất 2 hàng dữ liệu vào bảng'},
+          {type:'has_tag', tag:'td', points:1.0, label:'Có thẻ <code>&lt;td&gt;</code> dữ liệu', hint:'Dùng <td>...</td> cho ô dữ liệu'},
         ]
       },
       syntaxCriteria(2.0),
     ]
   },
+
   {
     id: 'f3_apply2',
     group: 'F3 — Bảng & Bố cục',
-    title: 'F3 - Vận dụng 2: Bố cục trang web (Header-Menu-Nội dung-Footer)',
-    description: 'Sử dụng <code>&lt;table&gt;</code> để tạo bố cục trang: Header (trên, gộp cột), Menu trái, Nội dung phải, Footer (dưới, gộp cột). Dùng <code>colspan</code> hoặc <code>rowspan</code>.',
+    title: 'F3 - Vận dụng 2: Bố cục trang web bằng bảng (colspan)',
+    description: `Dùng <code>&lt;table&gt;</code> để tạo bố cục trang web 3 phần. Yêu cầu:<br>
+      <ul style="margin:6px 0 0 16px;line-height:1.9">
+        <li><strong>Hàng 1 (Header):</strong> <code>&lt;td colspan="2"&gt;</code> gộp 2 cột, ghi "Header"</li>
+        <li><strong>Hàng 2 (Nội dung):</strong> 2 ô — <code>&lt;td&gt;</code> "Menu trái" và <code>&lt;td&gt;</code> "Nội dung chính"</li>
+        <li><strong>Hàng 3 (Footer):</strong> <code>&lt;td colspan="2"&gt;</code> gộp 2 cột, ghi "Footer"</li>
+        <li>Bảng có thuộc tính <code>border="1"</code> và <code>width="100%"</code></li>
+        <li>Bắt buộc dùng <code>colspan</code> để gộp ô Header và Footer</li>
+      </ul>`,
     required_tags: ['html','head','title','body','table','tr','td'],
     criteria: [
       basicStructureCriteria(2.5),
@@ -683,20 +780,28 @@ const EXERCISES = [
         name: '2. Cấu trúc bố cục bảng',
         points: 5.5,
         checks: [
-          {type:'has_tag', tag:'table', points:1.5, label:'Có &lt;table&gt; bố cục', hint:'Thêm <table>...</table>'},
-          {type:'tag_count', tag:'tr', min:3, points:1.5, label:'Có ít nhất 3 hàng &lt;tr&gt; (header, content, footer)', hint:'Cần ít nhất 3 hàng: header, nội dung, footer'},
-          {type:'has_attr_any', tags:['td','th'], attr:'colspan', points:1.5, label:'Có thuộc tính colspan', hint:'Thêm colspan="2" vào ô header hoặc footer'},
-          {type:'has_tag', tag:'td', points:1.0, label:'Có &lt;td&gt; nội dung', hint:'Dùng <td> cho các ô nội dung'},
+          {type:'has_tag', tag:'table', points:1.0, label:'Có <code>&lt;table&gt;</code> bố cục', hint:'Thêm <table border="1" width="100%">...</table>'},
+          {type:'tag_count', tag:'tr', min:3, points:1.5, label:'Có ít nhất 3 hàng <code>&lt;tr&gt;</code> (header, content, footer)', hint:'Cần ít nhất 3 hàng: header, nội dung, footer'},
+          {type:'has_attr_any', tags:['td','th'], attr:'colspan', points:2.0, label:'Có thuộc tính <code>colspan</code> để gộp ô', hint:'Thêm colspan="2" vào ô header và footer'},
+          {type:'has_tag', tag:'td', points:1.0, label:'Có <code>&lt;td&gt;</code> nội dung', hint:'Dùng <td> cho các ô nội dung'},
         ]
       },
       syntaxCriteria(2.0),
     ]
   },
+
   {
     id: 'f3_apply3',
     group: 'F3 — Bảng & Bố cục',
     title: 'F3 - Vận dụng 3: Nhúng video YouTube (iframe)',
-    description: 'Nhúng một video YouTube vào trang web bằng thẻ <code>&lt;iframe&gt;</code> với kích thước 560×315. Thêm đề mục <code>&lt;h3&gt;</code> "Video giới thiệu".',
+    description: `Tạo trang web nhúng video YouTube bằng <code>&lt;iframe&gt;</code>. Yêu cầu:<br>
+      <ul style="margin:6px 0 0 16px;line-height:1.9">
+        <li>Thẻ <code>&lt;h3&gt;</code> ghi "Video giới thiệu" (hoặc tiêu đề tương tự)</li>
+        <li>Thẻ <code>&lt;iframe&gt;</code> với thuộc tính <code>src</code> trỏ đến YouTube embed</li>
+        <li>Thuộc tính <code>width="560"</code> và <code>height="315"</code></li>
+        <li>URL src đúng dạng: <code>https://www.youtube.com/embed/VIDEO_ID</code></li>
+        <li>Ví dụ: <code>&lt;iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" width="560" height="315"&gt;&lt;/iframe&gt;</code></li>
+      </ul>`,
     required_tags: ['html','head','title','body','h3','iframe'],
     criteria: [
       basicStructureCriteria(2.5),
@@ -704,21 +809,33 @@ const EXERCISES = [
         name: '2. Nhúng iframe',
         points: 5.5,
         checks: [
-          {type:'has_tag', tag:'iframe', points:2.0, label:'Có thẻ &lt;iframe&gt;', hint:'Thêm <iframe src="https://www.youtube.com/embed/..."></iframe>'},
-          {type:'has_attr', tag:'iframe', attr:'src', points:2.0, label:'&lt;iframe&gt; có thuộc tính src', hint:'Thêm src="https://www.youtube.com/embed/VIDEO_ID"'},
-          {type:'has_tag', tag:'h3', points:1.5, label:'Có thẻ &lt;h3&gt; tiêu đề', hint:'Thêm <h3>Video giới thiệu</h3>'},
+          {type:'has_tag', tag:'h3', points:1.0, label:'Có thẻ <code>&lt;h3&gt;</code> tiêu đề', hint:'Thêm <h3>Video giới thiệu</h3>'},
+          {type:'has_tag', tag:'iframe', points:1.5, label:'Có thẻ <code>&lt;iframe&gt;</code>', hint:'Thêm <iframe src="https://www.youtube.com/embed/..."></iframe>'},
+          {type:'has_attr', tag:'iframe', attr:'src', points:1.5, label:'<code>&lt;iframe&gt;</code> có thuộc tính <code>src</code>', hint:'Thêm src="https://www.youtube.com/embed/VIDEO_ID"'},
+          {type:'has_attr', tag:'iframe', attr:'width', points:0.75, label:'<code>&lt;iframe&gt;</code> có thuộc tính <code>width</code>', hint:'Thêm width="560"'},
+          {type:'has_attr', tag:'iframe', attr:'height', points:0.75, label:'<code>&lt;iframe&gt;</code> có thuộc tính <code>height</code>', hint:'Thêm height="315"'},
         ]
       },
       syntaxCriteria(2.0),
     ]
   },
 
-  // ════ F4 — MEDIA ════
+  // ════════════════════════════════════════════════════════════════
+  //  F4 — MEDIA (3 bài)
+  // ════════════════════════════════════════════════════════════════
   {
     id: 'f4_apply1',
     group: 'F4 — Media (Ảnh/Video/Audio)',
     title: 'F4 - Vận dụng 1: Video tự động phát, tắt tiếng',
-    description: 'Viết mã HTML hiển thị video chiều rộng 500px, có thuộc tính <code>autoplay</code>, <code>muted</code> và <code>loop</code>. Thêm đề mục <code>&lt;h3&gt;</code> mô tả video.',
+    description: `Tạo trang web hiển thị video với các thuộc tính điều khiển. Yêu cầu:<br>
+      <ul style="margin:6px 0 0 16px;line-height:1.9">
+        <li>Thẻ <code>&lt;h3&gt;</code> mô tả video (ví dụ: "Video quảng cáo")</li>
+        <li>Thẻ <code>&lt;video&gt;</code> với <code>width="500"</code></li>
+        <li>Thuộc tính <code>autoplay</code> — tự động phát khi tải trang</li>
+        <li>Thuộc tính <code>muted</code> — tắt tiếng (bắt buộc khi dùng autoplay)</li>
+        <li>Thuộc tính <code>loop</code> — phát lặp lại</li>
+        <li>Ví dụ: <code>&lt;video width="500" autoplay muted loop&gt;&lt;source src="video.mp4"&gt;&lt;/video&gt;</code></li>
+      </ul>`,
     required_tags: ['html','head','title','body','h3','video'],
     criteria: [
       basicStructureCriteria(2.5),
@@ -726,199 +843,291 @@ const EXERCISES = [
         name: '2. Thẻ video bắt buộc',
         points: 5.5,
         checks: [
-          {type:'has_tag', tag:'video', points:1.5, label:'Có thẻ &lt;video&gt;', hint:'Thêm <video>...</video>'},
-          {type:'has_bool_attr', tag:'video', attr:'autoplay', points:1.5, label:'&lt;video&gt; có thuộc tính autoplay', hint:'Thêm autoplay vào thẻ <video>'},
-          {type:'has_bool_attr', tag:'video', attr:'muted', points:1.0, label:'&lt;video&gt; có thuộc tính muted', hint:'Thêm muted vào thẻ <video>'},
-          {type:'has_tag', tag:'h3', points:1.5, label:'Có thẻ &lt;h3&gt; mô tả', hint:'Thêm <h3>Mô tả video</h3>'},
+          {type:'has_tag', tag:'h3', points:0.5, label:'Có thẻ <code>&lt;h3&gt;</code> mô tả video', hint:'Thêm <h3>Tên video</h3>'},
+          {type:'has_tag', tag:'video', points:1.5, label:'Có thẻ <code>&lt;video&gt;</code>', hint:'Thêm <video width="500">...</video>'},
+          {type:'has_bool_attr', tag:'video', attr:'autoplay', points:1.5, label:'<code>&lt;video&gt;</code> có thuộc tính <code>autoplay</code>', hint:'Thêm autoplay vào thẻ <video>'},
+          {type:'has_bool_attr', tag:'video', attr:'muted', points:1.5, label:'<code>&lt;video&gt;</code> có thuộc tính <code>muted</code>', hint:'Thêm muted vào thẻ <video>'},
+          {type:'has_bool_attr', tag:'video', attr:'loop', points:0.5, label:'<code>&lt;video&gt;</code> có thuộc tính <code>loop</code>', hint:'Thêm loop vào thẻ <video>'},
         ]
       },
       syntaxCriteria(2.0),
     ]
   },
+
   {
     id: 'f4_apply2',
     group: 'F4 — Media (Ảnh/Video/Audio)',
-    title: 'F4 - Vận dụng 2: Trang nhạc (audio + thông tin bài hát)',
-    description: 'Tạo trang nhạc với thẻ <code>&lt;audio controls&gt;</code>, đề mục <code>&lt;h2&gt;</code> tên bài hát và đoạn <code>&lt;p&gt;</code> lời nhạc.',
-    required_tags: ['html','head','title','body','h2','audio','p'],
+    title: 'F4 - Vận dụng 2: Ảnh có chú thích (alt, width)',
+    description: `Tạo trang web hiển thị ảnh đúng chuẩn HTML. Yêu cầu:<br>
+      <ul style="margin:6px 0 0 16px;line-height:1.9">
+        <li>Thẻ <code>&lt;h2&gt;</code> ghi tiêu đề trang</li>
+        <li>Ít nhất <strong>2 thẻ <code>&lt;img&gt;</code></strong></li>
+        <li>Mỗi <code>&lt;img&gt;</code> phải có thuộc tính <code>src</code> (đường dẫn ảnh)</li>
+        <li>Mỗi <code>&lt;img&gt;</code> phải có thuộc tính <code>alt</code> (mô tả ảnh)</li>
+        <li>Ít nhất 1 <code>&lt;img&gt;</code> có thuộc tính <code>width</code></li>
+        <li>Ví dụ: <code>&lt;img src="anh.jpg" alt="Mô tả ảnh" width="300"&gt;</code></li>
+      </ul>`,
+    required_tags: ['html','head','title','body','h2','img'],
+    criteria: [
+      basicStructureCriteria(2.5),
+      {
+        name: '2. Thẻ ảnh bắt buộc',
+        points: 5.5,
+        checks: [
+          {type:'has_tag', tag:'h2', points:0.5, label:'Có thẻ <code>&lt;h2&gt;</code> tiêu đề', hint:'Thêm <h2>Bộ sưu tập ảnh</h2>'},
+          {type:'tag_count', tag:'img', min:2, points:1.5, label:'Có ít nhất 2 thẻ <code>&lt;img&gt;</code>', hint:'Thêm ít nhất 2 thẻ <img>'},
+          {type:'has_attr', tag:'img', attr:'src', points:1.5, label:'<code>&lt;img&gt;</code> có thuộc tính <code>src</code>', hint:'Thêm src="duong-dan-anh.jpg" vào <img>'},
+          {type:'has_attr', tag:'img', attr:'alt', points:1.5, label:'<code>&lt;img&gt;</code> có thuộc tính <code>alt</code>', hint:'Thêm alt="Mô tả ảnh" vào <img>'},
+          {type:'has_attr', tag:'img', attr:'width', points:0.5, label:'<code>&lt;img&gt;</code> có thuộc tính <code>width</code>', hint:'Thêm width="300" vào <img>'},
+        ]
+      },
+      syntaxCriteria(2.0),
+    ]
+  },
+
+  {
+    id: 'f4_apply3',
+    group: 'F4 — Media (Ảnh/Video/Audio)',
+    title: 'F4 - Vận dụng 3: Trình phát âm thanh (audio controls)',
+    description: `Tạo trang web có trình phát âm thanh. Yêu cầu:<br>
+      <ul style="margin:6px 0 0 16px;line-height:1.9">
+        <li>Thẻ <code>&lt;h3&gt;</code> ghi "Nghe nhạc" hoặc tên bài hát</li>
+        <li>Thẻ <code>&lt;audio&gt;</code> với thuộc tính <code>controls</code> (hiện thanh điều khiển)</li>
+        <li>Bên trong <code>&lt;audio&gt;</code> có thẻ <code>&lt;source src="nhac.mp3" type="audio/mpeg"&gt;</code></li>
+        <li>Thuộc tính <code>src</code> trên thẻ <code>&lt;source&gt;</code> hoặc trực tiếp trên <code>&lt;audio&gt;</code></li>
+        <li>Ví dụ: <code>&lt;audio controls&gt;&lt;source src="bai-hat.mp3" type="audio/mpeg"&gt;&lt;/audio&gt;</code></li>
+      </ul>`,
+    required_tags: ['html','head','title','body','h3','audio'],
     criteria: [
       basicStructureCriteria(2.5),
       {
         name: '2. Thẻ audio bắt buộc',
         points: 5.5,
         checks: [
-          {type:'has_tag', tag:'audio', points:2.0, label:'Có thẻ &lt;audio&gt;', hint:'Thêm <audio controls>...</audio>'},
-          {type:'has_bool_attr', tag:'audio', attr:'controls', points:1.5, label:'&lt;audio&gt; có thuộc tính controls', hint:'Thêm controls vào thẻ <audio>'},
-          {type:'has_tag', tag:'h2', points:1.0, label:'Có thẻ &lt;h2&gt; tên bài hát', hint:'Thêm <h2>Tên bài hát</h2>'},
-          {type:'has_tag', tag:'p', points:1.0, label:'Có thẻ &lt;p&gt; lời nhạc', hint:'Thêm <p>Lời bài hát...</p>'},
-        ]
-      },
-      syntaxCriteria(2.0),
-    ]
-  },
-  {
-    id: 'f4_apply3',
-    group: 'F4 — Media (Ảnh/Video/Audio)',
-    title: 'F4 - Vận dụng 3: Portfolio đa phương tiện (ảnh + video + audio)',
-    description: 'Tạo trang portfolio tổng hợp gồm: ảnh đại diện <code>&lt;img&gt;</code>, video hoạt động <code>&lt;video controls&gt;</code> và bài hát yêu thích <code>&lt;audio controls&gt;</code>.',
-    required_tags: ['html','head','title','body','h1','img','video','audio'],
-    criteria: [
-      basicStructureCriteria(2.5),
-      {
-        name: '2. Đa phương tiện',
-        points: 5.5,
-        checks: [
-          {type:'has_tag', tag:'img', points:1.5, label:'Có thẻ &lt;img&gt; ảnh đại diện', hint:'Thêm <img src="anh.jpg" alt="Ảnh đại diện">'},
-          {type:'has_attr', tag:'img', attr:'src', points:0.5, label:'&lt;img&gt; có thuộc tính src', hint:'Thêm src="đường_dẫn" vào <img>'},
-          {type:'has_tag', tag:'video', points:1.5, label:'Có thẻ &lt;video&gt;', hint:'Thêm <video controls>...</video>'},
-          {type:'has_tag', tag:'audio', points:1.5, label:'Có thẻ &lt;audio&gt;', hint:'Thêm <audio controls>...</audio>'},
-          {type:'has_tag', tag:'h1', points:0.5, label:'Có thẻ &lt;h1&gt; tiêu đề', hint:'Thêm <h1>Portfolio của tôi</h1>'},
+          {type:'has_tag', tag:'h3', points:0.5, label:'Có thẻ <code>&lt;h3&gt;</code> tiêu đề', hint:'Thêm <h3>Nghe nhạc</h3>'},
+          {type:'has_tag', tag:'audio', points:1.5, label:'Có thẻ <code>&lt;audio&gt;</code>', hint:'Thêm <audio controls>...</audio>'},
+          {type:'has_bool_attr', tag:'audio', attr:'controls', points:2.0, label:'<code>&lt;audio&gt;</code> có thuộc tính <code>controls</code>', hint:'Thêm controls vào thẻ <audio controls>'},
+          {type:'has_audio_source', points:1.5, label:'Có <code>&lt;source&gt;</code> hoặc <code>src</code> trên audio', hint:'Thêm <source src="nhac.mp3" type="audio/mpeg"> bên trong <audio>'},
         ]
       },
       syntaxCriteria(2.0),
     ]
   },
 
-  // ════ F5 — BIỂU MẪU ════
+  // ════════════════════════════════════════════════════════════════
+  //  F5 — BIỂU MẪU (5 bài)
+  // ════════════════════════════════════════════════════════════════
   {
     id: 'f5_apply1',
     group: 'F5 — Biểu mẫu (Form)',
-    title: 'F5 - Vận dụng 1: Form tìm kiếm đơn giản',
-    description: 'Tạo form tìm kiếm với thẻ <code>&lt;form&gt;</code>, ô nhập <code>&lt;input type="text"&gt;</code> và nút <code>&lt;button type="submit"&gt;</code>.',
-    required_tags: ['html','head','title','body','form','input','button'],
-    criteria: [
-      basicStructureCriteria(3.0),
-      {
-        name: '2. Form tìm kiếm',
-        points: 5.0,
-        checks: [
-          {type:'has_tag', tag:'form', points:1.5, label:'Có thẻ &lt;form&gt;', hint:'Thêm <form>...</form>'},
-          {type:'has_tag', tag:'input', points:2.0, label:'Có thẻ &lt;input&gt; nhập liệu', hint:'Thêm <input type="text" placeholder="Nhập từ khóa...">'},
-          {type:'has_tag', tag:'button', points:1.5, label:'Có nút &lt;button&gt; tìm kiếm', hint:'Thêm <button type="submit">Tìm kiếm</button>'},
-        ]
-      },
-      syntaxCriteria(2.0),
-    ]
-  },
-  {
-    id: 'f5_apply2',
-    group: 'F5 — Biểu mẫu (Form)',
-    title: 'F5 - Vận dụng 2: Form đăng ký nhận tin (email + required)',
-    description: 'Tạo form đăng ký nhận tin tức với <code>&lt;input type="email"&gt;</code> có thuộc tính <code>required</code>, kèm <code>&lt;label&gt;</code> và nút submit.',
-    required_tags: ['html','head','title','body','form','label','input','button'],
-    criteria: [
-      basicStructureCriteria(2.5),
-      {
-        name: '2. Form email',
-        points: 5.5,
-        checks: [
-          {type:'has_tag', tag:'form', points:1.0, label:'Có thẻ &lt;form&gt;', hint:'Thêm <form>...</form>'},
-          {type:'has_tag', tag:'label', points:1.0, label:'Có thẻ &lt;label&gt;', hint:'Thêm <label for="email">Email:</label>'},
-          {type:'attr_value', tag:'input', attr:'type', value:'email', points:2.0, label:'Có &lt;input type="email"&gt;', hint:'Thêm <input type="email" name="email" required>'},
-          {type:'has_bool_attr', tag:'input', attr:'required', points:1.0, label:'Input có thuộc tính required', hint:'Thêm required vào thẻ input'},
-          {type:'has_tag', tag:'button', points:0.5, label:'Có nút &lt;button&gt;', hint:'Thêm <button type="submit">Đăng ký</button>'},
-        ]
-      },
-      syntaxCriteria(2.0),
-    ]
-  },
-  {
-    id: 'f5_apply3',
-    group: 'F5 — Biểu mẫu (Form)',
-    title: 'F5 - Vận dụng 3: Form khảo sát (radio button)',
-    description: 'Tạo form khảo sát gồm: ô nhập tên (<code>text</code>), tuổi (<code>number</code>), và nhóm lựa chọn mức độ hài lòng bằng <code>&lt;input type="radio"&gt;</code>.',
-    required_tags: ['html','head','title','body','form','input','button'],
-    criteria: [
-      basicStructureCriteria(2.5),
-      {
-        name: '2. Form khảo sát',
-        points: 5.5,
-        checks: [
-          {type:'has_tag', tag:'form', points:1.0, label:'Có thẻ &lt;form&gt;', hint:'Thêm <form>...</form>'},
-          {type:'attr_value', tag:'input', attr:'type', value:'text', points:1.0, label:'Có &lt;input type="text"&gt; nhập tên', hint:'Thêm <input type="text" name="ten">'},
-          {type:'attr_value', tag:'input', attr:'type', value:'number', points:1.5, label:'Có &lt;input type="number"&gt; nhập tuổi', hint:'Thêm <input type="number" name="tuoi">'},
-          {type:'attr_value', tag:'input', attr:'type', value:'radio', points:1.5, label:'Có &lt;input type="radio"&gt; lựa chọn', hint:'Thêm <input type="radio" name="danhgia" value="tot"> Tốt'},
-          {type:'has_tag', tag:'button', points:0.5, label:'Có nút &lt;button&gt;', hint:'Thêm <button type="submit">Gửi</button>'},
-        ]
-      },
-      syntaxCriteria(2.0),
-    ]
-  },
-  {
-    id: 'f5_apply4',
-    group: 'F5 — Biểu mẫu (Form)',
-    title: 'F5 - Vận dụng 4: Form đăng nhập (username + password)',
-    description: 'Tạo form đăng nhập với <code>&lt;input type="text"&gt;</code> tên người dùng, <code>&lt;input type="password"&gt;</code> mật khẩu, cả hai đều có <code>required</code>.',
-    required_tags: ['html','head','title','body','form','label','input','button'],
+    title: 'F5 - Vận dụng 1: Form đăng nhập cơ bản',
+    description: `Tạo form đăng nhập đơn giản. Yêu cầu:<br>
+      <ul style="margin:6px 0 0 16px;line-height:1.9">
+        <li>Thẻ <code>&lt;h2&gt;</code> ghi "Đăng nhập"</li>
+        <li>Thẻ <code>&lt;form&gt;</code> bao bọc toàn bộ form</li>
+        <li><code>&lt;label&gt;</code> + <code>&lt;input type="text"&gt;</code> cho trường "Tên đăng nhập"</li>
+        <li><code>&lt;label&gt;</code> + <code>&lt;input type="password"&gt;</code> cho trường "Mật khẩu"</li>
+        <li><code>&lt;button type="submit"&gt;</code> hoặc <code>&lt;input type="submit"&gt;</code> nút Đăng nhập</li>
+        <li>Thuộc tính <code>required</code> trên cả 2 input</li>
+      </ul>`,
+    required_tags: ['html','head','title','body','h2','form','label','input','button'],
     criteria: [
       basicStructureCriteria(2.5),
       {
         name: '2. Form đăng nhập',
         points: 5.5,
         checks: [
-          {type:'has_tag', tag:'form', points:1.0, label:'Có thẻ &lt;form&gt;', hint:'Thêm <form method="post">...</form>'},
-          {type:'has_tag', tag:'label', points:1.0, label:'Có thẻ &lt;label&gt;', hint:'Thêm <label for="username">Tên người dùng:</label>'},
-          {type:'attr_value', tag:'input', attr:'type', value:'text', points:1.5, label:'Có &lt;input type="text"&gt; username', hint:'Thêm <input type="text" id="username" required>'},
-          {type:'attr_value', tag:'input', attr:'type', value:'password', points:1.5, label:'Có &lt;input type="password"&gt; mật khẩu', hint:'Thêm <input type="password" id="password" required>'},
-          {type:'has_tag', tag:'button', points:0.5, label:'Có nút &lt;button&gt;', hint:'Thêm <button type="submit">Đăng nhập</button>'},
-        ]
-      },
-      syntaxCriteria(2.0),
-    ]
-  },
-  {
-    id: 'f5_apply5',
-    group: 'F5 — Biểu mẫu (Form)',
-    title: 'F5 - Vận dụng: Đăng ký câu lạc bộ',
-    description: 'Tạo biểu mẫu đăng ký CLB gồm: Họ tên (text, required), Lớp (<code>&lt;select&gt;</code> dropdown), Giới thiệu bản thân (<code>&lt;textarea&gt;</code>), nút Đăng ký và Làm lại.',
-    required_tags: ['html','head','title','body','form','input','select','textarea','button'],
-    criteria: [
-      basicStructureCriteria(2.5),
-      {
-        name: '2. Form đăng ký CLB',
-        points: 5.5,
-        checks: [
-          {type:'has_tag', tag:'form', points:1.0, label:'Có thẻ &lt;form&gt;', hint:'Thêm <form>...</form>'},
-          {type:'attr_value', tag:'input', attr:'type', value:'text', points:1.0, label:'Có &lt;input type="text"&gt; họ tên', hint:'Thêm <input type="text" name="hoten" required>'},
-          {type:'has_tag', tag:'select', points:1.5, label:'Có &lt;select&gt; dropdown lớp', hint:'Thêm <select name="lop"><option>10A</option>...</select>'},
-          {type:'has_tag', tag:'textarea', points:1.5, label:'Có &lt;textarea&gt; giới thiệu', hint:'Thêm <textarea name="gioithieu"></textarea>'},
-          {type:'has_tag', tag:'button', points:0.5, label:'Có nút &lt;button&gt;', hint:'Thêm <button type="submit">Đăng ký</button>'},
+          {type:'has_tag', tag:'form', points:1.0, label:'Có thẻ <code>&lt;form&gt;</code>', hint:'Thêm <form>...</form>'},
+          {type:'has_tag', tag:'label', points:1.0, label:'Có thẻ <code>&lt;label&gt;</code>', hint:'Thêm <label>Tên đăng nhập:</label>'},
+          {type:'attr_value', tag:'input', attr:'type', value:'text', points:0.75, label:'Có <code>&lt;input type="text"&gt;</code> tên đăng nhập', hint:'Thêm <input type="text" required>'},
+          {type:'attr_value', tag:'input', attr:'type', value:'password', points:0.75, label:'Có <code>&lt;input type="password"&gt;</code> mật khẩu', hint:'Thêm <input type="password" required>'},
+          {type:'has_bool_attr', tag:'input', attr:'required', points:1.0, label:'Input có thuộc tính <code>required</code>', hint:'Thêm required vào các input bắt buộc'},
+          {type:'has_tag_any', tags:['button','input[type=submit]'], points:1.0, label:'Có nút submit', hint:'Thêm <button type="submit">Đăng nhập</button>'},
         ]
       },
       syntaxCriteria(2.0),
     ]
   },
 
-  // ════ TỔNG HỢP ════
+  {
+    id: 'f5_apply2',
+    group: 'F5 — Biểu mẫu (Form)',
+    title: 'F5 - Vận dụng 2: Form đăng ký tài khoản',
+    description: `Tạo form đăng ký tài khoản đầy đủ hơn. Yêu cầu:<br>
+      <ul style="margin:6px 0 0 16px;line-height:1.9">
+        <li>Thẻ <code>&lt;form method="post"&gt;</code></li>
+        <li><code>&lt;input type="text"&gt;</code> họ tên + <code>required</code></li>
+        <li><code>&lt;input type="email"&gt;</code> email + <code>required</code></li>
+        <li><code>&lt;input type="password"&gt;</code> mật khẩu + <code>required</code></li>
+        <li><code>&lt;input type="number"&gt;</code> tuổi (hoặc <code>type="date"</code> ngày sinh)</li>
+        <li>Mỗi input phải có <code>&lt;label&gt;</code> tương ứng</li>
+        <li>Nút <code>&lt;button type="submit"&gt;</code> "Đăng ký"</li>
+      </ul>`,
+    required_tags: ['html','head','title','body','form','label','input','button'],
+    criteria: [
+      basicStructureCriteria(2.5),
+      {
+        name: '2. Form đăng ký',
+        points: 5.5,
+        checks: [
+          {type:'has_tag', tag:'form', points:0.75, label:'Có thẻ <code>&lt;form&gt;</code>', hint:'Thêm <form method="post">...</form>'},
+          {type:'has_attr', tag:'form', attr:'method', points:0.75, label:'<code>&lt;form&gt;</code> có thuộc tính <code>method</code>', hint:'Thêm method="post" vào <form>'},
+          {type:'has_tag', tag:'label', points:0.75, label:'Có thẻ <code>&lt;label&gt;</code>', hint:'Thêm <label>Họ tên:</label>'},
+          {type:'attr_value', tag:'input', attr:'type', value:'email', points:1.0, label:'Có <code>&lt;input type="email"&gt;</code>', hint:'Thêm <input type="email" required>'},
+          {type:'attr_value', tag:'input', attr:'type', value:'password', points:0.75, label:'Có <code>&lt;input type="password"&gt;</code>', hint:'Thêm <input type="password" required>'},
+          {type:'has_bool_attr', tag:'input', attr:'required', points:0.75, label:'Input có thuộc tính <code>required</code>', hint:'Thêm required vào các input bắt buộc'},
+          {type:'has_tag', tag:'button', points:0.75, label:'Có <code>&lt;button&gt;</code> submit', hint:'Thêm <button type="submit">Đăng ký</button>'},
+        ]
+      },
+      syntaxCriteria(2.0),
+    ]
+  },
+
+  {
+    id: 'f5_apply3',
+    group: 'F5 — Biểu mẫu (Form)',
+    title: 'F5 - Vận dụng 3: Form khảo sát (radio + checkbox)',
+    description: `Tạo form khảo sát ý kiến học sinh. Yêu cầu:<br>
+      <ul style="margin:6px 0 0 16px;line-height:1.9">
+        <li>Thẻ <code>&lt;h2&gt;</code> ghi "Khảo sát ý kiến"</li>
+        <li>Thẻ <code>&lt;form&gt;</code> bao bọc toàn bộ</li>
+        <li>Câu hỏi 1 (chọn 1): ít nhất 2 <code>&lt;input type="radio"&gt;</code> cùng <code>name</code></li>
+        <li>Câu hỏi 2 (chọn nhiều): ít nhất 2 <code>&lt;input type="checkbox"&gt;</code></li>
+        <li>Mỗi radio/checkbox có <code>&lt;label&gt;</code> đi kèm</li>
+        <li>Nút <code>&lt;button type="submit"&gt;</code> "Gửi khảo sát"</li>
+      </ul>`,
+    required_tags: ['html','head','title','body','form','label','input','button'],
+    criteria: [
+      basicStructureCriteria(2.5),
+      {
+        name: '2. Form khảo sát',
+        points: 5.5,
+        checks: [
+          {type:'has_tag', tag:'form', points:0.75, label:'Có thẻ <code>&lt;form&gt;</code>', hint:'Thêm <form>...</form>'},
+          {type:'has_tag', tag:'label', points:0.75, label:'Có thẻ <code>&lt;label&gt;</code>', hint:'Thêm <label> cho mỗi radio/checkbox'},
+          {type:'attr_value', tag:'input', attr:'type', value:'radio', points:1.5, label:'Có <code>&lt;input type="radio"&gt;</code>', hint:'Thêm <input type="radio" name="cau1"> ít nhất 2 lựa chọn'},
+          {type:'attr_value', tag:'input', attr:'type', value:'checkbox', points:1.5, label:'Có <code>&lt;input type="checkbox"&gt;</code>', hint:'Thêm <input type="checkbox"> ít nhất 2 lựa chọn'},
+          {type:'has_tag', tag:'button', points:1.0, label:'Có <code>&lt;button&gt;</code> gửi', hint:'Thêm <button type="submit">Gửi khảo sát</button>'},
+        ]
+      },
+      syntaxCriteria(2.0),
+    ]
+  },
+
+  {
+    id: 'f5_apply4',
+    group: 'F5 — Biểu mẫu (Form)',
+    title: 'F5 - Vận dụng 4: Form chọn lớp (select + option)',
+    description: `Tạo form đăng ký chọn lớp học. Yêu cầu:<br>
+      <ul style="margin:6px 0 0 16px;line-height:1.9">
+        <li>Thẻ <code>&lt;form&gt;</code> bao bọc toàn bộ</li>
+        <li><code>&lt;input type="text"&gt;</code> nhập họ tên + <code>&lt;label&gt;</code></li>
+        <li>Thẻ <code>&lt;select name="lop"&gt;</code> chọn lớp</li>
+        <li>Ít nhất <strong>3 thẻ <code>&lt;option&gt;</code></strong> trong select (ví dụ: 10A, 10B, 11A)</li>
+        <li>Thẻ <code>&lt;textarea&gt;</code> nhập ghi chú (tùy chọn)</li>
+        <li>Nút <code>&lt;button type="submit"&gt;</code> "Đăng ký"</li>
+      </ul>`,
+    required_tags: ['html','head','title','body','form','label','input','select','option','button'],
+    criteria: [
+      basicStructureCriteria(2.5),
+      {
+        name: '2. Form chọn lớp',
+        points: 5.5,
+        checks: [
+          {type:'has_tag', tag:'form', points:0.75, label:'Có thẻ <code>&lt;form&gt;</code>', hint:'Thêm <form>...</form>'},
+          {type:'has_tag', tag:'label', points:0.75, label:'Có thẻ <code>&lt;label&gt;</code>', hint:'Thêm <label>Họ tên:</label>'},
+          {type:'attr_value', tag:'input', attr:'type', value:'text', points:0.75, label:'Có <code>&lt;input type="text"&gt;</code> họ tên', hint:'Thêm <input type="text" name="hoten">'},
+          {type:'has_tag', tag:'select', points:1.0, label:'Có thẻ <code>&lt;select&gt;</code> chọn lớp', hint:'Thêm <select name="lop">...</select>'},
+          {type:'tag_count', tag:'option', min:3, points:1.25, label:'Có ít nhất 3 thẻ <code>&lt;option&gt;</code>', hint:'Thêm ít nhất 3 <option>Tên lớp</option>'},
+          {type:'has_tag', tag:'button', points:1.0, label:'Có <code>&lt;button&gt;</code> submit', hint:'Thêm <button type="submit">Đăng ký</button>'},
+        ]
+      },
+      syntaxCriteria(2.0),
+    ]
+  },
+
+  {
+    id: 'f5_apply5',
+    group: 'F5 — Biểu mẫu (Form)',
+    title: 'F5 - Vận dụng 5: Form phản hồi (textarea + placeholder)',
+    description: `Tạo form phản hồi ý kiến. Yêu cầu:<br>
+      <ul style="margin:6px 0 0 16px;line-height:1.9">
+        <li>Thẻ <code>&lt;h2&gt;</code> ghi "Gửi phản hồi"</li>
+        <li>Thẻ <code>&lt;form method="post"&gt;</code></li>
+        <li><code>&lt;label&gt;</code> + <code>&lt;input type="text"&gt;</code> họ tên + <code>placeholder</code></li>
+        <li><code>&lt;label&gt;</code> + <code>&lt;input type="email"&gt;</code> email + <code>placeholder</code></li>
+        <li><code>&lt;label&gt;</code> + <code>&lt;textarea rows="5" cols="40"&gt;</code> nội dung phản hồi + <code>placeholder</code></li>
+        <li>Nút <code>&lt;button type="submit"&gt;</code> "Gửi phản hồi"</li>
+      </ul>`,
+    required_tags: ['html','head','title','body','form','label','input','textarea','button'],
+    criteria: [
+      basicStructureCriteria(2.5),
+      {
+        name: '2. Form phản hồi',
+        points: 5.5,
+        checks: [
+          {type:'has_tag', tag:'form', points:0.75, label:'Có thẻ <code>&lt;form&gt;</code>', hint:'Thêm <form method="post">...</form>'},
+          {type:'has_tag', tag:'label', points:0.75, label:'Có thẻ <code>&lt;label&gt;</code>', hint:'Thêm <label>Họ tên:</label>'},
+          {type:'attr_value', tag:'input', attr:'type', value:'email', points:1.0, label:'Có <code>&lt;input type="email"&gt;</code>', hint:'Thêm <input type="email" placeholder="Email của bạn">'},
+          {type:'has_tag', tag:'textarea', points:1.5, label:'Có thẻ <code>&lt;textarea&gt;</code> nội dung', hint:'Thêm <textarea rows="5" cols="40" placeholder="Nội dung..."></textarea>'},
+          {type:'has_attr', tag:'textarea', attr:'rows', points:0.5, label:'<code>&lt;textarea&gt;</code> có thuộc tính <code>rows</code>', hint:'Thêm rows="5" vào textarea'},
+          {type:'has_tag', tag:'button', points:1.0, label:'Có <code>&lt;button&gt;</code> submit', hint:'Thêm <button type="submit">Gửi phản hồi</button>'},
+        ]
+      },
+      syntaxCriteria(2.0),
+    ]
+  },
+
+  // ════════════════════════════════════════════════════════════════
+  //  TỔNG HỢP (3 bài)
+  // ════════════════════════════════════════════════════════════════
   {
     id: 'tong1',
     group: 'Tổng hợp',
-    title: 'Tổng hợp - Vận dụng 1: Hồ sơ cá nhân (F1+F2+F4)',
-    description: 'Tạo trang giới thiệu bản thân gồm: tiêu đề lớn <code>&lt;h1&gt;</code>, ảnh đại diện <code>&lt;img&gt;</code> 150px, danh sách <code>&lt;ul&gt;</code> 3 sở thích, đường kẻ ngang <code>&lt;hr&gt;</code>, đoạn video giới thiệu <code>&lt;video controls&gt;</code>.',
-    required_tags: ['html','head','title','body','h1','img','ul','li','hr','video'],
+    title: 'Tổng hợp - Vận dụng 1: Hồ sơ cá nhân đầy đủ',
+    description: `Tạo trang hồ sơ cá nhân kết hợp nhiều thành phần. Yêu cầu:<br>
+      <ul style="margin:6px 0 0 16px;line-height:1.9">
+        <li>Thẻ <code>&lt;h1&gt;</code> ghi tên, <code>&lt;h2&gt;</code> ghi "Thông tin"</li>
+        <li>Thẻ <code>&lt;img src="..." alt="..."&gt;</code> ảnh đại diện với <code>width</code></li>
+        <li>Thẻ <code>&lt;p&gt;</code> giới thiệu bản thân</li>
+        <li>Thẻ <code>&lt;hr&gt;</code> ngăn cách</li>
+        <li>Thẻ <code>&lt;ul&gt;</code> với ít nhất 3 <code>&lt;li&gt;</code> sở thích</li>
+        <li>Thẻ <code>&lt;video controls&gt;</code> hoặc <code>&lt;audio controls&gt;</code> media</li>
+      </ul>`,
+    required_tags: ['html','head','title','body','h1','img','p','hr','ul','li'],
     criteria: [
       basicStructureCriteria(2.0),
       {
         name: '2. Nội dung tổng hợp',
         points: 6.5,
         checks: [
-          {type:'has_tag', tag:'h1', points:1.0, label:'Có &lt;h1&gt; tiêu đề', hint:'Thêm <h1>Hồ sơ cá nhân</h1>'},
-          {type:'has_tag', tag:'img', points:1.5, label:'Có &lt;img&gt; ảnh đại diện', hint:'Thêm <img src="anh.jpg" alt="Ảnh đại diện" width="150">'},
-          {type:'has_attr', tag:'img', attr:'src', points:0.5, label:'&lt;img&gt; có src', hint:'Thêm src="đường_dẫn" vào <img>'},
-          {type:'has_tag', tag:'ul', points:1.0, label:'Có &lt;ul&gt; danh sách sở thích', hint:'Thêm <ul>...</ul>'},
-          {type:'tag_count', tag:'li', min:3, points:1.0, label:'Có ít nhất 3 &lt;li&gt; sở thích', hint:'Thêm ít nhất 3 <li>Sở thích</li>'},
-          {type:'has_tag', tag:'hr', points:0.5, label:'Có &lt;hr&gt; phân cách', hint:'Thêm <hr> giữa các phần'},
-          {type:'has_tag', tag:'video', points:1.0, label:'Có &lt;video&gt;', hint:'Thêm <video controls>...</video>'},
+          {type:'has_tag', tag:'h1', points:0.75, label:'Có <code>&lt;h1&gt;</code> tên', hint:'Thêm <h1>Họ và tên</h1>'},
+          {type:'has_tag', tag:'img', points:1.0, label:'Có <code>&lt;img&gt;</code> ảnh đại diện', hint:'Thêm <img src="anh.jpg" alt="Ảnh đại diện" width="150">'},
+          {type:'has_attr', tag:'img', attr:'alt', points:0.75, label:'<code>&lt;img&gt;</code> có <code>alt</code>', hint:'Thêm alt="Mô tả ảnh" vào <img>'},
+          {type:'has_tag', tag:'p', points:0.75, label:'Có <code>&lt;p&gt;</code> giới thiệu', hint:'Thêm <p>Đoạn giới thiệu...</p>'},
+          {type:'has_tag', tag:'hr', points:0.5, label:'Có <code>&lt;hr&gt;</code> phân cách', hint:'Thêm <hr> giữa các phần'},
+          {type:'has_tag', tag:'ul', points:0.75, label:'Có <code>&lt;ul&gt;</code> danh sách sở thích', hint:'Thêm <ul>...</ul>'},
+          {type:'tag_count', tag:'li', min:3, points:0.75, label:'Có ít nhất 3 <code>&lt;li&gt;</code> sở thích', hint:'Thêm ít nhất 3 <li>Sở thích</li>'},
+          {type:'has_tag_any', tags:['video','audio'], points:1.0, label:'Có <code>&lt;video&gt;</code> hoặc <code>&lt;audio&gt;</code>', hint:'Thêm <video controls>...</video> hoặc <audio controls>...</audio>'},
         ]
       },
       syntaxCriteria(1.5),
     ]
   },
+
   {
     id: 'tong2',
     group: 'Tổng hợp',
-    title: 'Tổng hợp - Vận dụng 2: Thời khóa biểu phức tạp (F3)',
-    description: 'Tạo bảng thời khóa biểu gồm Thứ 2–4, 4 hàng tiết. Hàng tiêu đề màu xanh nhạt, ô "Chào cờ" dùng <code>rowspan</code>, ô "Nghỉ giải lao" dùng <code>colspan</code>.',
+    title: 'Tổng hợp - Vận dụng 2: Thời khóa biểu phức tạp (colspan + rowspan)',
+    description: `Tạo bảng thời khóa biểu tuần với colspan và rowspan. Yêu cầu:<br>
+      <ul style="margin:6px 0 0 16px;line-height:1.9">
+        <li>Thẻ <code>&lt;h1&gt;</code> ghi "Thời khóa biểu"</li>
+        <li><code>&lt;table border="1"&gt;</code> với ít nhất 5 hàng <code>&lt;tr&gt;</code></li>
+        <li>Hàng tiêu đề dùng <code>&lt;th&gt;</code>: Tiết | Thứ 2 | Thứ 3 | Thứ 4</li>
+        <li>Ô "Chào cờ" dùng <code>colspan="3"</code> gộp 3 cột ngày</li>
+        <li>Ô "Nghỉ giải lao" dùng <code>rowspan="2"</code> hoặc <code>colspan</code></li>
+        <li>Cấu trúc đúng: <code>&lt;table&gt; → &lt;tr&gt; → &lt;th&gt;/&lt;td&gt;</code></li>
+      </ul>`,
     required_tags: ['html','head','title','body','h1','table','tr','th','td'],
     criteria: [
       basicStructureCriteria(2.0),
@@ -926,49 +1135,64 @@ const EXERCISES = [
         name: '2. Cấu trúc bảng TKB',
         points: 5.0,
         checks: [
-          {type:'has_tag', tag:'table', points:1.0, label:'Có &lt;table&gt;', hint:'Thêm <table border="1">...</table>'},
-          {type:'has_tag', tag:'th', points:1.0, label:'Có &lt;th&gt; tiêu đề cột', hint:'Dùng <th> cho hàng tiêu đề'},
-          {type:'tag_count', tag:'tr', min:5, points:1.0, label:'Có ít nhất 5 hàng &lt;tr&gt;', hint:'Cần 1 hàng tiêu đề + ít nhất 4 hàng tiết'},
-          {type:'has_tag', tag:'td', points:1.0, label:'Có &lt;td&gt; dữ liệu', hint:'Dùng <td> cho các ô dữ liệu'},
-          {type:'has_attr_any', tags:['td','th'], attr:'colspan', points:0.5, label:'Có colspan', hint:'Thêm colspan vào ô "Nghỉ giải lao"'},
-          {type:'has_attr_any', tags:['td','th'], attr:'rowspan', points:0.5, label:'Có rowspan', hint:'Thêm rowspan vào ô "Chào cờ"'},
+          {type:'has_tag', tag:'table', points:0.75, label:'Có <code>&lt;table&gt;</code>', hint:'Thêm <table border="1">...</table>'},
+          {type:'has_attr', tag:'table', attr:'border', points:0.5, label:'<code>&lt;table&gt;</code> có <code>border</code>', hint:'Thêm border="1" vào <table>'},
+          {type:'has_tag', tag:'th', points:0.75, label:'Có <code>&lt;th&gt;</code> tiêu đề cột', hint:'Dùng <th> cho hàng tiêu đề'},
+          {type:'tag_count', tag:'tr', min:5, points:1.0, label:'Có ít nhất 5 hàng <code>&lt;tr&gt;</code>', hint:'Cần 1 hàng tiêu đề + ít nhất 4 hàng tiết'},
+          {type:'has_tag', tag:'td', points:0.75, label:'Có <code>&lt;td&gt;</code> dữ liệu', hint:'Dùng <td> cho các ô dữ liệu'},
+          {type:'has_attr_any', tags:['td','th'], attr:'colspan', points:0.75, label:'Có <code>colspan</code>', hint:'Thêm colspan="3" vào ô "Chào cờ"'},
+          {type:'has_attr_any', tags:['td','th'], attr:'rowspan', points:0.5, label:'Có <code>rowspan</code>', hint:'Thêm rowspan="2" vào ô "Nghỉ giải lao"'},
         ]
       },
       {
         name: '3. Thuộc tính bảng',
         points: 1.5,
         checks: [
-          {type:'has_attr', tag:'table', attr:'border', points:1.5, label:'&lt;table&gt; có thuộc tính border', hint:'Thêm border="1" vào <table>'},
+          {type:'has_attr', tag:'table', attr:'border', points:1.5, label:'<code>&lt;table&gt;</code> có thuộc tính <code>border</code>', hint:'Thêm border="1" vào <table>'},
         ]
       },
       syntaxCriteria(1.5),
     ]
   },
+
   {
     id: 'tong3',
     group: 'Tổng hợp',
-    title: 'Tổng hợp - Vận dụng 3: Đăng ký câu lạc bộ đầy đủ (F5)',
-    description: 'Biểu mẫu đăng ký CLB hoàn chỉnh: họ tên (text), lớp (select), giới thiệu (textarea), nút Đăng ký + Làm lại. Kết hợp <code>&lt;label&gt;</code>, <code>for/id</code> đúng chuẩn, <code>method="post"</code>.',
-    required_tags: ['html','head','title','body','form','label','input','select','textarea','button'],
+    title: 'Tổng hợp - Vận dụng 3: Form đăng ký câu lạc bộ đầy đủ',
+    description: `Tạo form đăng ký câu lạc bộ hoàn chỉnh. Yêu cầu:<br>
+      <ul style="margin:6px 0 0 16px;line-height:1.9">
+        <li>Thẻ <code>&lt;h1&gt;</code> ghi "Đăng ký câu lạc bộ"</li>
+        <li><code>&lt;form method="post"&gt;</code> bao bọc toàn bộ</li>
+        <li><code>&lt;label for="hoten"&gt;</code> + <code>&lt;input type="text" id="hoten" required&gt;</code></li>
+        <li><code>&lt;label for="lop"&gt;</code> + <code>&lt;select id="lop"&gt;</code> với ít nhất 3 <code>&lt;option&gt;</code></li>
+        <li><code>&lt;label for="gioithieu"&gt;</code> + <code>&lt;textarea id="gioithieu"&gt;</code></li>
+        <li>Nút <code>&lt;button type="submit"&gt;</code> "Đăng ký" và <code>&lt;button type="reset"&gt;</code> "Làm lại"</li>
+        <li>Thuộc tính <code>for</code> trên label khớp với <code>id</code> của input</li>
+      </ul>`,
+    required_tags: ['html','head','title','body','h1','form','label','input','select','option','textarea','button'],
     criteria: [
       basicStructureCriteria(2.0),
       {
-        name: '2. Form đăng ký đầy đủ',
+        name: '2. Form đăng ký CLB',
         points: 6.5,
         checks: [
-          {type:'has_tag', tag:'form', points:1.0, label:'Có &lt;form&gt;', hint:'Thêm <form method="post">...</form>'},
-          {type:'has_tag', tag:'label', points:1.0, label:'Có &lt;label&gt;', hint:'Thêm <label for="hoten">Họ tên:</label>'},
-          {type:'attr_value', tag:'input', attr:'type', value:'text', points:1.0, label:'Có &lt;input type="text"&gt; họ tên', hint:'Thêm <input type="text" id="hoten" required>'},
-          {type:'has_bool_attr', tag:'input', attr:'required', points:1.0, label:'Input có thuộc tính required', hint:'Thêm required vào input họ tên'},
-          {type:'has_tag', tag:'select', points:1.0, label:'Có &lt;select&gt; chọn lớp', hint:'Thêm <select name="lop"><option>10A</option>...</select>'},
-          {type:'has_tag', tag:'textarea', points:1.0, label:'Có &lt;textarea&gt; giới thiệu', hint:'Thêm <textarea name="gioithieu"></textarea>'},
-          {type:'has_tag', tag:'button', points:0.5, label:'Có &lt;button&gt; submit', hint:'Thêm <button type="submit">Đăng ký</button>'},
+          {type:'has_tag', tag:'form', points:0.75, label:'Có <code>&lt;form&gt;</code>', hint:'Thêm <form method="post">...</form>'},
+          {type:'has_attr', tag:'form', attr:'method', points:0.5, label:'<code>&lt;form&gt;</code> có <code>method</code>', hint:'Thêm method="post" vào <form>'},
+          {type:'has_tag', tag:'label', points:0.75, label:'Có <code>&lt;label&gt;</code>', hint:'Thêm <label for="hoten">Họ tên:</label>'},
+          {type:'has_attr', tag:'label', attr:'for', points:0.75, label:'<code>&lt;label&gt;</code> có thuộc tính <code>for</code>', hint:'Thêm for="hoten" vào <label>'},
+          {type:'attr_value', tag:'input', attr:'type', value:'text', points:0.75, label:'Có <code>&lt;input type="text"&gt;</code> họ tên', hint:'Thêm <input type="text" id="hoten" required>'},
+          {type:'has_bool_attr', tag:'input', attr:'required', points:0.5, label:'Input có <code>required</code>', hint:'Thêm required vào input họ tên'},
+          {type:'has_tag', tag:'select', points:0.75, label:'Có <code>&lt;select&gt;</code> chọn lớp', hint:'Thêm <select id="lop">...</select>'},
+          {type:'tag_count', tag:'option', min:3, points:0.5, label:'Có ít nhất 3 <code>&lt;option&gt;</code>', hint:'Thêm ít nhất 3 <option> trong select'},
+          {type:'has_tag', tag:'textarea', points:0.75, label:'Có <code>&lt;textarea&gt;</code> giới thiệu', hint:'Thêm <textarea id="gioithieu"></textarea>'},
+          {type:'has_tag', tag:'button', points:0.5, label:'Có <code>&lt;button&gt;</code>', hint:'Thêm <button type="submit">Đăng ký</button>'},
         ]
       },
       syntaxCriteria(1.5),
     ]
   },
 ];
+
 
 const exMap = {};
 EXERCISES.forEach(ex => exMap[ex.id] = ex);
@@ -1228,10 +1452,49 @@ function renderCriteria(ex){
 // ═══════════════════════════════════════════════════════════════════
 //  RUN CODE
 // ═══════════════════════════════════════════════════════════════════
+function validateHTMLStructure(code) {
+  // Kiểm tra cấu trúc HTML tối thiểu trước khi render
+  const errors = [];
+  const c = code.trim();
+  if (!c) { errors.push('Code trống'); return errors; }
+  // Phải có ít nhất 1 thẻ HTML
+  if (!/<[a-zA-Z][a-zA-Z0-9]*[\s\/\>]/.test(c) && !/<[a-zA-Z][a-zA-Z0-9]*>/.test(c)) {
+    errors.push('Không có thẻ HTML nào — đây là văn bản thường, không phải code HTML');
+    return errors;
+  }
+  // Kiểm tra các thẻ bắt buộc
+  if (!/<html[\s>]/i.test(c)) errors.push('Thiếu thẻ <html>');
+  if (!/<body[\s>]/i.test(c)) errors.push('Thiếu thẻ <body>');
+  // Kiểm tra thuộc tính ngoài thẻ (stray attr)
+  const strayErrs = checkStrayAttr(c);
+  strayErrs.forEach(e => errors.push('Lỗi cú pháp: ' + e.title.replace(/<[^>]+>/g,'')));
+  return errors;
+}
+
 function runCode(){
   const code = getCode().trim();
   if(!code){ alert('Vui lòng nhập code HTML!'); return; }
+
+  // Validate cấu trúc trước khi render
+  const structErrors = validateHTMLStructure(code);
   const frame = document.getElementById('previewFrame');
+
+  if (structErrors.length > 0) {
+    // Code có lỗi cấu trúc nghiêm trọng — không render, hiển thị lỗi
+    if(frame) {
+      frame.style.display = 'none';
+      document.getElementById('previewEmpty').style.display = 'flex';
+      document.getElementById('previewLabel').textContent = 'Chưa có output';
+    }
+    const errList = structErrors.map(e => `<li style="margin:4px 0">⚠ ${e}</li>`).join('');
+    document.getElementById('outputContent').innerHTML =
+      `<div style="color:#f44747;font-weight:700;margin-bottom:8px">✗ Không thể chạy — Code có lỗi cấu trúc HTML:</div>
+       <ul style="margin:0;padding-left:20px;color:#ffa07a;font-size:13px">${errList}</ul>
+       <div style="margin-top:10px;color:#858585;font-size:12px">Hãy sửa lỗi trên rồi nhấn Chạy code lại.</div>`;
+    return;
+  }
+
+  // Code hợp lệ — render vào iframe
   if(frame){
     const doc = frame.contentDocument || frame.contentWindow.document;
     doc.open(); doc.write(code); doc.close();
@@ -1349,6 +1612,38 @@ function checkSyntax(code) {
       hint:'Mỗi thẻ mở phải có một thẻ đóng tương ứng.',
       snippet: stack.map(s => codeSnippet(s.line, s.text)).join('') });
   }
+
+  return issues;
+}
+
+// Kiểm tra thuộc tính thừa nằm ngoài thẻ HTML (dùng cho no_stray_attr)
+function checkStrayAttr(code) {
+  const issues = [];
+  const lines = code.split('\n');
+  lines.forEach((rawLine, i) => {
+    const lineNum = i + 1;
+    const lineText = rawLine.trim();
+    if (!lineText || /^\s*<!--/.test(lineText)) return;
+
+    // Xóa tất cả nội dung trong thẻ <...>
+    const stripped = rawLine
+      .replace(/<![^>]*>/g, '')
+      .replace(/<[^>]*>/g, '');
+
+    // Nếu phần còn lại có dạng 'word=value' → thuộc tính thừa ngoài thẻ
+    const strayAttrRegex = /\b([a-zA-Z][a-zA-Z0-9-]*)\s*=\s*("[^"]*"|'[^']*'|[^\s<>"']+)/g;
+    let m;
+    while ((m = strayAttrRegex.exec(stripped)) !== null) {
+      const strayText = m[0].trim();
+      const nearTag = lineText.match(/<([a-zA-Z]+)/)?.[1] || 'thẻ';
+      issues.push({ type:'error',
+        title:`Dòng ${lineNum}: <code>${m[1]}</code> nằm ngoài thẻ`,
+        msg:`<code>${strayText}</code> được viết ngoài thẻ HTML. Thuộc tính phải nằm bên trong <code>&lt; &gt;</code>.`,
+        hint:`Sửa thành: <code>&lt;${nearTag} ${strayText}&gt;</code>`,
+        snippet: codeSnippet(lineNum, lineText)
+      });
+    }
+  });
   return issues;
 }
 
@@ -1460,9 +1755,43 @@ function runSingleCheck(check, doc, code, syntaxIssues, hasHtml) {
       break;
     }
     case 'no_attr_colon_syntax': {
-      passed = !/([\w-]+)\s*:\s*["']?[\w#]+["']?\s*[;]?/.test(code.replace(/<style[^>]*>[\s\S]*?<\/style>/gi,'').replace(/<!--[\s\S]*?-->/g,''));
+      // Loại bỏ nội dung trong <style>, comment, và text content (giữa >...</)
+      // Chỉ kiểm tra bên trong các thẻ HTML: <tag attr:value>
+      const codeNoStyle = code
+        .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
+        .replace(/<!--[\s\S]*?-->/g, '');
+      // Tìm các thẻ HTML và kiểm tra bên trong chúng
+      const tagContents = [];
+      const tagRegexCA = /<([a-zA-Z][a-zA-Z0-9]*)([^>]*)>/g;
+      let mCA;
+      while ((mCA = tagRegexCA.exec(codeNoStyle)) !== null) {
+        tagContents.push(mCA[2]); // phần attr string bên trong thẻ
+      }
+      // Kiểm tra xem có attr dùng dấu : không (ví dụ: style:"color:red" hoặc bgcolor:"green")
+      const colonAttrRe = /([\w-]+)\s*:\s*["']?[^"'\s>]+/;
+      const badAttr = tagContents.find(s => colonAttrRe.test(s));
+      passed = !badAttr;
       if(!passed) issue = {type:'error', title:'Lỗi cú pháp thuộc tính (dùng : thay vì =)',
-        msg:'Thuộc tính HTML phải dùng dấu bằng: <code>attr="value"</code>, không phải <code>attr:value</code>.', hint};
+        msg:'Thuộc tính HTML phải dùng dấu bằng: <code>attr="value"</code>, không phải <code>attr:value</code>. Ví dụ: <code>style="color:red"</code> (đúng) vs <code>style:"color:red"</code> (sai).', hint};
+      break;
+    }
+    case 'no_stray_attr': {
+      if(!hasHtml) {
+        passed = false;
+        issue = {type:'error', title:'Không có thẻ HTML nào',
+          msg:'Code phải chứa các thẻ HTML hợp lệ để được tính điểm.', hint:'Thêm cấu trúc HTML cơ bản trước'};
+        break;
+      }
+      const strayErrs = checkStrayAttr(code);
+      passed = strayErrs.length === 0;
+      if(!passed) {
+        const first = strayErrs[0];
+        issue = {type:'error',
+          title: first.title,
+          msg: first.msg,
+          hint: first.hint || hint,
+          snippet: first.snippet};
+      }
       break;
     }
     case 'no_syntax_error': {
@@ -1489,6 +1818,25 @@ function runSingleCheck(check, doc, code, syntaxIssues, hasHtml) {
       passed = quoteWarns.length === 0;
       if(!passed) issue = {type:'warn', title:`Có ${quoteWarns.length} cảnh báo dấu nháy`,
         msg:'Thuộc tính phải được bọc trong dấu nháy kép.', hint};
+      break;
+    }
+    case 'has_audio_source': {
+      // Kiểm tra <audio> có src trực tiếp hoặc <source> bên trong
+      const audioEls = Array.from(doc.querySelectorAll('audio'));
+      if (audioEls.length === 0) {
+        passed = false;
+        issue = {type:'error', title:'Thiếu thẻ &lt;audio&gt;',
+          msg:'Không tìm thấy thẻ <code>&lt;audio&gt;</code> trong code.', hint};
+      } else {
+        passed = audioEls.some(el =>
+          el.hasAttribute('src') ||
+          el.querySelector('source[src]') !== null
+        );
+        if (!passed) issue = {type:'error',
+          title:'Thiếu nguồn âm thanh',
+          msg:'Thẻ <code>&lt;audio&gt;</code> cần có <code>src</code> hoặc thẻ <code>&lt;source src="..."&gt;</code> bên trong.',
+          hint};
+      }
       break;
     }
     default:
