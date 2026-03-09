@@ -140,6 +140,9 @@
     .btn-run-grade:hover{filter:brightness(1.1)}
     .btn-clear{background:var(--surface2);border:1px solid var(--border);color:var(--red);padding:9px 14px}
     .btn-clear:hover{background:rgba(239,68,68,.1)}
+    .btn-toggle-panel{background:linear-gradient(135deg,#0e7490,#0891b2);color:#fff;display:none}
+    .btn-toggle-panel:hover{filter:brightness(1.1)}
+    .btn-toggle-panel.active{background:linear-gradient(135deg,#1e40af,#3b82f6)}
     .shortcut{font-size:11px;color:var(--muted);margin-left:auto}
 
     /* ══ OUTPUT BAR ══ */
@@ -239,24 +242,66 @@
 
     /* ══ MOBILE PORTRAIT ══ */
     @media(max-width:768px) and (orientation:portrait){
-      header{padding:0 10px;height:46px;gap:6px}
-      .logo-text h1{font-size:14px}
+      /* Header gọn hơn */
+      header{padding:0 8px;height:44px;gap:4px}
+      .logo-text h1{font-size:13px}
       .logo-text p{display:none}
-      .header-nav{gap:4px}
+      .header-nav{gap:3px;flex:1}
       .nav-label{display:none}
-      .nav-select{font-size:11px;padding:4px 6px;max-width:100px}
-      .badge-version{font-size:10px;padding:3px 8px}
-      .main{grid-template-columns:1fr;grid-template-rows:1fr 280px}
-      .editor-panel{border-right:none;border-bottom:1px solid var(--border)}
-      .grade-panel{height:280px}
-      .exercise-bar{padding:5px 10px;min-height:30px}
+      .nav-select{font-size:11px;padding:4px 5px;max-width:calc(50vw - 60px);flex:1}
+      .badge-version{font-size:9px;padding:2px 6px}
+      /* Layout dọc: editor trên, panel dưới */
+      .main{grid-template-columns:1fr;grid-template-rows:1fr auto;overflow:hidden}
+      .editor-panel{border-right:none;border-bottom:1px solid var(--border);min-height:0;display:flex;flex-direction:column}
+      /* Editor bar đề bài gọn */
+      .exercise-bar{padding:4px 10px;min-height:0;max-height:80px;overflow-y:auto}
       .ex-title{font-size:11px}
-      .ex-desc{font-size:10px}
-      .action-bar{padding:6px 10px;gap:5px}
-      .btn{padding:7px 12px;font-size:11px}
-      .output-content{min-height:40px;max-height:80px;font-size:11px}
+      .ex-desc{font-size:10px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+      /* CodeMirror editor: chiều cao lớn, font dễ đọc */
+      #editor-wrap{flex:1;min-height:220px}
+      .CodeMirror{font-size:14px !important;line-height:1.8 !important}
+      .CodeMirror-gutters{min-width:36px}
+      /* Action buttons: 2 hàng gọn */
+      .action-bar{padding:6px 8px;gap:4px;flex-wrap:wrap}
+      .btn{padding:8px 10px;font-size:12px;flex:1;min-width:80px;text-align:center}
+      .btn-clear{flex:0 0 auto;min-width:50px}
       .shortcut{display:none}
-      .CodeMirror{font-size:12px !important}
+      /* Output nhỏ gọn */
+      .output-bar{flex-shrink:0}
+      .output-content{min-height:36px;max-height:60px;font-size:11px;padding:6px 10px}
+      /* Grade panel: chiều cao vừa đủ, có thể scroll */
+      .grade-panel{height:auto;max-height:45vh;flex-shrink:0;overflow:hidden}
+      .grade-header{flex-shrink:0}
+      .grade-tabs{gap:2px}
+      .grade-tab{padding:6px 4px;font-size:10px;flex:1}
+      .score-panel,.desc-panel,.crit-panel,.preview-panel{overflow-y:auto}
+      /* Score panel gọn */
+      .score-circle-wrap{padding:8px 12px 4px}
+      .score-circle{width:90px;height:90px}
+      .score-circle::before{width:68px;height:68px}
+      .score-num{font-size:22px}
+      .stats-row{padding:0 8px 6px;gap:4px}
+      .stat-box{padding:5px 8px}
+      .stat-num{font-size:15px}
+      .detail-header{padding:5px 10px;font-size:10px}
+      .detail-list{padding:0 8px 8px;gap:4px}
+      .detail-item{padding:6px 8px;font-size:11px}
+      .detail-item-title{font-size:11px}
+      .detail-item-msg{font-size:10px}
+      /* Desc panel */
+      .desc-panel{padding:8px 10px}
+      .desc-content{font-size:12px;line-height:1.6}
+      /* Crit panel */
+      .crit-body{padding:6px 8px;gap:5px}
+      .crit-card-head{padding:6px 10px}
+      .crit-card-title{font-size:10px}
+      .crit-card-body{padding:5px 10px;gap:3px}
+      .crit-item{font-size:10px}
+      .grade-footer{padding:4px 8px;font-size:9px}
+      /* Nút toggle panel chỉ hiện trên mobile */
+      .btn-toggle-panel{display:flex;align-items:center;gap:4px;flex:0 0 auto;min-width:auto;padding:8px 10px}
+      /* Ẩn grade panel khi đã ẩn */
+      .grade-panel.mobile-hidden{display:none !important}
     }
 
     /* ══ MOBILE LANDSCAPE ══ */
@@ -347,6 +392,7 @@
       <button class="btn btn-grade" onclick="gradeCode()">⚡ Chấm điểm</button>
       <button class="btn btn-run-grade" onclick="runAndGrade()">⚡ Chạy &amp; Chấm</button>
       <button class="btn btn-clear" onclick="clearCode()">🗑 Xóa</button>
+      <button class="btn btn-toggle-panel" id="btnTogglePanel" onclick="toggleGradePanel()" title="Ẩn/Hiện bảng kết quả">📊 Kết quả</button>
       <span class="shortcut">Ctrl+Enter</span>
     </div>
     <!-- OUTPUT -->
@@ -461,7 +507,7 @@
 // ═══════════════════════════════════════════════════════════════════
 //  VERSION
 // ═══════════════════════════════════════════════════════════════════
-const VERSION = '1.4.4';
+const VERSION = '1.4.5';
 document.getElementById('versionBadge').textContent = 'v' + VERSION;
 
 // ═══════════════════════════════════════════════════════════════════
@@ -1525,9 +1571,35 @@ function clearCode(){
 
 function runAndGrade(){
   runCode();
-  setTimeout(gradeCode, 100);
+  setTimeout(() => {
+    gradeCode();
+    // Trên mobile: tự động hiện grade panel sau khi chấm
+    if(window.innerWidth <= 768) {
+      const gp = document.querySelector('.grade-panel');
+      if(gp && gp.classList.contains('mobile-hidden')) {
+        gp.classList.remove('mobile-hidden');
+        const btn = document.getElementById('btnTogglePanel');
+        if(btn) { btn.textContent = '📄 Ẩn kết quả'; btn.classList.add('active'); }
+      }
+    }
+  }, 100);
 }
-
+// Hàm toggle grade panel trên mobile
+function toggleGradePanel(){
+  const gp = document.querySelector('.grade-panel');
+  const btn = document.getElementById('btnTogglePanel');
+  if(!gp) return;
+  const hidden = gp.classList.toggle('mobile-hidden');
+  if(btn) {
+    btn.textContent = hidden ? '📊 Kết quả' : '📄 Ẩn kết quả';
+    btn.classList.toggle('active', !hidden);
+  }
+  // Refresh CodeMirror sau khi toggle
+  setTimeout(() => {
+    const cm = window.cmEditor;
+    if(cm) cm.refresh();
+  }, 50);
+}
 // ═══════════════════════════════════════════════════════════════════
 //  ENGINE CHẤM ĐIỂM
 // ═══════════════════════════════════════════════════════════════════
